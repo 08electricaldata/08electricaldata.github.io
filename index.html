@@ -33,31 +33,34 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   padding: 25px;
   margin-bottom: 20px;
-}
-
-.card h2 {
-  color: #003f88;
   text-align: center;
-  margin-bottom: 15px;
 }
 
-.search-box {
+.select-row {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 15px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
-select, input {
+select {
   padding: 12px;
   font-size: 16px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  min-width: 240px;
+  min-width: 260px;
+}
+
+.button-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 button {
-  padding: 12px 22px;
+  padding: 12px 28px;
   font-size: 16px;
   background: #003f88;
   color: white;
@@ -67,15 +70,6 @@ button {
 }
 button:hover { opacity: 0.9; }
 
-.recent-list {
-  margin-top: 15px;
-}
-.recent-list button {
-  background: #e8f0ff;
-  color: #003f88;
-  margin: 5px;
-}
-
 .footer {
   text-align: center;
   padding: 15px;
@@ -83,11 +77,8 @@ button:hover { opacity: 0.9; }
   color: #555;
 }
 
-/* MOBILE */
 @media (max-width: 600px) {
-  select, input, button {
-    width: 100%;
-  }
+  select, button { width: 100%; }
 }
 </style>
 </head>
@@ -100,24 +91,24 @@ button:hover { opacity: 0.9; }
 </div>
 
 <div class="container">
-
-  <!-- SEARCH -->
   <div class="card">
     <h2>Select Drive</h2>
 
-    <div class="search-box">
-      <input id="mainSearch" placeholder="Search Main Drive">
-      <select id="mainDrive"></select>
+    <div class="select-row">
+      <select id="mainDrive">
+        <option value="">Select Main Drive</option>
+      </select>
 
-      <input id="subSearch" placeholder="Search Sub Drive">
-      <select id="subDrive"></select>
-
-      <button onclick="openDrive()">Open</button>
+      <select id="subDrive">
+        <option value="">Select Sub Drive</option>
+      </select>
     </div>
 
-    <div class="recent-list" id="recent"></div>
+    <div class="button-row">
+      <button onclick="openPage('view')">VIEW</button>
+      <button onclick="openPage('history')">HISTORY</button>
+    </div>
   </div>
-
 </div>
 
 <div class="footer">
@@ -131,30 +122,31 @@ const SHEET_URL =
 
 let headers = [];
 let rows = [];
+let sheetPassword = "";
 
-// ---------- LOAD WITH CACHE ----------
-async function loadData() {
-  const cached = localStorage.getItem("driveSheet");
-  if (cached) {
-    const data = JSON.parse(cached);
-    headers = data.headers;
-    rows = data.rows;
+// ---------- LOAD SHEET (WITH CACHE) ----------
+async function loadSheet() {
+  const cache = localStorage.getItem("driveSheetFull");
+  if (cache) {
+    const d = JSON.parse(cache);
+    headers = d.headers;
+    rows = d.rows;
+    sheetPassword = d.password;
     buildMain();
     return;
   }
 
-  const res = await fetch(SHEET_URL);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(47, text.length - 2));
+  const r = await fetch(SHEET_URL);
+  const t = await r.text();
+  const j = JSON.parse(t.substring(47, t.length - 2));
 
-  headers = json.table.cols.slice(7).map(c => c.label);
-  rows = json.table.rows.map(r =>
-    r.c.slice(7).map(c => c?.v || "")
-  );
+  headers = j.table.cols.slice(7).map(c => c.label); // H → AF
+  rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
+  sheetPassword = rows[0]?.[6] || ""; // G1
 
   localStorage.setItem(
-    "driveSheet",
-    JSON.stringify({ headers, rows })
+    "driveSheetFull",
+    JSON.stringify({ headers, rows, password: sheetPassword })
   );
 
   buildMain();
@@ -163,7 +155,6 @@ async function loadData() {
 // ---------- MAIN DRIVE ----------
 function buildMain() {
   const main = document.getElementById("mainDrive");
-  main.innerHTML = "<option value=''>Select Main Drive</option>";
   headers.forEach((h, i) => {
     const o = document.createElement("option");
     o.value = i;
@@ -172,78 +163,52 @@ function buildMain() {
   });
 }
 
-function buildSub() {
-  const idx = document.getElementById("mainDrive").value;
+document.getElementById("mainDrive").onchange = function () {
+  const idx = this.value;
   const sub = document.getElementById("subDrive");
   sub.innerHTML = "<option value=''>Select Sub Drive</option>";
   if (idx === "") return;
 
   rows.forEach(r => {
-    if (r[idx]) {
+    const val = r[+idx + 7];
+    if (val) {
       const o = document.createElement("option");
-      o.value = r[idx];
-      o.textContent = r[idx];
+      o.value = val;
+      o.textContent = val;
       sub.appendChild(o);
     }
   });
-}
+};
 
-// ---------- SEARCH FILTER ----------
-function filterSelect(input, select) {
-  const q = input.value.toLowerCase();
-  [...select.options].forEach(o => {
-    if (!o.value) return;
-    o.hidden = !o.text.toLowerCase().includes(q);
-  });
-}
-
-// ---------- OPEN DRIVE ----------
-function openDrive() {
+// ---------- OPEN VIEW / HISTORY ----------
+function openPage(type) {
   const mainSel = document.getElementById("mainDrive");
   const subSel = document.getElementById("subDrive");
+
   if (!mainSel.value || !subSel.value) {
-    alert("Select both Main & Sub Drive");
+    alert("Please select Main Drive and Sub Drive");
+    return;
+  }
+
+  const entered = prompt("🔐 Enter Password");
+  if (entered !== sheetPassword) {
+    alert("Incorrect password");
     return;
   }
 
   const id = `${mainSel.selectedOptions[0].text}-${subSel.value}`;
-  saveRecent(id);
+  const base =
+    type === "view"
+      ? "drive-viewer/index.html?id="
+      : "drive-viewer/history.html?id=";
+
   window.location.href =
-    "drive-viewer/index.html?id=" + encodeURIComponent(id);
+    "https://08electricaldata.github.io/" +
+    base +
+    encodeURIComponent(id);
 }
 
-// ---------- RECENT ----------
-function saveRecent(id) {
-  let list = JSON.parse(localStorage.getItem("recent") || "[]");
-  list = [id, ...list.filter(x => x !== id)].slice(0,5);
-  localStorage.setItem("recent", JSON.stringify(list));
-}
-
-function loadRecent() {
-  const box = document.getElementById("recent");
-  const list = JSON.parse(localStorage.getItem("recent") || "[]");
-  if (!list.length) return;
-
-  box.innerHTML = "<b>⭐ Recent:</b><br>";
-  list.forEach(id => {
-    const b = document.createElement("button");
-    b.textContent = id;
-    b.onclick = () =>
-      window.location.href =
-        "drive-viewer/index.html?id=" + encodeURIComponent(id);
-    box.appendChild(b);
-  });
-}
-
-// ---------- EVENTS ----------
-document.getElementById("mainDrive").onchange = buildSub;
-document.getElementById("mainSearch").onkeyup =
-  () => filterSelect(mainSearch, mainDrive);
-document.getElementById("subSearch").onkeyup =
-  () => filterSelect(subSearch, subDrive);
-
-loadData();
-loadRecent();
+loadSheet();
 </script>
 
 </body>
