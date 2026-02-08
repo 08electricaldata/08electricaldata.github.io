@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>08 Electrical Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f6ff;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  background: #003f88;
+  color: white;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.header p {
+  margin-top: 8px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  padding: 25px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card h2 {
+  color: #003f88;
+  margin-bottom: 15px;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-box input {
+  padding: 12px;
+  font-size: 16px;
+  width: 260px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.search-box button {
+  padding: 12px 22px;
+  font-size: 16px;
+  background: #003f88;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.search-box button:hover {
+  opacity: 0.9;
+}
+
+.links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 15px;
+}
+
+.links a {
+  text-decoration: none;
+  background: #003f88;
+  color: white;
+  padding: 18px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.links a:hover {
+  opacity: 0.9;
+}
+
+.footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>08 Electrical Data</h1>
+  <p>Drive Information & Maintenance History</p>
+</div>
+
+<div class="container">
+
+  <!-- SEARCH CARD -->
+  <div class="card">
+    <h2>Search Drive</h2>
+
+    <div class="search-box">
+      <input id="driveId" placeholder="Enter Drive ID (e.g. BAT_B-P-200)">
+      <button onclick="openDrive()">Open</button>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="card">
+    <h2>Quick Access</h2>
+
+    <div class="links">
+      <a href="drive-viewer/">🔍 Drive Viewer</a>
+      <a href="drive-viewer/history.html">📜 History Viewer</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  © 08 Electrical Data | Powered by GitHub Pages
+</div>
+
+<script>
+function openDrive() {
+  const id = document.getElementById("driveId").value.trim();
+  if (!id) {
+    alert("Please enter Drive ID");
+    return;
+  }
+  window.location.href =
+    "drive-viewer/index.html?id=" + encodeURIComponent(id);
+}
+</script>
+
+</body>
+</html>
