@@ -140,9 +140,14 @@ async function loadSheet() {
   const t = await r.text();
   const j = JSON.parse(t.substring(47, t.length - 2));
 
-  headers = j.table.cols.slice(7).map(c => c.label); // H → AF
+  // MAIN DRIVE HEADERS (H → AF)
+  headers = j.table.cols.slice(7).map(c => c.label);
+
+  // ALL ROW DATA
   rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
-  sheetPassword = rows[0]?.[6] || ""; // G1
+
+  // ✅ PASSWORD FROM G1 (COLUMN HEADER)
+  sheetPassword = (j.table.cols[6]?.label || "").trim();
 
   localStorage.setItem(
     "driveSheetFull",
@@ -190,11 +195,10 @@ function openPage(type) {
     return;
   }
 
-  // 🔧 TEMPORARY DEBUG (SHOW REAL PASSWORD ONCE)
+  // 🔧 TEMPORARY DEBUG (SHOW REAL PASSWORD)
   alert("DEBUG PASSWORD (from Sheet G1): " + sheetPassword);
 
   const entered = prompt("🔐 Enter Password");
-
   if (entered !== sheetPassword) {
     alert("Incorrect password");
     return;
@@ -211,7 +215,6 @@ function openPage(type) {
     base +
     encodeURIComponent(id);
 }
-
 
 loadSheet();
 </script>
