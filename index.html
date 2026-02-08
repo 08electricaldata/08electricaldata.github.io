@@ -147,7 +147,7 @@ async function loadSheet() {
   rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
 
   // ✅ PASSWORD FROM G1 (COLUMN HEADER)
-  sheetPassword = (j.table.rows[2]?.c[8]?.v || "").toString().trim();
+  sheetPassword = (j.table.rows[2]?.c[6]?.v || "").toString().trim();
 
 
   localStorage.setItem(
