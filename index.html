@@ -10,7 +10,6 @@ body {
   font-family: Arial, sans-serif;
   background: #f2f6ff;
   margin: 0;
-  padding: 0;
 }
 
 .header {
@@ -19,17 +18,8 @@ body {
   padding: 30px 15px;
   text-align: center;
 }
-
-.header h1 {
-  margin: 0;
-  font-size: 36px;
-}
-
-.header p {
-  margin-top: 8px;
-  font-size: 16px;
-  opacity: 0.9;
-}
+.header h1 { margin: 0; font-size: 36px; }
+.header p { margin-top: 8px; opacity: 0.9; }
 
 .container {
   max-width: 900px;
@@ -43,30 +33,30 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   padding: 25px;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 .card h2 {
   color: #003f88;
+  text-align: center;
   margin-bottom: 15px;
 }
 
 .search-box {
   display: flex;
-  justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
-.search-box input {
+select, input {
   padding: 12px;
   font-size: 16px;
-  width: 260px;
-  border: 1px solid #ccc;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 240px;
 }
 
-.search-box button {
+button {
   padding: 12px 22px;
   font-size: 16px;
   background: #003f88;
@@ -75,28 +65,15 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
+button:hover { opacity: 0.9; }
 
-.search-box button:hover {
-  opacity: 0.9;
+.recent-list {
+  margin-top: 15px;
 }
-
-.links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-  gap: 15px;
-}
-
-.links a {
-  text-decoration: none;
-  background: #003f88;
-  color: white;
-  padding: 18px;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.links a:hover {
-  opacity: 0.9;
+.recent-list button {
+  background: #e8f0ff;
+  color: #003f88;
+  margin: 5px;
 }
 
 .footer {
@@ -104,6 +81,13 @@ body {
   padding: 15px;
   font-size: 14px;
   color: #555;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  select, input, button {
+    width: 100%;
+  }
 }
 </style>
 </head>
@@ -117,42 +101,149 @@ body {
 
 <div class="container">
 
-  <!-- SEARCH CARD -->
+  <!-- SEARCH -->
   <div class="card">
-    <h2>Search Drive</h2>
+    <h2>Select Drive</h2>
 
     <div class="search-box">
-      <input id="driveId" placeholder="Enter Drive ID (e.g. BAT_B-P-200)">
+      <input id="mainSearch" placeholder="Search Main Drive">
+      <select id="mainDrive"></select>
+
+      <input id="subSearch" placeholder="Search Sub Drive">
+      <select id="subDrive"></select>
+
       <button onclick="openDrive()">Open</button>
     </div>
-  </div>
 
-  <!-- QUICK LINKS -->
-  <div class="card">
-    <h2>Quick Access</h2>
-
-    <div class="links">
-      <a href="drive-viewer/">🔍 Drive Viewer</a>
-      <a href="drive-viewer/history.html">📜 History Viewer</a>
-    </div>
+    <div class="recent-list" id="recent"></div>
   </div>
 
 </div>
 
 <div class="footer">
-  © 08 Electrical Data | Powered by GitHub Pages
+  © 08 Electrical Data | GitHub Pages
 </div>
 
 <script>
-function openDrive() {
-  const id = document.getElementById("driveId").value.trim();
-  if (!id) {
-    alert("Please enter Drive ID");
+const SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/1Ar9-a9u4b622-6i8b889qGqENI8rl8Q2U6PPOPBaLDc/gviz/tq" +
+  "?gid=198891854&tqx=out:json";
+
+let headers = [];
+let rows = [];
+
+// ---------- LOAD WITH CACHE ----------
+async function loadData() {
+  const cached = localStorage.getItem("driveSheet");
+  if (cached) {
+    const data = JSON.parse(cached);
+    headers = data.headers;
+    rows = data.rows;
+    buildMain();
     return;
   }
+
+  const res = await fetch(SHEET_URL);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47, text.length - 2));
+
+  headers = json.table.cols.slice(7).map(c => c.label);
+  rows = json.table.rows.map(r =>
+    r.c.slice(7).map(c => c?.v || "")
+  );
+
+  localStorage.setItem(
+    "driveSheet",
+    JSON.stringify({ headers, rows })
+  );
+
+  buildMain();
+}
+
+// ---------- MAIN DRIVE ----------
+function buildMain() {
+  const main = document.getElementById("mainDrive");
+  main.innerHTML = "<option value=''>Select Main Drive</option>";
+  headers.forEach((h, i) => {
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = h;
+    main.appendChild(o);
+  });
+}
+
+function buildSub() {
+  const idx = document.getElementById("mainDrive").value;
+  const sub = document.getElementById("subDrive");
+  sub.innerHTML = "<option value=''>Select Sub Drive</option>";
+  if (idx === "") return;
+
+  rows.forEach(r => {
+    if (r[idx]) {
+      const o = document.createElement("option");
+      o.value = r[idx];
+      o.textContent = r[idx];
+      sub.appendChild(o);
+    }
+  });
+}
+
+// ---------- SEARCH FILTER ----------
+function filterSelect(input, select) {
+  const q = input.value.toLowerCase();
+  [...select.options].forEach(o => {
+    if (!o.value) return;
+    o.hidden = !o.text.toLowerCase().includes(q);
+  });
+}
+
+// ---------- OPEN DRIVE ----------
+function openDrive() {
+  const mainSel = document.getElementById("mainDrive");
+  const subSel = document.getElementById("subDrive");
+  if (!mainSel.value || !subSel.value) {
+    alert("Select both Main & Sub Drive");
+    return;
+  }
+
+  const id = `${mainSel.selectedOptions[0].text}-${subSel.value}`;
+  saveRecent(id);
   window.location.href =
     "drive-viewer/index.html?id=" + encodeURIComponent(id);
 }
+
+// ---------- RECENT ----------
+function saveRecent(id) {
+  let list = JSON.parse(localStorage.getItem("recent") || "[]");
+  list = [id, ...list.filter(x => x !== id)].slice(0,5);
+  localStorage.setItem("recent", JSON.stringify(list));
+}
+
+function loadRecent() {
+  const box = document.getElementById("recent");
+  const list = JSON.parse(localStorage.getItem("recent") || "[]");
+  if (!list.length) return;
+
+  box.innerHTML = "<b>⭐ Recent:</b><br>";
+  list.forEach(id => {
+    const b = document.createElement("button");
+    b.textContent = id;
+    b.onclick = () =>
+      window.location.href =
+        "drive-viewer/index.html?id=" + encodeURIComponent(id);
+    box.appendChild(b);
+  });
+}
+
+// ---------- EVENTS ----------
+document.getElementById("mainDrive").onchange = buildSub;
+document.getElementById("mainSearch").onkeyup =
+  () => filterSelect(mainSearch, mainDrive);
+document.getElementById("subSearch").onkeyup =
+  () => filterSelect(subSearch, subDrive);
+
+loadData();
+loadRecent();
 </script>
 
 </body>
