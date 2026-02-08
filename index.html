@@ -22,9 +22,12 @@ body {
 .header p { margin-top: 8px; opacity: 0.9; }
 
 .container {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 30px auto;
   padding: 0 15px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
 }
 
 .card {
@@ -33,9 +36,38 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   padding: 25px;
   margin-bottom: 20px;
+}
+
+.card h2 {
+  margin-top: 0;
+  color: #003f88;
   text-align: center;
 }
 
+/* ===== MASTER LIST ===== */
+.master-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.master-btns a {
+  text-decoration: none;
+}
+
+.master-btns button {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  background: #003f88;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.master-btns button:hover { opacity: 0.9; }
+
+/* ===== DRIVE SELECT ===== */
 .select-row {
   display: flex;
   gap: 15px;
@@ -59,7 +91,7 @@ select {
   flex-wrap: wrap;
 }
 
-button {
+.button-row button {
   padding: 12px 28px;
   font-size: 16px;
   background: #003f88;
@@ -68,7 +100,7 @@ button {
   border-radius: 6px;
   cursor: pointer;
 }
-button:hover { opacity: 0.9; }
+.button-row button:hover { opacity: 0.9; }
 
 .footer {
   text-align: center;
@@ -77,8 +109,14 @@ button:hover { opacity: 0.9; }
   color: #555;
 }
 
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 600px) {
-  select, button { width: 100%; }
+  select, .button-row button { width: 100%; }
 }
 </style>
 </head>
@@ -91,6 +129,23 @@ button:hover { opacity: 0.9; }
 </div>
 
 <div class="container">
+
+  <!-- ===== LEFT : MASTER LIST ===== -->
+  <div class="card">
+    <h2>Master List</h2>
+
+    <div class="master-btns">
+      <a href="https://08electricaldata.github.io/drive-viewer/motorlist.html">
+        <button>⚙️ Motor List</button>
+      </a>
+
+      <!-- Future buttons can be added below -->
+      <!-- <button>Spare Master</button> -->
+      <!-- <button>Critical Motors</button> -->
+    </div>
+  </div>
+
+  <!-- ===== RIGHT : DRIVE SELECT ===== -->
   <div class="card">
     <h2>Select Drive</h2>
 
@@ -109,6 +164,7 @@ button:hover { opacity: 0.9; }
       <button onclick="openPage('history')">HISTORY</button>
     </div>
   </div>
+
 </div>
 
 <div class="footer">
@@ -124,7 +180,7 @@ let headers = [];
 let rows = [];
 let sheetPassword = "";
 
-// ---------- LOAD SHEET (WITH CACHE) ----------
+// ---------- LOAD SHEET ----------
 async function loadSheet() {
   const cache = localStorage.getItem("driveSheetFull");
   if (cache) {
@@ -140,15 +196,9 @@ async function loadSheet() {
   const t = await r.text();
   const j = JSON.parse(t.substring(47, t.length - 2));
 
-  // MAIN DRIVE HEADERS (H → AF)
   headers = j.table.cols.slice(7).map(c => c.label);
-
-  // ALL ROW DATA
   rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
-
-  // ✅ PASSWORD FROM G1 (COLUMN HEADER)
   sheetPassword = (j.table.rows[2]?.c[6]?.v || "").toString().trim();
-
 
   localStorage.setItem(
     "driveSheetFull",
