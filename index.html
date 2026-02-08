@@ -26,7 +26,7 @@ body {
   margin: 30px auto;
   padding: 0 15px;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px 1fr 1fr;
   gap: 20px;
 }
 
@@ -110,7 +110,7 @@ select {
 }
 
 /* ===== MOBILE ===== */
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .container {
     grid-template-columns: 1fr;
   }
@@ -142,12 +142,10 @@ select {
       <a href="https://08electricaldata.github.io/drive-viewer/trafolist.html">
         <button>⚡ Transformer List</button>
       </a>
-
-      <!-- Future buttons can be added below -->
     </div>
   </div>
 
-  <!-- ===== RIGHT : DRIVE SELECT ===== -->
+  <!-- ===== MIDDLE : DRIVE SELECT ===== -->
   <div class="card">
     <h2>Select Drive</h2>
 
@@ -164,6 +162,15 @@ select {
     <div class="button-row">
       <button onclick="openPage('view')">VIEW</button>
       <button onclick="openPage('history')">HISTORY</button>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT : JOBS ===== -->
+  <div class="card">
+    <h2>Jobs</h2>
+
+    <div class="button-row">
+      <button onclick="openJobPage()">📅 DATEWISE JOBS</button>
     </div>
   </div>
 
@@ -264,6 +271,18 @@ function openPage(type) {
     "https://08electricaldata.github.io/" +
     base +
     encodeURIComponent(id);
+}
+
+// ---------- OPEN DATEWISE JOBS ----------
+function openJobPage() {
+  const entered = prompt("🔐 Enter Password");
+  if (entered !== sheetPassword) {
+    alert("Incorrect password");
+    return;
+  }
+
+  window.location.href =
+    "https://08electricaldata.github.io/drive-viewer/summary-date.html";
 }
 
 loadSheet();
