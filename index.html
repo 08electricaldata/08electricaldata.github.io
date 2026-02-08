@@ -219,7 +219,7 @@ async function loadSheet() {
   headers = j.table.cols.slice(7).map(c => c.label);
   rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
   sheetPassword = String(j.table.rows[2]?.c[6]?.v || "").trim();
-  alert("Password fetched from sheet: " + sheetPassword);
+  // alert("Password fetched from sheet: " + sheetPassword);
 
   localStorage.setItem(
     "driveSheetFull",
