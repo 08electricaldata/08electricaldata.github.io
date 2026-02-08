@@ -196,9 +196,6 @@ function openPage(type) {
     return;
   }
 
-  // 🔧 TEMPORARY DEBUG (SHOW REAL PASSWORD)
-  alert("DEBUG PASSWORD (from Sheet G1): " + sheetPassword);
-
   const entered = prompt("🔐 Enter Password");
   if (entered !== sheetPassword) {
     alert("Incorrect password");
