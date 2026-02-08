@@ -26,7 +26,7 @@ body {
   margin: 30px auto;
   padding: 0 15px;
   display: grid;
-  grid-template-columns: 280px 1fr 280px; /* Master | Select | Jobs */
+  grid-template-columns: 280px 1fr 280px;
   gap: 20px;
 }
 
@@ -135,12 +135,19 @@ select {
   <!-- ===== LEFT : MASTER LIST ===== -->
   <div class="card">
     <h2>Master List</h2>
+
     <div class="master-btns">
       <a href="https://08electricaldata.github.io/drive-viewer/motorlist.html">
         <button>⚙️ Motor List</button>
       </a>
+
       <a href="https://08electricaldata.github.io/drive-viewer/trafolist.html">
         <button>⚡ Transformer List</button>
+      </a>
+
+      <!-- ✅ NEW BUTTON ADDED -->
+      <a href="https://08electricaldata.github.io/drive-viewer/breakerlist.html">
+        <button>🔌 Breaker List</button>
       </a>
     </div>
   </div>
