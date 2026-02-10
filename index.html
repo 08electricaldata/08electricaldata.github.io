@@ -19,7 +19,17 @@ body {
   text-align: center;
 }
 .header h1 { margin: 0; font-size: 36px; }
-.header p { margin-top: 8px; opacity: 0.9; }
+.header p {
+  margin-top: 8px;
+  font-size: 18px;        /* increased */
+  opacity: 0.95;
+}
+.header .credit {
+  margin-top: 6px;
+  font-size: 16px;        /* increased */
+  font-weight: 500;
+  opacity: 0.95;
+}
 
 .container {
   max-width: 1200px;
@@ -123,6 +133,7 @@ select {
 <div class="header">
   <h1>08 Electrical Data</h1>
   <p>Drive Information & Maintenance History</p>
+  <div class="credit">Designed and Maintained by RAKESH CHANDRA SETHY</div>
 </div>
 
 <div class="container">
@@ -164,6 +175,8 @@ select {
     <div class="jobs-btns">
       <button onclick="openJob('date')">📅 Datewise Jobs</button>
       <button onclick="openJob('advanced')">📊 Advanced Summary</button>
+      <!-- ✅ NEW BUTTON -->
+      <button onclick="openMotorOH()">🛠️ Motor O/H Data</button>
     </div>
   </div>
 
@@ -291,6 +304,13 @@ function openJob(type) {
       : "https://08electricaldata.github.io/drive-viewer/summary-date.html";
 
   window.location.href = url;
+}
+
+// ---------- MOTOR O/H ----------
+function openMotorOH() {
+  if (!checkPassword()) return;
+  window.location.href =
+    "https://08electricaldata.github.io/drive-viewer/motoroh.html";
 }
 
 loadSheet();
