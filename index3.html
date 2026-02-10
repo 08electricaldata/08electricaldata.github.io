@@ -60,10 +60,7 @@ body {
   gap: 12px;
 }
 
-.master-btns a { text-decoration: none; }
-
-.master-btns button,
-.jobs-btns button {
+button {
   width: 100%;
   padding: 12px;
   font-size: 15px;
@@ -73,8 +70,7 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
-.master-btns button:hover,
-.jobs-btns button:hover { opacity: 0.9; }
+button:hover { opacity: 0.9; }
 
 .select-row {
   display: flex;
@@ -98,17 +94,6 @@ select {
   justify-content: center;
   flex-wrap: wrap;
 }
-
-.button-row button {
-  padding: 12px 28px;
-  font-size: 16px;
-  background: #003f88;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.button-row button:hover { opacity: 0.9; }
 
 .footer {
   text-align: center;
@@ -136,21 +121,17 @@ select {
 
 <div class="container">
 
+  <!-- MASTER LIST -->
   <div class="card">
     <h2>Master List</h2>
     <div class="master-btns">
-      <a href="https://08electricaldata.github.io/drive-viewer/motorlist.html">
-        <button>⚙️ Motor List</button>
-      </a>
-      <a href="https://08electricaldata.github.io/drive-viewer/trafolist.html">
-        <button>⚡ Transformer List</button>
-      </a>
-      <a href="https://08electricaldata.github.io/drive-viewer/breakerlist.html">
-        <button>🔌 Breaker List</button>
-      </a>
+      <button onclick="secureOpen('motor')">⚙️ Motor List</button>
+      <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
+      <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
     </div>
   </div>
 
+  <!-- SELECT DRIVE -->
   <div class="card">
     <h2>Select Drive</h2>
     <div class="select-row">
@@ -163,17 +144,18 @@ select {
     </div>
 
     <div class="button-row">
-      <button onclick="openPage('view')">VIEW</button>
-      <button onclick="openPage('history')">HISTORY</button>
+      <button onclick="secureView('view')">VIEW</button>
+      <button onclick="secureView('history')">HISTORY</button>
     </div>
   </div>
 
+  <!-- JOBS -->
   <div class="card">
     <h2>Jobs</h2>
     <div class="jobs-btns">
-      <button onclick="openJob('date')">📅 Datewise Jobs</button>
-      <button onclick="openJob('advanced')">📊 Advanced Summary</button>
-      <button onclick="openMotorOH()">🛠️ Motor O/H Data</button>
+      <button onclick="secureOpen('date')">📅 Datewise Jobs</button>
+      <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+      <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     </div>
   </div>
 
@@ -184,22 +166,22 @@ select {
 </div>
 
 <script>
-// 🔥 JSON SOURCE (FAST)
+// 🔥 FAST JSON SOURCE
 const JSON_URL =
   "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
 let headers = [];
 let rows = [];
-let sheetPassword = "OK"; // password handled separately if needed
+let sheetPassword = "";
 
 // ---------- LOAD JSON ----------
 async function loadSheet() {
   const cache = localStorage.getItem("driveJSON");
-
   if (cache) {
     const d = JSON.parse(cache);
     headers = d.headers;
     rows = d.rows;
+    sheetPassword = String(headers[6] || "").trim(); // 🔐 G1
     buildMain();
     return;
   }
@@ -209,34 +191,49 @@ async function loadSheet() {
 
   headers = d.headers;
   rows = d.rows;
+  sheetPassword = String(headers[6] || "").trim(); // 🔐 G1
 
   localStorage.setItem("driveJSON", JSON.stringify(d));
   buildMain();
 }
 
-// ---------- MAIN DRIVE (START FROM COLUMN H) ----------
+// ---------- PASSWORD CHECK ----------
+function checkPassword() {
+  if (!sheetPassword) {
+    alert("⏳ Data still loading. Please wait.");
+    return false;
+  }
+
+  const entered = prompt("🔐 Enter Password");
+  if (entered === null) return false;
+
+  if (String(entered).trim() !== sheetPassword) {
+    alert("❌ Incorrect password");
+    return false;
+  }
+  return true;
+}
+
+// ---------- MAIN DRIVE (FROM H COLUMN) ----------
 function buildMain() {
   const main = document.getElementById("mainDrive");
   main.innerHTML = "<option value=''>Select Main Drive</option>";
 
   headers.forEach((h, i) => {
-    if (i < 7) return;   // ⛔ skip A–G
-    if (!h) return;
-
+    if (i < 7 || !h) return;
     const o = document.createElement("option");
-    o.value = i;        // keep real column index
+    o.value = i;
     o.textContent = h;
     main.appendChild(o);
   });
 }
-
 
 // ---------- SUB DRIVE ----------
 document.getElementById("mainDrive").onchange = function () {
   const idx = this.value;
   const sub = document.getElementById("subDrive");
   sub.innerHTML = "<option value=''>Select Sub Drive</option>";
-  if (idx === "") return;
+  if (!idx) return;
 
   rows.forEach(r => {
     const val = r[idx];
@@ -249,13 +246,10 @@ document.getElementById("mainDrive").onchange = function () {
   });
 };
 
-// ---------- PASSWORD CHECK ----------
-function checkPassword() {
-  return true; // ready for password JSON if needed
-}
+// ---------- SECURE VIEW / HISTORY ----------
+function secureView(type) {
+  if (!checkPassword()) return;
 
-// ---------- VIEW / HISTORY ----------
-function openPage(type) {
   const mainSel = document.getElementById("mainDrive");
   const subSel = document.getElementById("subDrive");
 
@@ -263,8 +257,6 @@ function openPage(type) {
     alert("Please select Main Drive and Sub Drive");
     return;
   }
-
-  if (!checkPassword()) return;
 
   const id = mainSel.selectedOptions[0].text + "-" + subSel.value;
   const base =
@@ -278,20 +270,21 @@ function openPage(type) {
     encodeURIComponent(id);
 }
 
-// ---------- JOBS ----------
-function openJob(type) {
-  const url =
-    type === "advanced"
-      ? "https://08electricaldata.github.io/drive-viewer/summary-advanced.html"
-      : "https://08electricaldata.github.io/drive-viewer/summary-date.html";
+// ---------- SECURE OPEN (ALL OTHER PAGES) ----------
+function secureOpen(type) {
+  if (!checkPassword()) return;
 
-  window.location.href = url;
-}
+  const map = {
+    motor: "drive-viewer/motorlist.html",
+    trafo: "drive-viewer/trafolist.html",
+    breaker: "drive-viewer/breakerlist.html",
+    date: "drive-viewer/summary-date.html",
+    advanced: "drive-viewer/summary-advanced.html",
+    motoroh: "drive-viewer/motoroh.html"
+  };
 
-// ---------- MOTOR O/H ----------
-function openMotorOH() {
   window.location.href =
-    "https://08electricaldata.github.io/drive-viewer/motoroh.html";
+    "https://08electricaldata.github.io/" + map[type];
 }
 
 loadSheet();
