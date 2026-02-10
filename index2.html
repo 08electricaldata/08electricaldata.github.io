@@ -23,11 +23,11 @@ body {
 .header p { margin-top: 8px; opacity: 0.9; }
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 30px auto;
   padding: 0 15px;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px 1fr 280px;
   gap: 20px;
 }
 
@@ -36,7 +36,6 @@ body {
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   padding: 25px;
-  margin-bottom: 20px;
 }
 
 .card h2 {
@@ -45,8 +44,8 @@ body {
   text-align: center;
 }
 
-/* ===== MASTER LIST ===== */
-.master-btns {
+.master-btns,
+.jobs-btns {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -56,7 +55,8 @@ body {
   text-decoration: none;
 }
 
-.master-btns button {
+.master-btns button,
+.jobs-btns button {
   width: 100%;
   padding: 12px;
   font-size: 15px;
@@ -66,9 +66,9 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
-.master-btns button:hover { opacity: 0.9; }
+.master-btns button:hover,
+.jobs-btns button:hover { opacity: 0.9; }
 
-/* ===== DRIVE SELECT ===== */
 .select-row {
   display: flex;
   gap: 15px;
@@ -110,11 +110,8 @@ select {
   color: #555;
 }
 
-/* ===== MOBILE ===== */
-@media (max-width: 900px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 1000px) {
+  .container { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
   select, .button-row button { width: 100%; }
@@ -131,32 +128,27 @@ select {
 
 <div class="container">
 
-  <!-- ===== LEFT : MASTER LIST ===== -->
   <div class="card">
     <h2>Master List</h2>
-
     <div class="master-btns">
       <a href="https://08electricaldata.github.io/drive-viewer/motorlist.html">
         <button>⚙️ Motor List</button>
       </a>
-
       <a href="https://08electricaldata.github.io/drive-viewer/trafolist.html">
         <button>⚡ Transformer List</button>
       </a>
-
-      <!-- Future buttons can be added below -->
+      <a href="https://08electricaldata.github.io/drive-viewer/breakerlist.html">
+        <button>🔌 Breaker List</button>
+      </a>
     </div>
   </div>
 
-  <!-- ===== RIGHT : DRIVE SELECT ===== -->
   <div class="card">
     <h2>Select Drive</h2>
-
     <div class="select-row">
       <select id="mainDrive">
         <option value="">Select Main Drive</option>
       </select>
-
       <select id="subDrive">
         <option value="">Select Sub Drive</option>
       </select>
@@ -168,10 +160,18 @@ select {
     </div>
   </div>
 
+  <div class="card">
+    <h2>Jobs</h2>
+    <div class="jobs-btns">
+      <button onclick="openJob('date')">📅 Datewise Jobs</button>
+      <button onclick="openJob('advanced')">📊 Advanced Summary</button>
+    </div>
+  </div>
+
 </div>
 
 <div class="footer">
-  © 08 Electrical Data | GitHub Pages
+  © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy (08 Electrical)
 </div>
 
 <script>
@@ -183,6 +183,24 @@ let headers = [];
 let rows = [];
 let sheetPassword = "";
 
+// ---------- PASSWORD CHECK ----------
+function checkPassword() {
+  if (!sheetPassword) {
+    alert("⏳ Data still loading. Please wait a moment.");
+    return false;
+  }
+
+  const entered = prompt("🔐 Enter Password");
+  if (entered === null) return false;
+
+  if (String(entered).trim() !== String(sheetPassword).trim()) {
+    alert("❌ Incorrect password");
+    return false;
+  }
+
+  return true;
+}
+
 // ---------- LOAD SHEET ----------
 async function loadSheet() {
   const cache = localStorage.getItem("driveSheetFull");
@@ -190,7 +208,7 @@ async function loadSheet() {
     const d = JSON.parse(cache);
     headers = d.headers;
     rows = d.rows;
-    sheetPassword = d.password;
+    sheetPassword = String(d.password || "").trim();
     buildMain();
     return;
   }
@@ -201,7 +219,8 @@ async function loadSheet() {
 
   headers = j.table.cols.slice(7).map(c => c.label);
   rows = j.table.rows.map(r => r.c.map(c => c?.v || ""));
-  sheetPassword = (j.table.rows[2]?.c[6]?.v || "").toString().trim();
+  sheetPassword = String(j.table.rows[2]?.c[6]?.v || "").trim();
+  // alert("Password fetched from sheet: " + sheetPassword);
 
   localStorage.setItem(
     "driveSheetFull",
@@ -239,7 +258,7 @@ document.getElementById("mainDrive").onchange = function () {
   });
 };
 
-// ---------- OPEN VIEW / HISTORY ----------
+// ---------- VIEW / HISTORY ----------
 function openPage(type) {
   const mainSel = document.getElementById("mainDrive");
   const subSel = document.getElementById("subDrive");
@@ -249,11 +268,7 @@ function openPage(type) {
     return;
   }
 
-  const entered = prompt("🔐 Enter Password");
-  if (entered !== sheetPassword) {
-    alert("Incorrect password");
-    return;
-  }
+  if (!checkPassword()) return;
 
   const id = `${mainSel.selectedOptions[0].text}-${subSel.value}`;
   const base =
@@ -265,6 +280,18 @@ function openPage(type) {
     "https://08electricaldata.github.io/" +
     base +
     encodeURIComponent(id);
+}
+
+// ---------- JOBS ----------
+function openJob(type) {
+  if (!checkPassword()) return;
+
+  const url =
+    type === "advanced"
+      ? "https://08electricaldata.github.io/drive-viewer/summary-advanced.html"
+      : "https://08electricaldata.github.io/drive-viewer/summary-date.html";
+
+  window.location.href = url;
 }
 
 loadSheet();
