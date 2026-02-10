@@ -152,11 +152,13 @@ select {
   <!-- JOBS -->
   <div class="card">
     <h2>Jobs</h2>
-    <div class="jobs-btns">
-      <button onclick="secureOpen('date')">📅 Datewise Jobs</button>
-      <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
-      <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
-    </div>
+<div class="jobs-btns">
+  <button onclick="secureOpen('date')">📅 Datewise Jobs</button>
+  <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+  <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
+  <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
+</div>
+
   </div>
 
 </div>
@@ -280,12 +282,14 @@ function secureOpen(type) {
     breaker: "drive-viewer/breakerlist.html",
     date: "drive-viewer/summary-date.html",
     advanced: "drive-viewer/summary-advanced.html",
-    motoroh: "drive-viewer/motoroh.html"
+    motoroh: "drive-viewer/motoroh.html",
+    motorpm: "drive-viewer/motorpm.html" // ✅ NEW
   };
 
   window.location.href =
     "https://08electricaldata.github.io/" + map[type];
 }
+
 
 loadSheet();
 </script>
