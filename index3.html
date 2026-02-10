@@ -214,19 +214,22 @@ async function loadSheet() {
   buildMain();
 }
 
-// ---------- MAIN DRIVE ----------
+// ---------- MAIN DRIVE (START FROM COLUMN H) ----------
 function buildMain() {
   const main = document.getElementById("mainDrive");
   main.innerHTML = "<option value=''>Select Main Drive</option>";
 
   headers.forEach((h, i) => {
+    if (i < 7) return;   // ⛔ skip A–G
     if (!h) return;
+
     const o = document.createElement("option");
-    o.value = i;
+    o.value = i;        // keep real column index
     o.textContent = h;
     main.appendChild(o);
   });
 }
+
 
 // ---------- SUB DRIVE ----------
 document.getElementById("mainDrive").onchange = function () {
