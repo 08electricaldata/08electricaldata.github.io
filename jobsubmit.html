@@ -1,72 +1,60 @@
-submit<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Daily Job Entry</title>
+<title>Job Book Entry</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   font-family: Arial, sans-serif;
   background:#f2f6ff;
-  margin:0;
+  padding:20px;
 }
-.header{
-  background:#003f88;
-  color:#fff;
-  padding:14px;
-  text-align:center;
-  font-size:20px;
-  font-weight:700;
-}
-.container{
-  max-width:900px;
-  margin:20px auto;
+.card{
+  max-width:600px;
+  margin:auto;
   background:#fff;
   padding:20px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+h2{
+  text-align:center;
+  color:#003f88;
 }
 label{
   display:block;
-  margin-top:14px;
-  font-weight:600;
-  color:#003f88;
+  margin-top:12px;
+  font-weight:bold;
 }
 input, textarea, select{
   width:100%;
   padding:8px;
-  margin-top:6px;
-  border:1px solid #ccc;
-  border-radius:6px;
-  font-size:14px;
+  margin-top:5px;
 }
-textarea{min-height:90px;}
 button{
   margin-top:20px;
-  padding:12px 20px;
+  width:100%;
+  padding:10px;
   background:#003f88;
   color:#fff;
   border:none;
-  border-radius:8px;
   font-size:16px;
   cursor:pointer;
 }
-button:hover{opacity:.9}
 #msg{
   margin-top:15px;
-  font-weight:600;
+  text-align:center;
+  font-weight:bold;
 }
-.success{color:green}
-.error{color:red}
 </style>
 </head>
 
 <body>
 
-<div class="header">Daily Job Details Entry</div>
-
-<div class="container">
+<div class="card">
+<h2>Job Book</h2>
 
 <form id="jobForm"
 action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
@@ -74,62 +62,51 @@ method="POST"
 target="hidden_iframe"
 onsubmit="submitted=true;">
 
-<!-- 1 DATE -->
-<label>Date (DD/MM/YYYY)</label>
-<input name="entry.2005620554" placeholder="19/12/2025">
+<label>Date (dd-mm-yyyy)</label>
+<input name="entry.2074265710" required>
 
-<!-- 2 MAIN DRIVE -->
-<label>Main Drive</label>
-<input name="entry.1045781291">
+<label>Area / Section</label>
+<input name="entry.2034418039" required>
 
-<!-- 3 SUB DRIVE -->
-<label>Sub Drive</label>
-<input name="entry.1065046570">
+<label>Equipment No</label>
+<input name="entry.2738583836" required>
 
-<!-- 4 JOB DETAILS -->
-<label>Job Details</label>
-<textarea name="entry.1166974658"></textarea>
+<label>Job Description</label>
+<textarea name="entry.556400630" required></textarea>
 
-<!-- 5 TYPE OF JOB -->
-<label>Type of Job</label>
-<input name="entry.839337160">
+<label>Job Type</label>
+<input name="entry.591852895">
 
-<!-- 6 NATURE OF JOB -->
-<label>Nature of Job</label>
-<input name="entry.1273925930">
+<label>Equipment Type</label>
+<input name="entry.1114165376">
 
-<!-- 7 HIGHLIGHT -->
-<label>Highlight (YES / NO)</label>
-<input name="entry.1578837255">
+<label>Completed (YES / NO)</label>
+<input name="entry.1932274245">
 
-<!-- 8 JOB BY -->
-<label>Job By</label>
-<input name="entry.1444638895">
+<label>Attended By</label>
+<input name="entry.972123475">
 
-<!-- 9 IMAGE NUMBER -->
-<label>Image No (Number only)</label>
-<input name="entry.1507285464">
+<label>IMAGE / NUMBER</label>
+<input name="entry.1690654842">
 
-<button type="submit">SUBMIT</button>
-
-<div id="msg"></div>
+<button type="submit">Submit Job</button>
 </form>
 
-<iframe name="hidden_iframe" style="display:none"
-onload="if(submitted){showSuccess();}">
-</iframe>
-
+<div id="msg"></div>
 </div>
 
-<script>
-let submitted=false;
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 
-function showSuccess(){
+<script>
+let submitted = false;
+document.getElementById("jobForm").addEventListener("submit", () => {
   document.getElementById("msg").innerHTML =
-    "<span class='success'>✅ Job submitted successfully. Pending verification.</span>";
-  document.getElementById("jobForm").reset();
-  submitted=false;
-}
+    "Submitting... Please wait";
+  setTimeout(()=>{
+    document.getElementById("msg").innerHTML =
+      "✅ Submitted successfully. Pending verification.";
+  },1200);
+});
 </script>
 
 </body>
