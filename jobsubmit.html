@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Job Book Entry</title>
+<title>Job Book</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,16 +12,11 @@ body{
   padding:20px;
 }
 .card{
-  max-width:600px;
+  max-width:650px;
   margin:auto;
   background:#fff;
   padding:20px;
   border-radius:8px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-}
-h2{
-  text-align:center;
-  color:#003f88;
 }
 label{
   display:block;
@@ -41,7 +36,6 @@ button{
   color:#fff;
   border:none;
   font-size:16px;
-  cursor:pointer;
 }
 #msg{
   margin-top:15px;
@@ -59,35 +53,61 @@ button{
 <form id="jobForm"
 action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
 method="POST"
-target="hidden_iframe"
-onsubmit="submitted=true;">
+target="hidden_iframe">
 
-<label>Date (dd-mm-yyyy)</label>
-<input name="entry.2074265710" required>
+<!-- 1 DATE -->
+<label>Date</label>
+<input type="date" name="entry.2074265710" required>
 
-<label>Area / Section</label>
-<input name="entry.2034418039" required>
+<!-- 2 MAIN DRIVE -->
+<label>Main Drive</label>
+<select id="mainDrive" name="entry.2034418039" required>
+  <option value="">-- Select --</option>
+</select>
 
-<label>Equipment No</label>
-<input name="entry.2738583836" required>
+<!-- 3 SUB DRIVE -->
+<label>Sub Drive</label>
+<select id="subDrive" name="entry.2738583836" required>
+  <option value="">-- Select --</option>
+</select>
 
-<label>Job Description</label>
+<!-- 4 JOB DETAILS -->
+<label>Job Details</label>
 <textarea name="entry.556400630" required></textarea>
 
-<label>Job Type</label>
-<input name="entry.591852895">
+<!-- 5 TYPE OF JOB -->
+<label>Type of Job</label>
+<select id="typeJob" name="entry.591852895" required>
+  <option value="">-- Select --</option>
+</select>
 
-<label>Equipment Type</label>
-<input name="entry.1114165376">
+<!-- 6 NATURE OF JOB -->
+<label>Nature of Job</label>
+<select id="natureJob" name="entry.1114165376" required>
+  <option value="">-- Select --</option>
+</select>
 
-<label>Completed (YES / NO)</label>
-<input name="entry.1932274245">
+<!-- 7 HIGHLIGHT -->
+<label>Highlight</label>
+<select name="entry.1932274245" required>
+  <option value="">-- Select --</option>
+  <option>YES</option>
+  <option>NO</option>
+</select>
 
-<label>Attended By</label>
-<input name="entry.972123475">
+<!-- 8 JOB BY -->
+<label>Job By</label>
+<select name="entry.972123475" required>
+  <option value="">-- Select --</option>
+  <option>NALCO</option>
+  <option>ANIL_AREA</option>
+  <option>CONTRACT</option>
+</select>
 
-<label>IMAGE / NUMBER</label>
-<input name="entry.1690654842">
+<!-- 9 IMAGE (GOOGLE FORM FILE UPLOAD ONLY) -->
+<p style="font-size:13px;color:#555">
+📎 Image upload handled by Google Form
+</p>
 
 <button type="submit">Submit Job</button>
 </form>
@@ -98,15 +118,45 @@ onsubmit="submitted=true;">
 <iframe name="hidden_iframe" style="display:none;"></iframe>
 
 <script>
-let submitted = false;
-document.getElementById("jobForm").addEventListener("submit", () => {
-  document.getElementById("msg").innerHTML =
-    "Submitting... Please wait";
-  setTimeout(()=>{
-    document.getElementById("msg").innerHTML =
-      "✅ Submitted successfully. Pending verification.";
-  },1200);
+let drivesData = {};
+
+fetch("drives.json")
+.then(r => r.json())
+.then(d => {
+  drivesData = d;
+
+  // Main Drive
+  d.headers.forEach(h => {
+    mainDrive.add(new Option(h, h));
+  });
+
+  // Type of Job
+  d.typeOfJob.forEach(v => {
+    typeJob.add(new Option(v, v));
+  });
+
+  // Nature of Job
+  d.natureOfJob.forEach(v => {
+    natureJob.add(new Option(v, v));
+  });
 });
+
+// Sub Drive dependency
+mainDrive.onchange = () => {
+  subDrive.length = 1;
+  (drivesData.rows[mainDrive.value] || [])
+    .forEach(v => subDrive.add(new Option(v, v)));
+};
+
+// Submit handling
+document.getElementById("jobForm").onsubmit = () => {
+  msg.innerHTML = "Submitting...";
+  setTimeout(() => {
+    msg.innerHTML = "✅ Submitted successfully. Pending verification.";
+    document.getElementById("jobForm").reset();
+    subDrive.length = 1;
+  }, 1200);
+};
 </script>
 
 </body>
