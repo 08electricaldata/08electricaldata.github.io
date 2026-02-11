@@ -2,161 +2,222 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Job Book</title>
+<title>Job Book – Landscape Entry</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
+body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background:#f2f6ff;
-  padding:20px;
+  background: #f2f6ff;
 }
-.card{
-  max-width:650px;
-  margin:auto;
-  background:#fff;
-  padding:20px;
-  border-radius:8px;
+
+h1 {
+  text-align: center;
+  background: #003f88;
+  color: #fff;
+  margin: 0;
+  padding: 12px;
 }
-label{
-  display:block;
-  margin-top:12px;
-  font-weight:bold;
+
+/* LANDSCAPE GRID */
+form {
+  max-width: 1400px;
+  margin: 10px auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
-input, textarea, select{
-  width:100%;
-  padding:8px;
-  margin-top:5px;
+
+/* FULL WIDTH ROW */
+.full {
+  grid-column: span 4;
 }
-button{
-  margin-top:20px;
-  width:100%;
-  padding:10px;
-  background:#003f88;
-  color:#fff;
-  border:none;
-  font-size:16px;
+
+label {
+  font-weight: bold;
+  font-size: 13px;
 }
-#msg{
-  margin-top:15px;
-  text-align:center;
-  font-weight:bold;
+
+input, select, textarea, button {
+  width: 100%;
+  padding: 8px;
+  font-size: 13px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+button {
+  background: #003f88;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #002b60;
+}
+
+.success {
+  display: none;
+  grid-column: span 4;
+  background: #e6ffea;
+  color: #0a7a2f;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-<h2>Job Book</h2>
+<h1>JOB BOOK – LANDSCAPE ENTRY</h1>
 
 <form id="jobForm"
 action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
 method="POST"
 target="hidden_iframe">
 
-<!-- 1 DATE -->
-<label>Date</label>
-<input type="date" name="entry.2074265710" required>
-
-<!-- 2 MAIN DRIVE -->
-<label>Main Drive</label>
-<select id="mainDrive" name="entry.2034418039" required>
-  <option value="">-- Select --</option>
-</select>
-
-<!-- 3 SUB DRIVE -->
-<label>Sub Drive</label>
-<select id="subDrive" name="entry.2738583836" required>
-  <option value="">-- Select --</option>
-</select>
-
-<!-- 4 JOB DETAILS -->
-<label>Job Details</label>
-<textarea name="entry.556400630" required></textarea>
-
-<!-- 5 TYPE OF JOB -->
-<label>Type of Job</label>
-<select id="typeJob" name="entry.591852895" required>
-  <option value="">-- Select --</option>
-</select>
-
-<!-- 6 NATURE OF JOB -->
-<label>Nature of Job</label>
-<select id="natureJob" name="entry.1114165376" required>
-  <option value="">-- Select --</option>
-</select>
-
-<!-- 7 HIGHLIGHT -->
-<label>Highlight</label>
-<select name="entry.1932274245" required>
-  <option value="">-- Select --</option>
-  <option>YES</option>
-  <option>NO</option>
-</select>
-
-<!-- 8 JOB BY -->
-<label>Job By</label>
-<select name="entry.972123475" required>
-  <option value="">-- Select --</option>
-  <option>NALCO</option>
-  <option>ANIL_AREA</option>
-  <option>CONTRACT</option>
-</select>
-
-<!-- 9 IMAGE (GOOGLE FORM FILE UPLOAD ONLY) -->
-<p style="font-size:13px;color:#555">
-📎 Image upload handled by Google Form
-</p>
-
-<button type="submit">Submit Job</button>
-</form>
-
-<div id="msg"></div>
+<!-- SUCCESS MESSAGE -->
+<div class="success" id="successMsg">
+✅ Submitted successfully. Pending verification.
 </div>
 
-<iframe name="hidden_iframe" style="display:none;"></iframe>
+<!-- 1 DATE -->
+<div>
+<label>Date</label>
+<input type="date" name="entry.2074265710" required>
+</div>
+
+<!-- 2 MAIN DRIVE -->
+<div>
+<label>Main Drive</label>
+<select id="mainDrive" name="entry.2034418039" required>
+<option value="">Select</option>
+</select>
+</div>
+
+<!-- 3 SUB DRIVE -->
+<div>
+<label>Sub Drive</label>
+<select id="subDrive" name="entry.273858386" required>
+<option value="">Select</option>
+</select>
+</div>
+
+<!-- 4 JOB DETAILS -->
+<div class="full">
+<label>Job Details</label>
+<textarea name="entry.2034418039" required></textarea>
+</div>
+
+<!-- 5 TYPE OF JOB -->
+<div>
+<label>Type of Job</label>
+<select id="typeJob" name="entry.556406030" required>
+<option value="">Select</option>
+</select>
+</div>
+
+<!-- 6 NATURE OF JOB -->
+<div>
+<label>Nature of Job</label>
+<select id="natureJob" name="entry.591852895" required>
+<option value="">Select</option>
+</select>
+</div>
+
+<!-- 7 HIGHLIGHT -->
+<div>
+<label>Highlight</label>
+<select name="entry.1114156376" required>
+<option value="">Select</option>
+<option>YES</option>
+<option>NO</option>
+</select>
+</div>
+
+<!-- 8 JOB BY -->
+<div>
+<label>Job By</label>
+<select name="entry.1932274245" required>
+<option value="">Select</option>
+<option>NALCO</option>
+<option>ANIL_AREA</option>
+<option>CONTRACTOR</option>
+</select>
+</div>
+
+<!-- 9 IMAGE NUMBER -->
+<div>
+<label>Image No (Number only)</label>
+<input type="number" name="entry.1507285464" required>
+</div>
+
+<!-- 10 IMAGE / NUMBER -->
+<div>
+<label>Image / Number</label>
+<input type="number" name="entry.1690654842" required>
+</div>
+
+<!-- SUBMIT -->
+<div class="full">
+<button type="submit">SUBMIT JOB</button>
+</div>
+
+</form>
+
+<!-- HIDDEN IFRAME -->
+<iframe name="hidden_iframe" style="display:none"
+onload="afterSubmit()"></iframe>
 
 <script>
-let drivesData = {};
+let submitted = false;
 
-fetch("drives.json")
-.then(r => r.json())
-.then(d => {
-  drivesData = d;
-
-  // Main Drive
-  d.headers.forEach(h => {
-    mainDrive.add(new Option(h, h));
-  });
-
-  // Type of Job
-  d.typeOfJob.forEach(v => {
-    typeJob.add(new Option(v, v));
-  });
-
-  // Nature of Job
-  d.natureOfJob.forEach(v => {
-    natureJob.add(new Option(v, v));
-  });
-});
-
-// Sub Drive dependency
-mainDrive.onchange = () => {
-  subDrive.length = 1;
-  (drivesData.rows[mainDrive.value] || [])
-    .forEach(v => subDrive.add(new Option(v, v)));
-};
-
-// Submit handling
-document.getElementById("jobForm").onsubmit = () => {
-  msg.innerHTML = "Submitting...";
-  setTimeout(() => {
-    msg.innerHTML = "✅ Submitted successfully. Pending verification.";
+function afterSubmit() {
+  if (submitted) {
+    document.getElementById("successMsg").style.display = "block";
     document.getElementById("jobForm").reset();
-    subDrive.length = 1;
-  }, 1200);
+    submitted = false;
+  }
+}
+
+document.getElementById("jobForm").onsubmit = () => {
+  submitted = true;
 };
+
+/* LOAD JSON DROPDOWNS */
+fetch("./drives.json")
+.then(r => r.json())
+.then(data => {
+
+  const main = document.getElementById("mainDrive");
+  const sub  = document.getElementById("subDrive");
+  const type = document.getElementById("typeJob");
+  const nat  = document.getElementById("natureJob");
+
+  data.headers.forEach(v => main.add(new Option(v, v)));
+  data.typeOfJob.forEach(v => type.add(new Option(v, v)));
+  data.natureOfJob.forEach(v => nat.add(new Option(v, v)));
+
+  main.onchange = () => {
+    sub.length = 1;
+    (data.rows[main.value] || []).forEach(v => {
+      sub.add(new Option(v, v));
+    });
+  };
+
+})
+.catch(() => alert("❌ drives.json not loading"));
 </script>
 
 </body>
