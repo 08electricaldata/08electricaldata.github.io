@@ -195,9 +195,12 @@ document.getElementById("jobForm").onsubmit = () => {
   submitted = true;
 };
 
-/* LOAD JSON DROPDOWNS */
-fetch("./drives.json")
-.then(r => r.json())
+/* LOAD JSON DROPDOWNS – RAW GITHUB */
+fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
+.then(res => {
+  if (!res.ok) throw new Error("JSON load failed");
+  return res.json();
+})
 .then(data => {
 
   const main = document.getElementById("mainDrive");
@@ -205,10 +208,16 @@ fetch("./drives.json")
   const type = document.getElementById("typeJob");
   const nat  = document.getElementById("natureJob");
 
-  data.headers.forEach(v => main.add(new Option(v, v)));
+  /* MAIN DRIVE */
+  data.headers.forEach(v => {
+    main.add(new Option(v, v));
+  });
+
+  /* TYPE & NATURE */
   data.typeOfJob.forEach(v => type.add(new Option(v, v)));
   data.natureOfJob.forEach(v => nat.add(new Option(v, v)));
 
+  /* SUB DRIVE */
   main.onchange = () => {
     sub.length = 1;
     (data.rows[main.value] || []).forEach(v => {
@@ -217,8 +226,13 @@ fetch("./drives.json")
   };
 
 })
-.catch(() => alert("❌ drives.json not loading"));
+.catch(err => {
+  alert("❌ drives.json not loading\n" + err.message);
+});
 </script>
+
+
+
 
 </body>
 </html>
