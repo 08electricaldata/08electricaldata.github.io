@@ -1,0 +1,136 @@
+submit<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Daily Job Entry</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f2f6ff;
+  margin:0;
+}
+.header{
+  background:#003f88;
+  color:#fff;
+  padding:14px;
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+}
+.container{
+  max-width:900px;
+  margin:20px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:600;
+  color:#003f88;
+}
+input, textarea, select{
+  width:100%;
+  padding:8px;
+  margin-top:6px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:14px;
+}
+textarea{min-height:90px;}
+button{
+  margin-top:20px;
+  padding:12px 20px;
+  background:#003f88;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
+#msg{
+  margin-top:15px;
+  font-weight:600;
+}
+.success{color:green}
+.error{color:red}
+</style>
+</head>
+
+<body>
+
+<div class="header">Daily Job Details Entry</div>
+
+<div class="container">
+
+<form id="jobForm"
+action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
+method="POST"
+target="hidden_iframe"
+onsubmit="submitted=true;">
+
+<!-- 1 DATE -->
+<label>Date (DD/MM/YYYY)</label>
+<input name="entry.2005620554" placeholder="19/12/2025">
+
+<!-- 2 MAIN DRIVE -->
+<label>Main Drive</label>
+<input name="entry.1045781291">
+
+<!-- 3 SUB DRIVE -->
+<label>Sub Drive</label>
+<input name="entry.1065046570">
+
+<!-- 4 JOB DETAILS -->
+<label>Job Details</label>
+<textarea name="entry.1166974658"></textarea>
+
+<!-- 5 TYPE OF JOB -->
+<label>Type of Job</label>
+<input name="entry.839337160">
+
+<!-- 6 NATURE OF JOB -->
+<label>Nature of Job</label>
+<input name="entry.1273925930">
+
+<!-- 7 HIGHLIGHT -->
+<label>Highlight (YES / NO)</label>
+<input name="entry.1578837255">
+
+<!-- 8 JOB BY -->
+<label>Job By</label>
+<input name="entry.1444638895">
+
+<!-- 9 IMAGE NUMBER -->
+<label>Image No (Number only)</label>
+<input name="entry.1507285464">
+
+<button type="submit">SUBMIT</button>
+
+<div id="msg"></div>
+</form>
+
+<iframe name="hidden_iframe" style="display:none"
+onload="if(submitted){showSuccess();}">
+</iframe>
+
+</div>
+
+<script>
+let submitted=false;
+
+function showSuccess(){
+  document.getElementById("msg").innerHTML =
+    "<span class='success'>✅ Job submitted successfully. Pending verification.</span>";
+  document.getElementById("jobForm").reset();
+  submitted=false;
+}
+</script>
+
+</body>
+</html>
