@@ -181,55 +181,58 @@ target="hidden_iframe">
 onload="afterSubmit()"></iframe>
 
 <script>
-let submitted = false;
-
-function afterSubmit() {
-  if (submitted) {
-    document.getElementById("successMsg").style.display = "block";
-    document.getElementById("jobForm").reset();
-    submitted = false;
-  }
-}
-
-document.getElementById("jobForm").onsubmit = () => {
-  submitted = true;
-};
-
-/* LOAD JSON DROPDOWNS – RAW GITHUB */
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
-.then(res => {
-  if (!res.ok) throw new Error("JSON load failed");
-  return res.json();
-})
+.then(r => r.json())
 .then(data => {
 
-  const main = document.getElementById("mainDrive");
-  const sub  = document.getElementById("subDrive");
-  const type = document.getElementById("typeJob");
-  const nat  = document.getElementById("natureJob");
+  const mainDrive  = document.getElementById("mainDrive");
+  const subDrive   = document.getElementById("subDrive");
+  const typeJob    = document.getElementById("typeJob");
+  const natureJob  = document.getElementById("natureJob");
 
-  /* MAIN DRIVE */
-  data.headers.forEach(v => {
-    main.add(new Option(v, v));
+  /* ===== UNIQUE VALUES ===== */
+  const mainSet   = new Set();
+  const typeSet   = new Set();
+  const natureSet = new Set();
+
+  data.forEach(row => {
+    Object.keys(row)
+      .filter(k => k.startsWith("H"))
+      .forEach(h => row[h] && mainSet.add(row[h]));
+
+    row.B && typeSet.add(row.B);
+    row.C && natureSet.add(row.C);
   });
 
+  /* MAIN DRIVE */
+  mainSet.forEach(v => mainDrive.add(new Option(v, v)));
+
   /* TYPE & NATURE */
-  data.typeOfJob.forEach(v => type.add(new Option(v, v)));
-  data.natureOfJob.forEach(v => nat.add(new Option(v, v)));
+  typeSet.forEach(v => typeJob.add(new Option(v, v)));
+  natureSet.forEach(v => natureJob.add(new Option(v, v)));
 
   /* SUB DRIVE */
-  main.onchange = () => {
-    sub.length = 1;
-    (data.rows[main.value] || []).forEach(v => {
-      sub.add(new Option(v, v));
+  mainDrive.onchange = () => {
+    subDrive.length = 1;
+    const selected = mainDrive.value;
+
+    data.forEach(row => {
+      Object.keys(row)
+        .filter(k => k.startsWith("H") && row[k] === selected)
+        .forEach(k => {
+          const idx = parseInt(k.replace("H","")) + 1;
+          row["H"+idx] && subDrive.add(new Option(row["H"+idx], row["H"+idx]));
+        });
     });
   };
 
 })
-.catch(err => {
-  alert("❌ drives.json not loading\n" + err.message);
-});
+.catch(err => alert("❌ JSON error\n" + err.message));
 </script>
+
+
+
+
 
 
 
