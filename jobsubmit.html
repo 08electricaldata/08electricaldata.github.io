@@ -1,202 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Job Book – Landscape Entry</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Job Entry</title>
 
 <style>
-body{
+body {
   font-family: Arial, sans-serif;
-  background:#f2f6ff;
-  margin:0;
+  background: #f2f6ff;
+  margin: 0;
+  padding: 20px;
 }
-h2{
-  text-align:center;
-  color:#003f88;
-  margin:10px 0;
+
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
-.form-box{
-  background:#fff;
-  margin:10px;
-  padding:15px;
-  border-radius:8px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
+
+h2 {
+  text-align: center;
+  color: #003f88;
+  margin-bottom: 20px;
 }
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
 }
-label{
-  font-weight:600;
-  font-size:13px;
+
+label {
+  font-weight: bold;
+  font-size: 13px;
 }
-input,select,textarea{
-  width:100%;
-  padding:6px;
-  font-size:14px;
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
 }
-textarea{ resize:vertical; }
-button{
-  background:#003f88;
-  color:#fff;
-  border:none;
-  padding:10px 25px;
-  font-size:16px;
-  border-radius:6px;
-  cursor:pointer;
+
+textarea {
+  grid-column: span 4;
+  height: 70px;
 }
-.footer{
-  text-align:center;
-  margin-top:15px;
+
+button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 30px;
+  background: #003f88;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
 }
-@media(max-width:900px){
-  .grid{ grid-template-columns:1fr; }
+
+#msg {
+  text-align: center;
+  font-weight: bold;
+  color: green;
+  margin-top: 12px;
 }
 </style>
 </head>
 
 <body>
 
+<div class="container">
 <h2>DAILY JOB DETAILS – LANDSCAPE ENTRY</h2>
 
-<form class="form-box"
-  action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
-  method="POST"
-  target="hidden_iframe"
-  onsubmit="submitted=true;">
+<form id="jobForm" target="hiddenFrame"
+action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
+method="POST">
 
-<div class="grid">
-
-  <!-- DATE -->
+<div class="row">
   <div>
     <label>Date</label>
-    <input type="date" name="entry.2074265710" required>
+    <input type="date" name="entry.2074265710" id="dateField" required>
   </div>
 
-  <!-- MAIN DRIVE -->
   <div>
     <label>Main Drive</label>
-    <select id="mainDrive" name="entry.2034418039" required>
-      <option value="">Select</option>
-    </select>
+    <select name="entry.2034418039" id="mainDrive" required></select>
   </div>
 
-  <!-- SUB DRIVE -->
   <div>
     <label>Sub Drive</label>
-    <select id="subDrive" name="entry.2738583836" required>
-      <option value="">Select</option>
-    </select>
+    <select name="entry.273858386" id="subDrive" required></select>
   </div>
 
-  <!-- IMAGE NUMBER -->
   <div>
-    <label>Image No (Number only)</label>
+    <label>Image No</label>
     <input type="number" name="entry.1690654842" required>
   </div>
+</div>
 
-  <!-- JOB DETAILS -->
-  <div style="grid-column:span 4">
-    <label>Job Details</label>
-    <textarea name="entry.556400630" rows="3" required></textarea>
-  </div>
+<div class="row">
+  <textarea name="entry.556400630" placeholder="Job Details" required></textarea>
+</div>
 
-  <!-- TYPE OF JOB -->
+<div class="row">
   <div>
     <label>Type of Job</label>
-    <select id="typeJob" name="entry.591852895" required>
-      <option value="">Select</option>
-    </select>
+    <select name="entry.591852895" id="typeJob"></select>
   </div>
 
-  <!-- NATURE OF JOB -->
   <div>
     <label>Nature of Job</label>
-    <select id="natureJob" name="entry.1114156376" required>
-      <option value="">Select</option>
-    </select>
+    <select name="entry.1114156376" id="natureJob"></select>
   </div>
 
-  <!-- HIGHLIGHT -->
   <div>
     <label>Highlight</label>
-    <select name="entry.1932274245" required>
-      <option value="">Select</option>
+    <select name="entry.1932274245">
       <option>YES</option>
       <option>NO</option>
     </select>
   </div>
 
-  <!-- JOB BY -->
   <div>
     <label>Job By</label>
-    <select name="entry.972123475" required>
-      <option value="">Select</option>
+    <select name="entry.972123475">
       <option>NALCO</option>
+      <option>ANIL</option>
       <option>ANIL_AREA</option>
-      <option>SUPPLY</option>
       <option>MOTOR</option>
-      <option>NALCO & ANIL</option>
+      <option>SUPPLY</option>
     </select>
   </div>
-
 </div>
 
-<div class="footer">
-  <button type="submit">SUBMIT</button>
-</div>
+<button type="submit">SUBMIT</button>
+<div id="msg"></div>
 
 </form>
 
-<iframe name="hidden_iframe" style="display:none"></iframe>
+<iframe name="hiddenFrame" style="display:none"></iframe>
+</div>
 
 <script>
-const JSON_URL =
-"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+const jsonURL = "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
-fetch(JSON_URL)
-.then(r=>r.json())
-.then(data=>{
-  const headers=data.headers;
-  const rows=data.rows;
+fetch(jsonURL)
+.then(r => r.json())
+.then(j => {
+  const headers = j.headers;
+  const rows = j.rows;
 
-  const main=document.getElementById("mainDrive");
-  const sub=document.getElementById("subDrive");
-  const type=document.getElementById("typeJob");
-  const nature=document.getElementById("natureJob");
+  const mainSel = document.getElementById("mainDrive");
+  const subSel = document.getElementById("subDrive");
 
-  // MAIN DRIVE (H1–AF1)
-  for(let i=7;i<headers.length;i++){
-    if(headers[i]) main.add(new Option(headers[i],i));
+  const mainStart = 7;
+  for (let i = mainStart; i < headers.length; i++) {
+    if (headers[i]) {
+      mainSel.add(new Option(headers[i], headers[i]));
+    }
   }
 
-  // TYPE OF JOB (col B)
-  [...new Set(rows.map(r=>r[1]).filter(Boolean))]
-    .forEach(v=>type.add(new Option(v,v)));
-
-  // NATURE OF JOB (col C)
-  [...new Set(rows.map(r=>r[2]).filter(Boolean))]
-    .forEach(v=>nature.add(new Option(v,v)));
-
-  // SUB DRIVE
-  main.onchange=()=>{
-    sub.length=1;
-    const col=+main.value;
-    [...new Set(rows.map(r=>r[col]).filter(Boolean))]
-      .forEach(v=>sub.add(new Option(v,v)));
+  mainSel.onchange = () => {
+    subSel.innerHTML = "";
+    const idx = headers.indexOf(mainSel.value);
+    rows.forEach(r => {
+      if (r[idx]) subSel.add(new Option(r[idx], r[idx]));
+    });
   };
-});
-</script>
 
-<script>
-let submitted=false;
-window.onload=()=>{
-  if(submitted){
-    document.forms[0].reset();
-    alert("✅ Submitted successfully.\nPending verification.");
-  }
+  rows.forEach(r => {
+    if (r[1]) typeJob.add(new Option(r[1], r[1]));
+    if (r[2]) natureJob.add(new Option(r[2], r[2]));
+  });
+});
+
+document.getElementById("jobForm").onsubmit = () => {
+  setTimeout(() => {
+    document.getElementById("msg").innerText =
+      "✅ Submitted successfully. Pending verification.";
+    const d = dateField.value;
+    jobForm.reset();
+    dateField.value = d;
+  }, 800);
 };
 </script>
 
