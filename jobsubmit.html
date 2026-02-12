@@ -77,11 +77,132 @@ button {
   color: green;
   margin-top: 12px;
 }
+  /* ===== TOP LEFT NAV ===== */
+.top-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.top-nav button {
+  width: auto;
+  padding: 6px 14px;
+  font-size: 14px;
+  background: #003f88;
+  border-radius: 6px;
+}
+
+/* ===== MOBILE / PORTRAIT FRIENDLY ===== */
+@media (max-width: 768px) {
+
+  .row-top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .row-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .row-top {
+    grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    justify-content: center;
+  }
+}
+/* ================================
+   🌙 ALWAYS DARK MODE (GLOBAL)
+   ================================ */
+
+body {
+  background: #0e1621;
+  color: #e5e7eb;
+}
+
+.container {
+  background: #1b2636;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+}
+
+h2 {
+  color: #93c5fd;
+}
+
+label {
+  color: #e5e7eb;
+}
+
+/* ---- Inputs & Selects ---- */
+input,
+select,
+textarea {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* ---- Focus State ---- */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px rgba(96,165,250,0.6);
+}
+
+/* ---- Buttons ---- */
+button {
+  background: #003f88;
+}
+
+button:hover {
+  background: #0050aa;
+}
+
+/* ---- Message ---- */
+#msg {
+  color: #22c55e;
+}
+
+/* ---- Top Nav Buttons ---- */
+.top-nav button {
+  background: #003f88;
+}
+
+/* ---- Mobile polish ---- */
+@media (max-width: 768px) {
+  .container {
+    border-radius: 0;
+  }
+}
+
 </style>
 
 </head>
 
 <body>
+<!-- ===== TOP NAV BUTTONS ===== -->
+<div class="top-nav">
+  <button type="button" onclick="history.back()">⬅ Back</button>
+  <button type="button" onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+</div>
 
 <div class="container">
 <h2>DAILY JOB DETAILS – LANDSCAPE ENTRY</h2>
