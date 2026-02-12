@@ -169,10 +169,14 @@ method="POST">
 <script>
 /* ===== AUTO DATE (dd/mm/yyyy) ===== */
 const today = new Date();
-const dd = String(today.getDate()).padStart(2, "0");
-const mm = String(today.getMonth() + 1).padStart(2, "0");
+/* ===== AUTO DATE (ISO – SAFE FOR SHEETS) ===== */
+const today = new Date();
 const yyyy = today.getFullYear();
-document.getElementById("dateField").value = `${dd}/${mm}/${yyyy}`;
+const mm = String(today.getMonth() + 1).padStart(2, "0");
+const dd = String(today.getDate()).padStart(2, "0");
+
+document.getElementById("dateField").value = `${yyyy}-${mm}-${dd}`;
+
 
 /* ===== READ ID FROM URL (FIXED) ===== */
 const id = new URLSearchParams(location.search).get("id");
