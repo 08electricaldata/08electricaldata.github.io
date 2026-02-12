@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Daily Job Entry</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f6ff;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  max-width: 1200px;
+  margin: auto;
+}
+
+h2 {
+  text-align: center;
+  color: #003f88;
+  margin-bottom: 20px;
+}
+
+/* ===== TOP ROW : 6 FIELDS ===== */
+.row-top {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+/* ===== BOTTOM ROW ===== */
+.row-bottom {
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+label {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 80px;
+  resize: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #003f88;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#msg {
+  text-align: center;
+  font-weight: bold;
+  color: green;
+  margin-top: 12px;
+}
+  /* ===== TOP LEFT NAV ===== */
+.top-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.top-nav button {
+  width: auto;
+  padding: 6px 14px;
+  font-size: 14px;
+  background: #003f88;
+  border-radius: 6px;
+}
+
+/* ===== MOBILE / PORTRAIT FRIENDLY ===== */
+@media (max-width: 768px) {
+
+  .row-top {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .row-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .row-top {
+    grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    justify-content: center;
+  }
+}
+/* ================================
+   🌙 ALWAYS DARK MODE (GLOBAL)
+   ================================ */
+
+body {
+  background: #0e1621;
+  color: #e5e7eb;
+}
+
+.container {
+  background: #1b2636;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+}
+
+h2 {
+  color: #93c5fd;
+}
+
+label {
+  color: #e5e7eb;
+}
+
+/* ---- Inputs & Selects ---- */
+input,
+select,
+textarea {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* ---- Focus State ---- */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px rgba(96,165,250,0.6);
+}
+
+/* ---- Buttons ---- */
+button {
+  background: #003f88;
+}
+
+button:hover {
+  background: #0050aa;
+}
+
+/* ---- Message ---- */
+#msg {
+  color: #22c55e;
+}
+
+/* ---- Top Nav Buttons ---- */
+.top-nav button {
+  background: #003f88;
+}
+
+/* ---- Mobile polish ---- */
+@media (max-width: 768px) {
+  .container {
+    border-radius: 0;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+<!-- ===== TOP NAV BUTTONS ===== -->
+<div class="top-nav">
+  <button type="button" onclick="history.back()">⬅ Back</button>
+  <button type="button" onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+</div>
+
+<div class="container">
+<h2>DAILY JOB DETAILS – LANDSCAPE ENTRY</h2>
+
+<form id="jobForm" target="hiddenFrame"
+action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
+method="POST">
+
+<!-- ===== TOP ROW ===== -->
+<div class="row-top">
+
+  <div>
+    <label>Date</label>
+    <input type="date" name="entry.2074265710" id="dateField" required>
+  </div>
+
+  <div>
+    <label>Main Drive</label>
+    <select name="entry.2034418039" id="mainDrive" required></select>
+  </div>
+
+  <div>
+    <label>Sub Drive</label>
+    <select name="entry.273858386" id="subDrive" required></select>
+  </div>
+
+  <div>
+    <label>Type of Job</label>
+    <select name="entry.591852895" id="typeJob"></select>
+  </div>
+
+  <div>
+    <label>Nature of Job</label>
+    <select name="entry.1114156376" id="natureJob"></select>
+  </div>
+
+  <div>
+    <label>Highlight</label>
+    <select name="entry.1932274245">
+      <option>YES</option>
+      <option>NO</option>
+    </select>
+  </div>
+
+</div>
+
+<!-- ===== BOTTOM ROW ===== -->
+<div class="row-bottom">
+
+  <div>
+    <label>Job Details</label>
+    <textarea name="entry.556400630" required></textarea>
+  </div>
+
+  <div>
+    <label>Job By</label>
+    <select name="entry.972123475">
+      <option>NALCO</option>
+      <option>ANIL</option>
+      <option>ANIL_AREA</option>
+      <option>MOTOR</option>
+      <option>SUPPLY</option>
+    </select>
+  </div>
+
+  <div>
+    <button type="submit">SUBMIT</button>
+  </div>
+
+</div>
+
+<div id="msg"></div>
+
+
+</form>
+
+<iframe name="hiddenFrame" style="display:none"></iframe>
+</div>
+
+<script>
+const jsonURL = "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+fetch(jsonURL)
+.then(r => r.json())
+.then(j => {
+  const headers = j.headers;
+  const rows = j.rows;
+
+  const mainSel = document.getElementById("mainDrive");
+  const subSel = document.getElementById("subDrive");
+
+  const mainStart = 7;
+  for (let i = mainStart; i < headers.length; i++) {
+    if (headers[i]) {
+      mainSel.add(new Option(headers[i], headers[i]));
+    }
+  }
+
+  mainSel.onchange = () => {
+    subSel.innerHTML = "";
+    const idx = headers.indexOf(mainSel.value);
+    rows.forEach(r => {
+      if (r[idx]) subSel.add(new Option(r[idx], r[idx]));
+    });
+  };
+
+  rows.forEach(r => {
+    if (r[1]) typeJob.add(new Option(r[1], r[1]));
+    if (r[2]) natureJob.add(new Option(r[2], r[2]));
+  });
+});
+
+document.getElementById("jobForm").onsubmit = () => {
+  setTimeout(() => {
+    document.getElementById("msg").innerText =
+      "✅ Submitted successfully. Pending verification.";
+    const d = dateField.value;
+    jobForm.reset();
+    dateField.value = d;
+  }, 800);
+};
+</script>
+
+</body>
+</html>
