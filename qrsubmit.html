@@ -185,24 +185,29 @@ if (id) {
   }
 }
 
-/* ===== LOAD NATURE OF JOB (CORRECT COLUMN) ===== */
+/* ===== LOAD NATURE OF JOB ===== */
 const jsonURL =
   "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
 fetch(jsonURL)
 .then(r => r.json())
 .then(j => {
+
   const rows = j.rows;
   const natureSel = document.getElementById("natureJob");
-  const set = new Set();
+  const set = new Set();   // 1️⃣ create set
 
-  rows.forEach(r => {
-    const val = (r[1] || "").trim(); // ✅ ALWAYS populated
+  rows.forEach(r => {     // 2️⃣ collect values
+    const val = (r[2] || "").trim();   // or r[2] if using Column C
     if (val) set.add(val);
   });
 
-  set.forEach(v => natureSel.add(new Option(v, v)));
+  set.forEach(v => {      // 3️⃣ populate dropdown
+    natureSel.add(new Option(v, v));
+  });
+
 });
+
 
 /* ===== SUBMIT FEEDBACK ===== */
 document.getElementById("jobForm").onsubmit = () => {
