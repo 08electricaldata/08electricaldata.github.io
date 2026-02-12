@@ -194,15 +194,24 @@ if (id) {
 const jsonURL =
   "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
+/* ===== LOAD NATURE OF JOB DROPDOWN (FIXED) ===== */
 fetch(jsonURL)
 .then(r => r.json())
 .then(j => {
   const rows = j.rows;
   const natureSel = document.getElementById("natureJob");
+  const set = new Set();
+
   rows.forEach(r => {
-    if (r[2]) natureSel.add(new Option(r[2], r[2]));
+    const val = (r[2] || "").trim();
+    if (val) set.add(val);
+  });
+
+  set.forEach(v => {
+    natureSel.add(new Option(v, v));
   });
 });
+
 
 /* ===== SUBMIT FEEDBACK ===== */
 document.getElementById("jobForm").onsubmit = () => {
