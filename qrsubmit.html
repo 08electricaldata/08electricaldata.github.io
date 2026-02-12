@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ===== BASE ===== */
 body {
   font-family: Arial, sans-serif;
   background: #0e1621;
@@ -167,34 +166,29 @@ method="POST">
 </div>
 
 <script>
-/* ===== AUTO DATE (dd/mm/yyyy) ===== */
-const today = new Date();
 /* ===== AUTO DATE (ISO – SAFE FOR SHEETS) ===== */
 const today = new Date();
 const yyyy = today.getFullYear();
 const mm = String(today.getMonth() + 1).padStart(2, "0");
 const dd = String(today.getDate()).padStart(2, "0");
-
 document.getElementById("dateField").value = `${yyyy}-${mm}-${dd}`;
-
 
 /* ===== READ ID FROM URL (FIXED) ===== */
 const id = new URLSearchParams(location.search).get("id");
 if (id) {
   const firstDash = id.indexOf("-");
   if (firstDash !== -1) {
-    const main = id.substring(0, firstDash);
-    const sub = id.substring(firstDash + 1); // keeps P-202 fully
-    document.getElementById("mainDrive").value = main;
-    document.getElementById("subDrive").value = sub;
+    document.getElementById("mainDrive").value =
+      id.substring(0, firstDash);
+    document.getElementById("subDrive").value =
+      id.substring(firstDash + 1);
   }
 }
 
-/* ===== LOAD NATURE OF JOB DROPDOWN ===== */
+/* ===== LOAD NATURE OF JOB (CORRECT COLUMN) ===== */
 const jsonURL =
   "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
-/* ===== LOAD NATURE OF JOB DROPDOWN (FIXED) ===== */
 fetch(jsonURL)
 .then(r => r.json())
 .then(j => {
@@ -203,15 +197,12 @@ fetch(jsonURL)
   const set = new Set();
 
   rows.forEach(r => {
-    const val = (r[2] || "").trim();
+    const val = (r[1] || "").trim(); // ✅ ALWAYS populated
     if (val) set.add(val);
   });
 
-  set.forEach(v => {
-    natureSel.add(new Option(v, v));
-  });
+  set.forEach(v => natureSel.add(new Option(v, v)));
 });
-
 
 /* ===== SUBMIT FEEDBACK ===== */
 document.getElementById("jobForm").onsubmit = () => {
@@ -220,7 +211,7 @@ document.getElementById("jobForm").onsubmit = () => {
       "✅ Submitted successfully. Pending verification.";
     jobForm.reset();
     document.getElementById("dateField").value =
-      `${dd}/${mm}/${yyyy}`;
+      `${yyyy}-${mm}-${dd}`;
   }, 800);
 };
 </script>
