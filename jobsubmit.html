@@ -17,6 +17,8 @@ body {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  max-width: 1200px;
+  margin: auto;
 }
 
 h2 {
@@ -25,11 +27,20 @@ h2 {
   margin-bottom: 20px;
 }
 
-.row {
+/* ===== TOP ROW : 6 FIELDS ===== */
+.row-top {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+/* ===== BOTTOM ROW ===== */
+.row-bottom {
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+  gap: 12px;
+  align-items: end;
 }
 
 label {
@@ -41,22 +52,22 @@ input, select, textarea {
   width: 100%;
   padding: 6px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 textarea {
-  grid-column: span 4;
-  height: 70px;
+  height: 80px;
+  resize: none;
 }
 
 button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 30px;
+  width: 100%;
+  padding: 10px;
   background: #003f88;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
 }
 
@@ -67,6 +78,7 @@ button {
   margin-top: 12px;
 }
 </style>
+
 </head>
 
 <body>
@@ -78,7 +90,9 @@ button {
 action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
 method="POST">
 
-<div class="row">
+<!-- ===== TOP ROW ===== -->
+<div class="row-top">
+
   <div>
     <label>Date</label>
     <input type="date" name="entry.2074265710" id="dateField" required>
@@ -94,17 +108,6 @@ method="POST">
     <select name="entry.273858386" id="subDrive" required></select>
   </div>
 
-  <div>
-    <label>Image No</label>
-    <input type="number" name="entry.1690654842" required>
-  </div>
-</div>
-
-<div class="row">
-  <textarea name="entry.556400630" placeholder="Job Details" required></textarea>
-</div>
-
-<div class="row">
   <div>
     <label>Type of Job</label>
     <select name="entry.591852895" id="typeJob"></select>
@@ -123,6 +126,16 @@ method="POST">
     </select>
   </div>
 
+</div>
+
+<!-- ===== BOTTOM ROW ===== -->
+<div class="row-bottom">
+
+  <div>
+    <label>Job Details</label>
+    <textarea name="entry.556400630" required></textarea>
+  </div>
+
   <div>
     <label>Job By</label>
     <select name="entry.972123475">
@@ -133,10 +146,15 @@ method="POST">
       <option>SUPPLY</option>
     </select>
   </div>
+
+  <div>
+    <button type="submit">SUBMIT</button>
+  </div>
+
 </div>
 
-<button type="submit">SUBMIT</button>
 <div id="msg"></div>
+
 
 </form>
 
