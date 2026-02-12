@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+/* ===== BASE ===== */
 body {
   font-family: Arial, sans-serif;
   background: #0e1621;
@@ -166,17 +167,23 @@ method="POST">
 </div>
 
 <script>
-/* ===== AUTO DATE ===== */
+/* ===== AUTO DATE (dd/mm/yyyy) ===== */
 const today = new Date();
-document.getElementById("dateField").value =
-  today.toISOString().split("T")[0];
+const dd = String(today.getDate()).padStart(2, "0");
+const mm = String(today.getMonth() + 1).padStart(2, "0");
+const yyyy = today.getFullYear();
+document.getElementById("dateField").value = `${dd}/${mm}/${yyyy}`;
 
-/* ===== READ ID FROM URL ===== */
+/* ===== READ ID FROM URL (FIXED) ===== */
 const id = new URLSearchParams(location.search).get("id");
-if(id){
-  const [main, sub] = id.split("-");
-  document.getElementById("mainDrive").value = main || "";
-  document.getElementById("subDrive").value = sub || "";
+if (id) {
+  const firstDash = id.indexOf("-");
+  if (firstDash !== -1) {
+    const main = id.substring(0, firstDash);
+    const sub = id.substring(firstDash + 1); // keeps P-202 fully
+    document.getElementById("mainDrive").value = main;
+    document.getElementById("subDrive").value = sub;
+  }
 }
 
 /* ===== LOAD NATURE OF JOB DROPDOWN ===== */
@@ -189,7 +196,7 @@ fetch(jsonURL)
   const rows = j.rows;
   const natureSel = document.getElementById("natureJob");
   rows.forEach(r => {
-    if(r[2]) natureSel.add(new Option(r[2], r[2]));
+    if (r[2]) natureSel.add(new Option(r[2], r[2]));
   });
 });
 
@@ -200,7 +207,7 @@ document.getElementById("jobForm").onsubmit = () => {
       "✅ Submitted successfully. Pending verification.";
     jobForm.reset();
     document.getElementById("dateField").value =
-      new Date().toISOString().split("T")[0];
+      `${dd}/${mm}/${yyyy}`;
   }, 800);
 };
 </script>
