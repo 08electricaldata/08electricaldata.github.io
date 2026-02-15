@@ -146,14 +146,12 @@ select {
     </select>
   </div>
 
-  <!-- ROW 1 -->
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
     <button onclick="secureView('history')">HISTORY</button>
     <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
   </div>
 
-  <!-- ROW 2 -->
   <div class="button-row">
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="openJob1()">📘 Job1 Summary</button>
@@ -167,9 +165,8 @@ select {
   <div class="jobs-btns">
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
-
-    <!-- ✅ NEW BUTTON ADDED -->
     <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
+    <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
   </div>
 </div>
 
@@ -181,118 +178,75 @@ select {
 
 <script>
 const JSON_URL =
-  "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
-let headers = [], rows = [], sheetPassword = "";
+let headers=[], rows=[], sheetPassword="";
 
-/* LOAD JSON */
 async function loadSheet(){
-  const cache = localStorage.getItem("driveJSON");
-  if(cache){
-    const d = JSON.parse(cache);
-    headers = d.headers;
-    rows = d.rows;
-    sheetPassword = String(headers[6] || "").trim();
-    buildMain();
-    return;
-  }
-  const d = await (await fetch(JSON_URL)).json();
-  headers = d.headers;
-  rows = d.rows;
-  sheetPassword = String(headers[6] || "").trim();
-  localStorage.setItem("driveJSON", JSON.stringify(d));
+  const cache=localStorage.getItem("driveJSON");
+  const d=cache?JSON.parse(cache):await (await fetch(JSON_URL)).json();
+  headers=d.headers; rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
+  localStorage.setItem("driveJSON",JSON.stringify(d));
   buildMain();
 }
 
-/* PASSWORD */
 function checkPassword(){
-  if(!sheetPassword){
-    alert("⏳ Data loading");
-    return false;
-  }
-  const p = prompt("🔐 Enter Password");
-  if(p === null) return false;
-  if(p.trim() !== sheetPassword){
-    alert("❌ Incorrect password");
-    return false;
-  }
+  if(!sheetPassword){ alert("⏳ Data loading"); return false; }
+  const p=prompt("🔐 Enter Password");
+  if(p===null||p.trim()!==sheetPassword){ alert("❌ Incorrect password"); return false; }
   return true;
 }
 
-/* BUILD MAIN DRIVE */
 function buildMain(){
-  const m = document.getElementById("mainDrive");
-  m.innerHTML = "<option value=''>Select Main Drive</option>";
+  const m=document.getElementById("mainDrive");
+  m.innerHTML="<option value=''>Select Main Drive</option>";
   headers.forEach((h,i)=>{
-    if(i < 7 || !h) return;
-    const o = document.createElement("option");
-    o.value = i;
-    o.textContent = h;
-    m.appendChild(o);
+    if(i<7||!h) return;
+    const o=document.createElement("option");
+    o.value=i; o.textContent=h; m.appendChild(o);
   });
 }
 
-/* SUB DRIVE */
-document.getElementById("mainDrive").onchange = function(){
-  const sub = document.getElementById("subDrive");
-  sub.innerHTML = "<option value=''>Select Sub Drive</option>";
+mainDrive.onchange=function(){
+  subDrive.innerHTML="<option value=''>Select Sub Drive</option>";
   if(!this.value) return;
   rows.forEach(r=>{
     if(r[this.value]){
-      const o = document.createElement("option");
-      o.value = r[this.value];
-      o.textContent = r[this.value];
-      sub.appendChild(o);
+      const o=document.createElement("option");
+      o.value=r[this.value]; o.textContent=r[this.value];
+      subDrive.appendChild(o);
     }
   });
 };
 
-/* VIEW / HISTORY */
 function secureView(type){
   if(!checkPassword()) return;
-  const m = document.getElementById("mainDrive");
-  const s = document.getElementById("subDrive");
-  if(!m.value || !s.value){
-    alert("Please select Main Drive and Sub Drive");
-    return;
-  }
-  const id = m.selectedOptions[0].text + "-" + s.value;
-  const base = type === "view"
-    ? "drive-viewer/index.html?id="
-    : "drive-viewer/history.html?id=";
-  location.href =
-    "https://08electricaldata.github.io/" +
-    base +
+  if(!mainDrive.value||!subDrive.value){ alert("Please select Main Drive and Sub Drive"); return; }
+  const id=mainDrive.selectedOptions[0].text+"-"+subDrive.value;
+  location.href="https://08electricaldata.github.io/"+
+    (type==="view"?"drive-viewer/index.html?id=":"drive-viewer/history.html?id=")+
     encodeURIComponent(id);
 }
 
-/* OPEN STATIC PAGES */
 function secureOpen(type){
   if(!checkPassword()) return;
-  const map = {
-    motor: "drive-viewer/motorlist.html",
-    trafo: "drive-viewer/trafolist.html",
-    breaker: "drive-viewer/breakerlist.html",
-    advanced: "drive-viewer/summary-advanced.html",
-    motoroh: "drive-viewer/motoroh.html",
-    motorpm: "drive-viewer/motorpm.html",
-    trafopm: "drive-viewer/trafopm.html",   // ✅ NEW MAP ENTRY
-    jobentry: "jobsubmit.html"
+  const map={
+    motor:"drive-viewer/motorlist.html",
+    trafo:"drive-viewer/trafolist.html",
+    breaker:"drive-viewer/breakerlist.html",
+    advanced:"drive-viewer/summary-advanced.html",
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    trafopm:"drive-viewer/trafopm.html",
+    breakerpm:"drive-viewer/breakerpm.html",
+    jobentry:"jobsubmit.html"
   };
-  location.href = "https://08electricaldata.github.io/" + map[type];
+  location.href="https://08electricaldata.github.io/"+map[type];
 }
 
-/* JOB SUMMARIES */
-function openJob1(){
-  if(!checkPassword()) return;
-  location.href =
-    "https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
-}
-function openJob2(){
-  if(!checkPassword()) return;
-  location.href =
-    "https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
-}
+function openJob1(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html"; }
+function openJob2(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html"; }
 
 loadSheet();
 </script>
