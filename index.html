@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
 <meta charset="UTF-8">
 <title>08 Electrical Data</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -168,6 +167,9 @@ select {
   <div class="jobs-btns">
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
+
+    <!-- ✅ NEW BUTTON ADDED -->
+    <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
   </div>
 </div>
 
@@ -274,6 +276,7 @@ function secureOpen(type){
     advanced: "drive-viewer/summary-advanced.html",
     motoroh: "drive-viewer/motoroh.html",
     motorpm: "drive-viewer/motorpm.html",
+    trafopm: "drive-viewer/trafopm.html",   // ✅ NEW MAP ENTRY
     jobentry: "jobsubmit.html"
   };
   location.href = "https://08electricaldata.github.io/" + map[type];
