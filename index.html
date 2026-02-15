@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
 <meta charset="UTF-8">
 <title>08 Electrical Data</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@ body {
   margin: 0;
 }
 
+/* HEADER */
 .header {
   background: #003f88;
   color: white;
@@ -22,6 +24,7 @@ body {
 .header p { margin-top: 8px; font-size: 18px; opacity: 0.95; }
 .header .credit { margin-top: 6px; font-size: 16px; font-weight: 500; }
 
+/* LAYOUT */
 .container {
   max-width: 1200px;
   margin: 30px auto;
@@ -38,8 +41,13 @@ body {
   padding: 25px;
 }
 
-.card h2 { margin-top: 0; color: #003f88; text-align: center; }
+.card h2 {
+  margin-top: 0;
+  color: #003f88;
+  text-align: center;
+}
 
+/* BUTTONS */
 .master-btns,
 .jobs-btns {
   display: flex;
@@ -59,6 +67,7 @@ button {
 }
 button:hover { opacity: 0.9; }
 
+/* SELECT */
 .select-row {
   display: flex;
   gap: 15px;
@@ -74,6 +83,7 @@ select {
   min-width: 260px;
 }
 
+/* BUTTON ROWS */
 .button-row {
   margin-top: 20px;
   display: flex;
@@ -86,6 +96,7 @@ select {
   min-width: 150px;
 }
 
+/* FOOTER */
 .footer {
   text-align: center;
   padding: 15px;
@@ -93,6 +104,7 @@ select {
   color: #555;
 }
 
+/* RESPONSIVE */
 @media (max-width: 1000px) {
   .container { grid-template-columns: 1fr; }
 }
@@ -135,10 +147,18 @@ select {
     </select>
   </div>
 
+  <!-- ROW 1 -->
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
     <button onclick="secureView('history')">HISTORY</button>
     <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
+  </div>
+
+  <!-- ROW 2 -->
+  <div class="button-row">
+    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+    <button onclick="openJob1()">📘 Job1 Summary</button>
+    <button onclick="openJob2()">📕 Job2 Summary</button>
   </div>
 </div>
 
@@ -146,7 +166,6 @@ select {
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
-    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
   </div>
@@ -164,6 +183,7 @@ const JSON_URL =
 
 let headers = [], rows = [], sheetPassword = "";
 
+/* LOAD JSON */
 async function loadSheet(){
   const cache = localStorage.getItem("driveJSON");
   if(cache){
@@ -171,7 +191,8 @@ async function loadSheet(){
     headers = d.headers;
     rows = d.rows;
     sheetPassword = String(headers[6] || "").trim();
-    buildMain(); return;
+    buildMain();
+    return;
   }
   const d = await (await fetch(JSON_URL)).json();
   headers = d.headers;
@@ -181,25 +202,35 @@ async function loadSheet(){
   buildMain();
 }
 
+/* PASSWORD */
 function checkPassword(){
-  if(!sheetPassword){ alert("⏳ Data still loading"); return false; }
+  if(!sheetPassword){
+    alert("⏳ Data loading");
+    return false;
+  }
   const p = prompt("🔐 Enter Password");
   if(p === null) return false;
-  if(p.trim() !== sheetPassword){ alert("❌ Incorrect password"); return false; }
+  if(p.trim() !== sheetPassword){
+    alert("❌ Incorrect password");
+    return false;
+  }
   return true;
 }
 
+/* BUILD MAIN DRIVE */
 function buildMain(){
   const m = document.getElementById("mainDrive");
   m.innerHTML = "<option value=''>Select Main Drive</option>";
   headers.forEach((h,i)=>{
     if(i < 7 || !h) return;
     const o = document.createElement("option");
-    o.value = i; o.textContent = h;
+    o.value = i;
+    o.textContent = h;
     m.appendChild(o);
   });
 }
 
+/* SUB DRIVE */
 document.getElementById("mainDrive").onchange = function(){
   const sub = document.getElementById("subDrive");
   sub.innerHTML = "<option value=''>Select Sub Drive</option>";
@@ -214,6 +245,7 @@ document.getElementById("mainDrive").onchange = function(){
   });
 };
 
+/* VIEW / HISTORY */
 function secureView(type){
   if(!checkPassword()) return;
   const m = document.getElementById("mainDrive");
@@ -232,9 +264,9 @@ function secureView(type){
     encodeURIComponent(id);
 }
 
+/* OPEN STATIC PAGES */
 function secureOpen(type){
   if(!checkPassword()) return;
-
   const map = {
     motor: "drive-viewer/motorlist.html",
     trafo: "drive-viewer/trafolist.html",
@@ -244,9 +276,19 @@ function secureOpen(type){
     motorpm: "drive-viewer/motorpm.html",
     jobentry: "jobsubmit.html"
   };
+  location.href = "https://08electricaldata.github.io/" + map[type];
+}
 
+/* JOB SUMMARIES */
+function openJob1(){
+  if(!checkPassword()) return;
   location.href =
-    "https://08electricaldata.github.io/" + map[type];
+    "https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
+}
+function openJob2(){
+  if(!checkPassword()) return;
+  location.href =
+    "https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
 }
 
 loadSheet();
