@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>08 Electrical Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f6ff;
+  margin: 0;
+}
+
+.header {
+  background: #003f88;
+  color: white;
+  padding: 30px 15px;
+  text-align: center;
+}
+.header h1 { margin: 0; font-size: 36px; }
+.header p { margin-top: 8px; font-size: 18px; opacity: 0.95; }
+.header .credit { margin-top: 6px; font-size: 16px; font-weight: 500; }
+
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 15px;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  padding: 25px;
+}
+
+.card h2 { margin-top: 0; color: #003f88; text-align: center; }
+
+.master-btns,
+.jobs-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  background: #003f88;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+
+.select-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+select {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 260px;
+}
+
+.button-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.button-row button {
+  width: auto;
+  min-width: 150px;
+}
+
+.footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+@media (max-width: 1000px) {
+  .container { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  select, .button-row button { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>08 Electrical Data</h1>
+  <p>Drive Information & Maintenance History</p>
+  <div class="credit">Designed and Maintained by RAKESH CHANDRA SETHY</div>
+</div>
+
+<div class="container">
+
+<!-- MASTER LIST -->
+<div class="card">
+  <h2>Master List</h2>
+  <div class="master-btns">
+    <button onclick="secureOpen('motor')">⚙️ Motor List</button>
+    <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
+    <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
+  </div>
+</div>
+
+<!-- SELECT DRIVE -->
+<div class="card">
+  <h2>Select Drive</h2>
+
+  <div class="select-row">
+    <select id="mainDrive">
+      <option value="">Select Main Drive</option>
+    </select>
+    <select id="subDrive">
+      <option value="">Select Sub Drive</option>
+    </select>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="button-row">
+    <button onclick="secureView('view')">VIEW</button>
+    <button onclick="secureView('history')">HISTORY</button>
+    <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
+  </div>
+
+  <!-- ROW 2 (NEW) -->
+  <div class="button-row">
+    <button onclick="secureOpen('date')">📅 Datewise Jobs</button>
+    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+    <button onclick="openJob1()">📘 Job1 Summary</button>
+    <button onclick="openJob2()">📕 Job2 Summary</button>
+  </div>
+</div>
+
+<!-- JOBS -->
+<div class="card">
+  <h2>Jobs</h2>
+  <div class="jobs-btns">
+    <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
+    <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy (08 Electrical)
+</div>
+
+<script>
+const JSON_URL =
+  "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+let headers=[], rows=[], sheetPassword="";
+
+async function loadSheet(){
+  const cache=localStorage.getItem("driveJSON");
+  if(cache){
+    const d=JSON.parse(cache);
+    headers=d.headers; rows=d.rows;
+    sheetPassword=String(headers[6]||"").trim();
+    buildMain(); return;
+  }
+  const d=await (await fetch(JSON_URL)).json();
+  headers=d.headers; rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
+  localStorage.setItem("driveJSON",JSON.stringify(d));
+  buildMain();
+}
+
+function checkPassword(){
+  if(!sheetPassword){ alert("⏳ Data loading"); return false; }
+  const p=prompt("🔐 Enter Password");
+  if(p===null) return false;
+  if(p.trim()!==sheetPassword){ alert("❌ Incorrect password"); return false; }
+  return true;
+}
+
+function buildMain(){
+  const m=document.getElementById("mainDrive");
+  m.innerHTML="<option value=''>Select Main Drive</option>";
+  headers.forEach((h,i)=>{
+    if(i<7||!h) return;
+    const o=document.createElement("option");
+    o.value=i; o.textContent=h; m.appendChild(o);
+  });
+}
+
+document.getElementById("mainDrive").onchange=function(){
+  const sub=document.getElementById("subDrive");
+  sub.innerHTML="<option value=''>Select Sub Drive</option>";
+  if(!this.value) return;
+  rows.forEach(r=>{
+    if(r[this.value]){
+      const o=document.createElement("option");
+      o.value=r[this.value]; o.textContent=r[this.value];
+      sub.appendChild(o);
+    }
+  });
+};
+
+function secureView(type){
+  if(!checkPassword()) return;
+  const m=document.getElementById("mainDrive");
+  const s=document.getElementById("subDrive");
+  if(!m.value||!s.value){ alert("Select drives"); return; }
+  const id=m.selectedOptions[0].text+"-"+s.value;
+  const base=type==="view"
+    ?"drive-viewer/index.html?id="
+    :"drive-viewer/history.html?id=";
+  location.href="https://08electricaldata.github.io/"+base+encodeURIComponent(id);
+}
+
+function secureOpen(type){
+  if(!checkPassword()) return;
+  const map={
+    motor:"drive-viewer/motorlist.html",
+    trafo:"drive-viewer/trafolist.html",
+    breaker:"drive-viewer/breakerlist.html",
+    date:"drive-viewer/summary-date.html",
+    advanced:"drive-viewer/summary-advanced.html",
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    jobentry:"jobsubmit.html"
+  };
+  location.href="https://08electricaldata.github.io/"+map[type];
+}
+
+/* NEW SUMMARY LINKS */
+function openJob1(){
+  if(!checkPassword()) return;
+  location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
+}
+function openJob2(){
+  if(!checkPassword()) return;
+  location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+}
+
+loadSheet();
+</script>
+
+</body>
+</html>
