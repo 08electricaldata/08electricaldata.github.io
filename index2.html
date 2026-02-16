@@ -6,81 +6,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body { font-family: Arial, sans-serif; background:#f2f6ff; margin:0; }
+body{font-family:Arial,sans-serif;background:#f2f6ff;margin:0}
 
 /* HEADER */
-.header {
-  background:#003f88; color:white; padding:30px 15px; text-align:center;
-}
-.header h1{margin:0;font-size:36px;}
-.header p{margin-top:8px;font-size:18px;opacity:.95;}
-.header .credit{margin-top:6px;font-size:16px;font-weight:500;}
+.header{background:#003f88;color:white;padding:30px 15px;text-align:center}
+.header h1{margin:0;font-size:36px}
+.header p{margin-top:8px;font-size:18px;opacity:.95}
+.header .credit{margin-top:6px;font-size:16px;font-weight:500}
 
 /* LAYOUT */
 .container{
-  max-width:1200px; margin:30px auto; padding:0 15px;
-  display:grid; grid-template-columns:280px 1fr 280px; gap:20px;
+  max-width:1200px;margin:30px auto;padding:0 15px;
+  display:grid;grid-template-columns:280px 1fr 280px;gap:20px
 }
-
 .card{
-  background:white; border-radius:10px;
+  background:white;border-radius:10px;
   box-shadow:0 2px 6px rgba(0,0,0,.15);
-  padding:25px;
+  padding:25px
 }
-.card h2{margin-top:0;color:#003f88;text-align:center;}
+.card h2{margin-top:0;color:#003f88;text-align:center}
 
 /* BUTTONS */
-.master-btns,.jobs-btns{display:flex;flex-direction:column;gap:12px;}
+.master-btns,.jobs-btns{display:flex;flex-direction:column;gap:12px}
 button{
-  width:100%; padding:12px; font-size:15px;
-  background:#003f88; color:white;
-  border:none; border-radius:6px; cursor:pointer;
+  width:100%;padding:12px;font-size:15px;
+  background:#003f88;color:white;
+  border:none;border-radius:6px;cursor:pointer
 }
-button:hover{opacity:.9;}
+button:hover{opacity:.9}
 
 /* SELECT */
-.select-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap;}
+.select-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 select{
   padding:12px;font-size:16px;border-radius:6px;
-  border:1px solid #ccc;min-width:260px;
+  border:1px solid #ccc;min-width:260px
 }
 
 /* ROWS */
 .button-row{
-  margin-top:20px; display:flex;
-  gap:15px; justify-content:center; flex-wrap:wrap;
+  margin-top:20px;display:flex;
+  gap:15px;justify-content:center;flex-wrap:wrap
 }
-.button-row button{width:auto;min-width:150px;}
+.button-row button{width:auto;min-width:150px}
 
 /* KPI */
-.kpi-wrap{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;}
+.kpi-wrap{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
 .kpi{
-  flex:1; min-width:160px;
-  background:#f8fbff; border-radius:10px;
-  padding:14px; text-align:center;
+  flex:1;min-width:160px;background:#f8fbff;
+  border-radius:10px;padding:14px;text-align:center;
   box-shadow:0 2px 6px rgba(0,0,0,.12);
-  cursor:pointer;
+  cursor:pointer
 }
-.kpi h3{margin:0;font-size:14px;color:#003f88;}
-.kpi .num{font-size:26px;font-weight:bold;margin-top:6px;}
-.kpi small{font-size:12px;display:block;margin-top:4px;}
-.kpi.red{background:#ffeaea;animation:blink 1.2s infinite;}
-@keyframes blink{50%{background:#ffcccc;}}
+.kpi h3{margin:0;font-size:14px;color:#003f88}
+.kpi .num{font-size:26px;font-weight:bold;margin-top:6px}
+.kpi small{font-size:12px;display:block;margin-top:4px}
+.kpi.red{background:#ffeaea;animation:blink 1.2s infinite}
+@keyframes blink{50%{background:#ffcccc}}
 
-/* TREND */
-.trend-card{
-  margin-top:15px; background:white;
-  border-radius:10px; padding:15px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-}
-.trend-card h3{
-  margin:0 0 10px; color:#003f88; text-align:center;
+.kpi-time{
+  text-align:right;font-size:12px;color:#666;margin-top:6px
 }
 
-/* FOOTER */
-.footer{text-align:center;padding:15px;font-size:14px;color:#555;}
+.footer{text-align:center;padding:15px;font-size:14px;color:#555}
 
-@media(max-width:1000px){.container{grid-template-columns:1fr;}}
+@media(max-width:1000px){.container{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -125,16 +114,12 @@ select{
     <button onclick="openJob2()">📕 Job2 Summary</button>
   </div>
 
-  <!-- ✅ KPI MOVED HERE -->
+  <!-- ✅ KPI ADDED (NOT REPLACING ANYTHING) -->
   <div class="kpi-wrap" id="kpiBox"></div>
-
-  <div class="trend-card">
-    <h3>📊 Monthly PM Due Trend</h3>
-    <canvas id="trendCanvas" height="120"></canvas>
-  </div>
+  <div class="kpi-time" id="kpiTime"></div>
 </div>
 
-<!-- JOBS (UNCHANGED) -->
+<!-- JOBS -->
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
@@ -148,57 +133,111 @@ select{
 </div>
 
 <div class="footer">
-  © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy (08 Electrical)
+© 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy
 </div>
 
 <script>
+const DRIVE_JSON =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 const DASHBOARD_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dashboard/summary.json";
 
-function secureOpen(p){
-  location.href="https://08electricaldata.github.io/drive-viewer/"+p+".html";
+let headers=[],rows=[],sheetPassword="";
+
+/* LOAD DRIVE DATA */
+async function loadSheet(){
+  const d=await (await fetch(DRIVE_JSON)).json();
+  headers=d.headers; rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
+  buildMain();
 }
-function openJob1(){location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";}
-function openJob2(){location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";}
+
+/* PASSWORD */
+function checkPassword(){
+  if(!sheetPassword){alert("⏳ Data loading");return false}
+  const p=prompt("🔐 Enter Password");
+  if(p===null||p.trim()!==sheetPassword){
+    alert("❌ Incorrect password");return false
+  }
+  return true
+}
+
+/* BUILD DRIVE */
+function buildMain(){
+  mainDrive.innerHTML="<option value=''>Select Main Drive</option>";
+  headers.forEach((h,i)=>{
+    if(i<7||!h)return;
+    const o=document.createElement("option");
+    o.value=i;o.textContent=h;mainDrive.appendChild(o)
+  })
+}
+mainDrive.onchange=function(){
+  subDrive.innerHTML="<option value=''>Select Sub Drive</option>";
+  rows.forEach(r=>{
+    if(r[this.value]){
+      const o=document.createElement("option");
+      o.value=r[this.value];o.textContent=r[this.value];
+      subDrive.appendChild(o)
+    }
+  })
+}
+
+/* VIEW / OPEN */
+function secureView(type){
+  if(!checkPassword())return;
+  if(!mainDrive.value||!subDrive.value){
+    alert("Please select Main Drive and Sub Drive");return
+  }
+  const id=mainDrive.selectedOptions[0].text+"-"+subDrive.value;
+  location.href="https://08electricaldata.github.io/"+
+  (type==="view"?"drive-viewer/index.html?id=":"drive-viewer/history.html?id=")+
+  encodeURIComponent(id)
+}
+function secureOpen(type){
+  if(!checkPassword())return;
+  const map={
+    motor:"drive-viewer/motorlist.html",
+    trafo:"drive-viewer/trafolist.html",
+    breaker:"drive-viewer/breakerlist.html",
+    advanced:"drive-viewer/summary-advanced.html",
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    trafopm:"drive-viewer/trafopm.html",
+    breakerpm:"drive-viewer/breakerpm.html",
+    jobentry:"jobsubmit.html"
+  };
+  location.href="https://08electricaldata.github.io/"+map[type]
+}
+function openJob1(){if(checkPassword())location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html"}
+function openJob2(){if(checkPassword())location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html"}
 
 /* KPI LOAD */
-async function loadDashboardKPI(){
+async function loadKPI(){
   const j=await (await fetch(DASHBOARD_JSON)).json();
   const box=document.getElementById("kpiBox");
-  box.innerHTML="";
   const map={
-    overdue_motors_oh:["Overdue Motors O/H","motoroh"],
-    overdue_motors_pm:["Overdue Motors PM","motorpm"],
-    overdue_modules_pm:["Overdue Modules PM","motorpm"],
-    overdue_transformers_pm:["Transformer PM","trafopm"],
+    overdue_motors_oh:["Motors O/H","motoroh"],
+    overdue_motors_pm:["Motors PM","motorpm"],
+    overdue_modules_pm:["Modules PM","motorpm"],
+    overdue_transformers_pm:["Transformers PM","trafopm"],
     overdue_breaker_pm:["Breaker PM","breakerpm"]
   };
   j.metrics.forEach(m=>{
-    if(!map[m.key]) return;
+    if(!map[m.key])return;
     const d=document.createElement("div");
     d.className="kpi"+(m.due>0?" red":"");
     d.onclick=()=>secureOpen(map[m.key][1]);
     d.innerHTML=`<h3>${map[m.key][0]}</h3>
                  <div class="num">${m.due}</div>
                  <small>Installed: ${m.installed}</small>`;
-    box.appendChild(d);
+    box.appendChild(d)
   });
+  document.getElementById("kpiTime").innerText=
+    "Last updated: "+new Date(j.updated).toLocaleString();
 }
 
-/* SIMPLE TREND */
-function drawTrend(){
-  const c=document.getElementById("trendCanvas"),ctx=c.getContext("2d");
-  const d=[30,42,28,50,38,46],max=Math.max(...d);
-  ctx.beginPath();
-  d.forEach((v,i)=>{
-    const x=i*(c.width/(d.length-1));
-    const y=c.height-(v/max)*c.height;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  });
-  ctx.strokeStyle="#003f88"; ctx.stroke();
-}
-
-loadDashboardKPI(); drawTrend();
+loadSheet();
+loadKPI();
 </script>
 
 </body>
