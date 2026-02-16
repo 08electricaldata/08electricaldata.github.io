@@ -29,7 +29,7 @@ body {
   margin: 30px auto;
   padding: 0 15px;
   display: grid;
-  grid-template-columns: 280px 1fr 280px;
+  grid-template-columns: 280px 1fr 320px;
   gap: 20px;
 }
 
@@ -95,6 +95,47 @@ select {
   min-width: 150px;
 }
 
+/* KPI */
+.kpi-wrap { display:flex; flex-direction:column; gap:12px; }
+
+.kpi {
+  background:#f8fbff;
+  border-radius:10px;
+  padding:14px;
+  text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.12);
+  cursor:pointer;
+}
+.kpi h3 { margin:0; font-size:14px; color:#003f88; }
+.kpi .num { font-size:26px; font-weight:bold; margin-top:6px; }
+.kpi small { font-size:12px; display:block; margin-top:4px; }
+
+.kpi.red {
+  background:#ffeaea;
+  animation:blink 1.2s infinite;
+}
+@keyframes blink { 50% { background:#ffcccc; } }
+
+.kpi button {
+  margin-top:6px;
+  padding:6px;
+  background:#25D366;
+  font-size:13px;
+}
+
+/* TREND */
+.trend-card {
+  background:white;
+  border-radius:10px;
+  padding:15px;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.trend-card h3 {
+  margin:0 0 10px;
+  color:#003f88;
+  text-align:center;
+}
+
 /* FOOTER */
 .footer {
   text-align: center;
@@ -106,9 +147,6 @@ select {
 /* RESPONSIVE */
 @media (max-width: 1000px) {
   .container { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  select, .button-row button { width: 100%; }
 }
 </style>
 </head>
@@ -146,14 +184,12 @@ select {
     </select>
   </div>
 
-  <!-- ROW 1 -->
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
     <button onclick="secureView('history')">HISTORY</button>
     <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
   </div>
 
-  <!-- ROW 2 -->
   <div class="button-row">
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="openJob1()">📘 Job1 Summary</button>
@@ -161,15 +197,26 @@ select {
   </div>
 </div>
 
-<!-- JOBS -->
+<!-- JOBS + KPI -->
 <div class="card">
-  <h2>Jobs</h2>
+  <h2>Jobs Dashboard</h2>
+
+  <div class="kpi-wrap" id="kpiBox">
+    <div class="kpi"><h3>Loading KPIs…</h3></div>
+  </div>
+
+  <div class="trend-card" style="margin-top:16px">
+    <h3>📊 Monthly PM Due Trend</h3>
+    <canvas id="trendCanvas" height="120"></canvas>
+  </div>
+
+  <hr style="margin:18px 0">
+
   <div class="jobs-btns">
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
-
-    <!-- ✅ NEW BUTTON ADDED -->
     <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
+    <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
   </div>
 </div>
 
@@ -181,120 +228,104 @@ select {
 
 <script>
 const JSON_URL =
-  "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+const DASHBOARD_JSON =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dashboard/summary.json";
 
-let headers = [], rows = [], sheetPassword = "";
+let headers=[], rows=[], sheetPassword="";
 
-/* LOAD JSON */
+/* LOAD DRIVE JSON */
 async function loadSheet(){
-  const cache = localStorage.getItem("driveJSON");
-  if(cache){
-    const d = JSON.parse(cache);
-    headers = d.headers;
-    rows = d.rows;
-    sheetPassword = String(headers[6] || "").trim();
-    buildMain();
-    return;
-  }
-  const d = await (await fetch(JSON_URL)).json();
-  headers = d.headers;
-  rows = d.rows;
-  sheetPassword = String(headers[6] || "").trim();
-  localStorage.setItem("driveJSON", JSON.stringify(d));
+  const d=await (await fetch(JSON_URL)).json();
+  headers=d.headers; rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
   buildMain();
 }
 
 /* PASSWORD */
 function checkPassword(){
-  if(!sheetPassword){
-    alert("⏳ Data loading");
-    return false;
-  }
-  const p = prompt("🔐 Enter Password");
-  if(p === null) return false;
-  if(p.trim() !== sheetPassword){
-    alert("❌ Incorrect password");
-    return false;
-  }
-  return true;
+  const p=prompt("🔐 Enter Password");
+  return p && p.trim()===sheetPassword;
 }
 
-/* BUILD MAIN DRIVE */
+/* BUILD DROPDOWNS */
 function buildMain(){
-  const m = document.getElementById("mainDrive");
-  m.innerHTML = "<option value=''>Select Main Drive</option>";
+  mainDrive.innerHTML="<option value=''>Select Main Drive</option>";
   headers.forEach((h,i)=>{
-    if(i < 7 || !h) return;
-    const o = document.createElement("option");
-    o.value = i;
-    o.textContent = h;
-    m.appendChild(o);
+    if(i<7||!h) return;
+    const o=document.createElement("option");
+    o.value=i; o.textContent=h; mainDrive.appendChild(o);
   });
 }
-
-/* SUB DRIVE */
-document.getElementById("mainDrive").onchange = function(){
-  const sub = document.getElementById("subDrive");
-  sub.innerHTML = "<option value=''>Select Sub Drive</option>";
-  if(!this.value) return;
+mainDrive.onchange=()=>{
+  subDrive.innerHTML="<option value=''>Select Sub Drive</option>";
   rows.forEach(r=>{
-    if(r[this.value]){
-      const o = document.createElement("option");
-      o.value = r[this.value];
-      o.textContent = r[this.value];
-      sub.appendChild(o);
+    if(r[mainDrive.value]){
+      const o=document.createElement("option");
+      o.value=r[mainDrive.value]; o.textContent=r[mainDrive.value];
+      subDrive.appendChild(o);
     }
   });
 };
 
-/* VIEW / HISTORY */
-function secureView(type){
+/* NAV */
+function secureView(t){
   if(!checkPassword()) return;
-  const m = document.getElementById("mainDrive");
-  const s = document.getElementById("subDrive");
-  if(!m.value || !s.value){
-    alert("Please select Main Drive and Sub Drive");
-    return;
-  }
-  const id = m.selectedOptions[0].text + "-" + s.value;
-  const base = type === "view"
-    ? "drive-viewer/index.html?id="
-    : "drive-viewer/history.html?id=";
-  location.href =
-    "https://08electricaldata.github.io/" +
-    base +
-    encodeURIComponent(id);
+  const id=mainDrive.selectedOptions[0].text+"-"+subDrive.value;
+  location.href="https://08electricaldata.github.io/"+
+    (t==="view"?"drive-viewer/index.html?id=":"drive-viewer/history.html?id=")+encodeURIComponent(id);
 }
-
-/* OPEN STATIC PAGES */
-function secureOpen(type){
+function secureOpen(p){
   if(!checkPassword()) return;
-  const map = {
-    motor: "drive-viewer/motorlist.html",
-    trafo: "drive-viewer/trafolist.html",
-    breaker: "drive-viewer/breakerlist.html",
-    advanced: "drive-viewer/summary-advanced.html",
-    motoroh: "drive-viewer/motoroh.html",
-    motorpm: "drive-viewer/motorpm.html",
-    trafopm: "drive-viewer/trafopm.html",   // ✅ NEW MAP ENTRY
-    jobentry: "jobsubmit.html"
+  location.href="https://08electricaldata.github.io/drive-viewer/"+p+".html";
+}
+function openJob1(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html"; }
+function openJob2(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html"; }
+
+/* KPI */
+async function loadDashboardKPI(){
+  const j=await (await fetch(DASHBOARD_JSON)).json();
+  const box=document.getElementById("kpiBox");
+  box.innerHTML="";
+  const map={
+    overdue_motors_oh:["Overdue Motors O/H","motoroh"],
+    overdue_motors_pm:["Overdue Motors PM","motorpm"],
+    overdue_modules_pm:["Overdue Modules PM","motorpm"],
+    overdue_transformers_pm:["Transformer PM","trafopm"],
+    overdue_breaker_pm:["Breaker PM","breakerpm"]
   };
-  location.href = "https://08electricaldata.github.io/" + map[type];
+  j.metrics.forEach(m=>{
+    if(!map[m.key]) return;
+    const d=document.createElement("div");
+    d.className="kpi"+(m.due>0?" red":"");
+    d.onclick=()=>secureOpen(map[m.key][1]);
+    d.innerHTML=`<h3>${map[m.key][0]}</h3><div class="num">${m.due}</div><small>Installed: ${m.installed}</small>`;
+    box.appendChild(d);
+  });
+  const t=document.createElement("small");
+  t.style.textAlign="center";
+  t.innerText="Updated: "+new Date(j.updated).toLocaleString();
+  box.appendChild(t);
 }
 
-/* JOB SUMMARIES */
-function openJob1(){
-  if(!checkPassword()) return;
-  location.href =
-    "https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
-}
-function openJob2(){
-  if(!checkPassword()) return;
-  location.href =
-    "https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+/* TREND (placeholder – fast) */
+function drawTrend(){
+  const c=document.getElementById("trendCanvas");
+  const ctx=c.getContext("2d");
+  const d=[30,42,28,50,38,46];
+  const max=Math.max(...d);
+  ctx.beginPath();
+  d.forEach((v,i)=>{
+    const x=i*(c.width/(d.length-1));
+    const y=c.height-(v/max)*c.height;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.strokeStyle="#003f88"; ctx.stroke();
 }
 
 loadSheet();
+loadDashboardKPI();
+drawTrend();
 </script>
 
 </body>
