@@ -86,11 +86,12 @@ select{
 <!-- MASTER LIST -->
 <div class="card">
   <h2>Master List</h2>
-  <div class="master-btns">
-    <button onclick="secureOpen('motor')">⚙️ Motor List</button>
-    <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
-    <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
-  </div>
+<div class="master-btns">
+  <button onclick="secureOpen('motor')">⚙️ Motor List</button>
+  <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
+  <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
+  <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+</div>
 </div>
 
 <!-- SELECT DRIVE -->
@@ -199,6 +200,7 @@ function secureOpen(type){
     motor:"drive-viewer/motorlist.html",
     trafo:"drive-viewer/trafolist.html",
     breaker:"drive-viewer/breakerlist.html",
+    ersmaster:"drive-viewer/ersmasterdata.html",
     advanced:"drive-viewer/summary-advanced.html",
     motoroh:"drive-viewer/motoroh.html",
     motorpm:"drive-viewer/motorpm.html",
