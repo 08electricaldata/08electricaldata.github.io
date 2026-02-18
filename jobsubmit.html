@@ -319,23 +319,32 @@ fetch(jsonURL)
 
   /* ================= SUB DRIVE ================= */
 
-  function loadSubDrive() {
-    subSel.innerHTML = "";
-    const idx = headers.indexOf(mainSel.value);
+function loadSubDrive() {
+  subSel.innerHTML = "";
 
-    let subSet = new Set();
+  /* Trim + case-safe header matching */
+  const selectedMain = mainSel.value.trim().toLowerCase();
 
-    rows.forEach(r => {
-      if (r[idx]) subSet.add(r[idx]);
-    });
+  const idx = headers.findIndex(h => 
+    h && h.trim().toLowerCase() === selectedMain
+  );
 
-    let subList = Array.from(subSet);
-    subList.sort((a, b) => a.localeCompare(b));
+  if (idx === -1) return;
 
-    subList.forEach(val => {
-      subSel.add(new Option(val, val));
-    });
-  }
+  let subSet = new Set();
+
+  rows.forEach(r => {
+    if (r[idx]) subSet.add(r[idx]);
+  });
+
+  let subList = Array.from(subSet);
+  subList.sort((a, b) => a.localeCompare(b));
+
+  subList.forEach(val => {
+    subSel.add(new Option(val, val));
+  });
+}
+
 
   mainSel.onchange = loadSubDrive;
 
