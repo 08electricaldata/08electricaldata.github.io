@@ -5,95 +5,49 @@
 <title>Daily Job Entry</title>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0e1621;
-  color: #e5e7eb;
-  margin: 0;
-  padding: 20px;
+body{
+  font-family:Arial,sans-serif;
+  background:#0e1621;
+  color:#e5e7eb;
+  margin:0;
+  padding:20px
 }
-
-.container {
-  background: #1b2636;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.6);
-  max-width: 1200px;
-  margin: auto;
+.container{
+  background:#1b2636;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  max-width:1200px;
+  margin:auto
 }
-
-h2 {
-  text-align: center;
-  color: #93c5fd;
-  margin-bottom: 20px;
+h2{text-align:center;color:#93c5fd;margin-bottom:20px}
+.row-top{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:15px}
+.row-bottom{display:grid;grid-template-columns:4fr 1fr 1fr;gap:12px;align-items:end}
+label{font-weight:bold;font-size:13px}
+input,select,textarea{
+  width:100%;
+  padding:6px;
+  font-size:14px;
+  background:#111827;
+  color:#e5e7eb;
+  border:1px solid #334155;
+  box-sizing:border-box
 }
-
-.row-top {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
-  margin-bottom: 15px;
+textarea{height:80px;resize:none}
+button{
+  width:100%;
+  padding:10px;
+  background:#003f88;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer
 }
-
-.row-bottom {
-  display: grid;
-  grid-template-columns: 4fr 1fr 1fr;
-  gap: 12px;
-  align-items: end;
-}
-
-label {
-  font-weight: bold;
-  font-size: 13px;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 6px;
-  font-size: 14px;
-  box-sizing: border-box;
-  background: #111827;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-}
-
-textarea {
-  height: 80px;
-  resize: none;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background: #003f88;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #0050aa;
-}
-
-#msg {
-  text-align: center;
-  font-weight: bold;
-  color: #22c55e;
-  margin-top: 12px;
-}
-
-.top-nav {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.top-nav button {
-  width: auto;
-  padding: 6px 14px;
-}
+button:hover{background:#0050aa}
+#msg{text-align:center;font-weight:bold;color:#22c55e;margin-top:12px}
+.top-nav{display:flex;gap:10px;margin-bottom:10px}
+.top-nav button{width:auto;padding:6px 14px}
 </style>
 </head>
 
@@ -178,34 +132,33 @@ method="POST">
 </div>
 
 <div id="msg"></div>
-
 </form>
 
 <iframe name="hiddenFrame" style="display:none"></iframe>
 </div>
 
 <script>
-const jsonURL = "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+const jsonURL =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
 fetch(jsonURL)
-.then(r => r.json())
-.then(j => {
+.then(r=>r.json())
+.then(j=>{
 
-  const headers = j.headers;
-  const rows = j.rows;
+  const headers=j.headers;
+  const rows=j.rows;
 
-  const mainSel   = document.getElementById("mainDrive");
-  const subSel    = document.getElementById("subDrive");
-  const typeJob   = document.getElementById("typeJob");
-  const natureJob = document.getElementById("natureJob");
+  const mainSel=document.getElementById("mainDrive");
+  const subSel=document.getElementById("subDrive");
+  const typeJob=document.getElementById("typeJob");
+  const natureJob=document.getElementById("natureJob");
 
-  /* ========= MAIN DRIVE (INDEX SAFE + SORTED) ========= */
+  /* ========= MAIN DRIVE ========= */
 
-  let mainList = [];
-
-  headers.forEach((h, i) => {
-    if (i >= 7 && h) {
-      mainList.push({ index: i, text: h });
+  let mainList=[];
+  headers.forEach((h,i)=>{
+    if(i>=7 && h){
+      mainList.push({index:i,text:h});
     }
   });
 
@@ -213,7 +166,7 @@ fetch(jsonURL)
 
   mainList.forEach(item=>{
     const o=document.createElement("option");
-    o.value=item.index;
+    o.value=item.index;          // store column index
     o.textContent=item.text;
     mainSel.appendChild(o);
   });
@@ -221,11 +174,14 @@ fetch(jsonURL)
   /* ========= SUB DRIVE ========= */
 
   mainSel.onchange=function(){
+
     subSel.innerHTML="";
     let subSet=new Set();
 
     rows.forEach(r=>{
-      if(r[this.value]) subSet.add(r[this.value]);
+      if(r[this.value]!==undefined && r[this.value]!=="" ){
+        subSet.add(String(r[this.value])); // important fix
+      }
     });
 
     let subList=Array.from(subSet);
@@ -239,6 +195,7 @@ fetch(jsonURL)
     });
   };
 
+  /* Auto load first */
   if(mainSel.options.length>0){
     mainSel.selectedIndex=0;
     mainSel.onchange();
@@ -250,8 +207,9 @@ fetch(jsonURL)
   if(headers[1]) typeSet.add(headers[1]);
   rows.forEach(r=>{ if(r[1]) typeSet.add(r[1]); });
 
-  Array.from(typeSet).sort((a,b)=>a.localeCompare(b))
-  .forEach(val=>typeJob.add(new Option(val,val)));
+  Array.from(typeSet)
+  .sort((a,b)=>a.localeCompare(b))
+  .forEach(v=>typeJob.add(new Option(v,v)));
 
   /* ========= NATURE OF JOB ========= */
 
@@ -259,8 +217,9 @@ fetch(jsonURL)
   if(headers[2]) natureSet.add(headers[2]);
   rows.forEach(r=>{ if(r[2]) natureSet.add(r[2]); });
 
-  Array.from(natureSet).sort((a,b)=>a.localeCompare(b))
-  .forEach(val=>natureJob.add(new Option(val,val)));
+  Array.from(natureSet)
+  .sort((a,b)=>a.localeCompare(b))
+  .forEach(v=>natureJob.add(new Option(v,v)));
 
 });
 
@@ -270,7 +229,6 @@ document.getElementById("jobForm").onsubmit=()=>{
   setTimeout(()=>{
     document.getElementById("msg").innerText=
     "✅ Submitted successfully. Pending verification.";
-
     const d=dateField.value;
     jobForm.reset();
     dateField.value=d;
