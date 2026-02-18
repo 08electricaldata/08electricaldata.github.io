@@ -293,62 +293,108 @@ const jsonURL = "https://raw.githubusercontent.com/08electricaldata/08electrical
 fetch(jsonURL)
 .then(r => r.json())
 .then(j => {
+
   const headers = j.headers;
   const rows = j.rows;
 
-  const mainSel = document.getElementById("mainDrive");
-  const subSel = document.getElementById("subDrive");
+  const mainSel   = document.getElementById("mainDrive");
+  const subSel    = document.getElementById("subDrive");
+  const typeJob   = document.getElementById("typeJob");
+  const natureJob = document.getElementById("natureJob");
 
-const mainStart = 7;
-let mainList = [];
+  /* ================= MAIN DRIVE ================= */
 
-/* Collect Main Drive */
-for (let i = mainStart; i < headers.length; i++) {
-  if (headers[i]) {
-    mainList.push(headers[i]);
+  const mainStart = 7;
+  let mainList = [];
+
+  for (let i = mainStart; i < headers.length; i++) {
+    if (headers[i]) mainList.push(headers[i]);
   }
-}
 
-/* Sort A-Z (keep original case) */
-mainList.sort((a, b) => a.localeCompare(b));
+  mainList.sort((a, b) => a.localeCompare(b));
 
-/* Add to dropdown */
-mainList.forEach(val => {
-  mainSel.add(new Option(val, val));
-});
+  mainList.forEach(val => {
+    mainSel.add(new Option(val, val));
+  });
 
-/* Sub Drive Load Function */
-mainSel.onchange = () => {
-  subSel.innerHTML = "";
-  const idx = headers.indexOf(mainSel.value);
+  /* ================= SUB DRIVE ================= */
 
-  let subList = [];
+  function loadSubDrive() {
+    subSel.innerHTML = "";
+    const idx = headers.indexOf(mainSel.value);
+
+    let subSet = new Set();
+
+    rows.forEach(r => {
+      if (r[idx]) subSet.add(r[idx]);
+    });
+
+    let subList = Array.from(subSet);
+    subList.sort((a, b) => a.localeCompare(b));
+
+    subList.forEach(val => {
+      subSel.add(new Option(val, val));
+    });
+  }
+
+  mainSel.onchange = loadSubDrive;
+
+  /* Auto select first main drive */
+  if (mainSel.options.length > 0) {
+    mainSel.selectedIndex = 0;
+    loadSubDrive();
+  }
+
+  /* ================= TYPE OF JOB (Column B) ================= */
+
+  let typeSet = new Set();
+
+  if (headers[1]) typeSet.add(headers[1]);
 
   rows.forEach(r => {
-    if (r[idx]) {
-      subList.push(r[idx]);
-    }
+    if (r[1]) typeSet.add(r[1]);
   });
 
-  /* Sort A-Z */
-  subList.sort((a, b) => a.localeCompare(b));
+  let typeList = Array.from(typeSet);
+  typeList.sort((a, b) => a.localeCompare(b));
 
-  subList.forEach(val => {
-    subSel.add(new Option(val, val));
+  typeList.forEach(val => {
+    typeJob.add(new Option(val, val));
   });
-};
 
+  /* ================= NATURE OF JOB (Column C) ================= */
+
+  let natureSet = new Set();
+
+  if (headers[2]) natureSet.add(headers[2]);
+
+  rows.forEach(r => {
+    if (r[2]) natureSet.add(r[2]);
+  });
+
+  let natureList = Array.from(natureSet);
+  natureList.sort((a, b) => a.localeCompare(b));
+
+  natureList.forEach(val => {
+    natureJob.add(new Option(val, val));
+  });
+
+});
+
+/* ================= FORM SUBMIT ================= */
 
 document.getElementById("jobForm").onsubmit = () => {
   setTimeout(() => {
     document.getElementById("msg").innerText =
       "✅ Submitted successfully. Pending verification.";
+
     const d = dateField.value;
     jobForm.reset();
     dateField.value = d;
   }, 800);
 };
 </script>
+
 
 </body>
 </html>
