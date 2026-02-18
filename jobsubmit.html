@@ -153,7 +153,7 @@ fetch(jsonURL)
   const typeJob=document.getElementById("typeJob");
   const natureJob=document.getElementById("natureJob");
 
-  /* ========= MAIN DRIVE ========= */
+  /* ========= MAIN DRIVE (SUBMIT TEXT, STORE INDEX) ========= */
 
   let mainList=[];
   headers.forEach((h,i)=>{
@@ -166,8 +166,9 @@ fetch(jsonURL)
 
   mainList.forEach(item=>{
     const o=document.createElement("option");
-    o.value=item.index;          // store column index
+    o.value=item.text;              // submit real text
     o.textContent=item.text;
+    o.dataset.index=item.index;     // store column index internally
     mainSel.appendChild(o);
   });
 
@@ -178,9 +179,11 @@ fetch(jsonURL)
     subSel.innerHTML="";
     let subSet=new Set();
 
+    const colIndex=this.selectedOptions[0].dataset.index;
+
     rows.forEach(r=>{
-      if(r[this.value]!==undefined && r[this.value]!=="" ){
-        subSet.add(String(r[this.value])); // important fix
+      if(r[colIndex]!==undefined && r[colIndex]!==""){
+        subSet.add(String(r[colIndex])); // convert numeric transformer values
       }
     });
 
