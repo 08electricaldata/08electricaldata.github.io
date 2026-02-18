@@ -314,10 +314,28 @@ fetch(jsonURL)
     });
   };
 
-  rows.forEach(r => {
-    if (r[1]) typeJob.add(new Option(r[1], r[1]));
-    if (r[2]) natureJob.add(new Option(r[2], r[2]));
-  });
+/* ===== LOAD TYPE OF JOB (Column B) ===== */
+if (headers[1]) {
+  typeJob.add(new Option(headers[1], headers[1]));
+}
+
+rows.forEach(r => {
+  if (r[1]) {
+    typeJob.add(new Option(r[1], r[1]));
+  }
+});
+
+/* ===== LOAD NATURE OF JOB (Column C) ===== */
+if (headers[2]) {
+  natureJob.add(new Option(headers[2], headers[2]));
+}
+
+rows.forEach(r => {
+  if (r[2]) {
+    natureJob.add(new Option(r[2], r[2]));
+  }
+});
+
 });
 
 document.getElementById("jobForm").onsubmit = () => {
