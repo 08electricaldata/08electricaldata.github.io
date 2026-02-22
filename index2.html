@@ -6,72 +6,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial,sans-serif;background:#f2f6ff;margin:0}
+body{
+  font-family:Arial,sans-serif;
+  margin:0;
+  background:linear-gradient(135deg,#e6f0ff,#f4f9ff);
+}
 
-/* HEADER */
+/* PREMIUM HEADER */
 .header{
-  background:#003f88;
+  background:linear-gradient(135deg,#002b5c,#0052cc);
   color:white;
-  padding:20px 15px;
+  padding:25px 20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
 }
 
 .header-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:10px;
+  gap:15px;
 }
 
 /* CENTER TITLE */
 .header-center{
   text-align:center;
-  min-width:320px;
+  min-width:340px;
 }
-.header h1{margin:0;font-size:30px}
-.header p{margin:4px 0 0;font-size:15px}
-.header .credit{font-size:14px;margin-top:3px}
+.header h1{
+  margin:0;
+  font-size:32px;
+  letter-spacing:1px;
+}
+.header p{
+  margin:6px 0 0;
+  font-size:15px;
+  opacity:.95;
+}
+.header .credit{
+  font-size:14px;
+  margin-top:4px;
+  opacity:.9;
+}
 
-/* KPI BOXES */
+/* KPI PREMIUM BOX */
 .kpi-group{
   display:flex;
-  gap:8px;
+  gap:10px;
 }
 
 .kpi{
-  width:130px;
-  background:white;
-  color:#000;
-  border-radius:8px;
-  padding:8px;
+  width:140px;
+  padding:10px;
+  border-radius:14px;
   text-align:center;
-  box-shadow:0 2px 6px rgba(0,0,0,.25);
   cursor:pointer;
+
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 4px 15px rgba(0,0,0,.25);
+  transition:all .3s ease;
 }
+
+.kpi:hover{
+  transform:translateY(-6px) scale(1.05);
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+
 .kpi h3{
   margin:0;
   font-size:12px;
-  color:#003f88;
+  color:#fff;
+  letter-spacing:.5px;
 }
+
 .kpi .num{
-  font-size:20px;
+  font-size:22px;
   font-weight:bold;
-  margin-top:4px;
+  margin-top:5px;
+  color:#fff;
 }
+
 .kpi small{
-  font-size:10px;
+  font-size:11px;
   display:block;
-  margin-top:2px;
+  margin-top:3px;
+  color:#e0e0e0;
 }
+
+/* RED BLINK */
 .kpi.red{
-  background:#ffeaea;
+  background:rgba(255,0,0,0.25);
   animation:blink 1.2s infinite;
 }
-@keyframes blink{50%{background:#ffcccc}}
+@keyframes blink{
+  50%{background:rgba(255,0,0,0.4);}
+}
 
 .kpi-time{
   text-align:center;
-  font-size:11px;
-  margin-top:6px;
+  font-size:12px;
+  margin-top:10px;
   opacity:.9;
 }
 
@@ -86,11 +123,19 @@ body{font-family:Arial,sans-serif;background:#f2f6ff;margin:0}
 }
 .card{
   background:white;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-  padding:25px
+  border-radius:14px;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);
+  padding:25px;
+  transition:.3s;
 }
-.card h2{margin-top:0;color:#003f88;text-align:center}
+.card:hover{
+  box-shadow:0 6px 25px rgba(0,0,0,.25);
+}
+.card h2{
+  margin-top:0;
+  color:#003f88;
+  text-align:center
+}
 
 /* BUTTONS */
 .master-btns,.jobs-btns{
@@ -102,13 +147,17 @@ button{
   width:100%;
   padding:12px;
   font-size:15px;
-  background:#003f88;
+  background:linear-gradient(135deg,#003f88,#0052cc);
   color:white;
   border:none;
-  border-radius:6px;
-  cursor:pointer
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
 }
-button:hover{opacity:.9}
+button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 15px rgba(0,0,0,.25);
+}
 
 /* SELECT */
 .select-row{
@@ -156,7 +205,6 @@ select{
 <body>
 
 <div class="header">
-
   <div class="header-row">
 
     <!-- LEFT 3 KPI -->
@@ -175,31 +223,27 @@ select{
     <div class="kpi-group" id="kpiRight"></div>
 
   </div>
-
   <div class="kpi-time" id="kpiTime"></div>
-
 </div>
 
 <div class="container">
 
-<!-- MASTER LIST -->
 <div class="card">
   <h2>Master List</h2>
   <div class="master-btns">
-    <button onclick="secureOpen('motorlist')">⚙️ Motor List</button>
-    <button onclick="secureOpen('trafolist')">⚡ Transformer List</button>
-    <button onclick="secureOpen('breakerlist')">🔌 Breaker List</button>
-    <button onclick="secureOpen('ersmasterdata')">🗂️ ERS Master</button>
+    <button onclick="secureOpen('motor')">⚙️ Motor List</button>
+    <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
+    <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
+    <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
   </div>
 </div>
 
-<!-- SELECT DRIVE -->
 <div class="card">
   <h2>Select Drive</h2>
 
   <div class="select-row">
-    <select><option>Select Main Drive</option></select>
-    <select><option>Select Sub Drive</option></select>
+    <select id="mainDrive"><option>Select Main Drive</option></select>
+    <select id="subDrive"><option>Select Sub Drive</option></select>
   </div>
 
   <div class="button-row">
@@ -214,20 +258,18 @@ select{
     <button>📕 Job2 Summary</button>
   </div>
 
-  <!-- Cleared for future Job Nature Table -->
   <div id="futureJobSection"></div>
 
 </div>
 
-<!-- JOBS -->
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
-    <button>🛠️ Motor O/H Data</button>
-    <button>🧾 Motor PM Status</button>
-    <button>⚡ Transformer Status</button>
-    <button>🛢️ Transformer Oil Report</button>
-    <button>🔌 Breaker PM Status</button>
+    <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
+    <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
+    <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
+    <button onclick="secureOpen('trafooil')">🛢️ Transformer Oil Report</button>
+    <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
   </div>
 </div>
 
@@ -241,6 +283,33 @@ select{
 const DASHBOARD_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dashboard/summary.json";
 
+/* PASSWORD */
+function checkPassword(){
+  const p=prompt("🔐 Enter Password");
+  if(p===null || p.trim()!=="1234"){   // replace with your real password logic
+    alert("❌ Incorrect password");
+    return false;
+  }
+  return true;
+}
+
+/* OPEN WITH PASSWORD */
+function secureOpen(type){
+  if(!checkPassword()) return;
+
+  const map={
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    trafopm:"drive-viewer/trafopm.html",
+    breakerpm:"drive-viewer/breakerpm.html"
+  };
+
+  if(map[type]){
+    location.href="https://08electricaldata.github.io/"+map[type];
+  }
+}
+
+/* LOAD KPI */
 async function loadKPI(){
   const j=await (await fetch(DASHBOARD_JSON)).json();
 
@@ -248,11 +317,11 @@ async function loadKPI(){
   const right=document.getElementById("kpiRight");
 
   const order=[
-    ["overdue_motors_oh","Motors O/H"],
-    ["overdue_motors_pm","Motors PM"],
-    ["overdue_modules_pm","Modules PM"],
-    ["overdue_transformers_pm","Transformers PM"],
-    ["overdue_breaker_pm","Breaker PM"]
+    ["overdue_motors_oh","Motors O/H","motoroh"],
+    ["overdue_motors_pm","Motors PM","motorpm"],
+    ["overdue_modules_pm","Modules PM","motorpm"],
+    ["overdue_transformers_pm","Transformers PM","trafopm"],
+    ["overdue_breaker_pm","Breaker PM","breakerpm"]
   ];
 
   order.forEach((m,i)=>{
@@ -261,6 +330,7 @@ async function loadKPI(){
 
     const box=document.createElement("div");
     box.className="kpi"+(data.due>0?" red":"");
+    box.onclick=()=>secureOpen(m[2]);
 
     box.innerHTML=`<h3>${m[1]}</h3>
                    <div class="num">${data.due}</div>
