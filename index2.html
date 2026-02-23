@@ -24,9 +24,7 @@ body{
   align-items:center;
   justify-content:center;
 }
-.header-center{
-  text-align:center;
-}
+.header-center{text-align:center}
 .header h1{margin:0;font-size:32px}
 .header p{margin:6px 0 0;font-size:15px}
 .header .credit{font-size:14px;margin-top:4px}
@@ -65,20 +63,21 @@ button{
   cursor:pointer;
 }
 
-/* SELECT */
+/* SEARCHABLE INPUT */
 .select-row{
   display:flex;
   gap:15px;
   justify-content:center;
   flex-wrap:wrap
 }
-select{
+input[list]{
   padding:12px;
   font-size:16px;
   border-radius:6px;
   border:1px solid #ccc;
-  min-width:260px
+  min-width:260px;
 }
+
 .button-row{
   margin-top:20px;
   display:flex;
@@ -129,21 +128,14 @@ select{
 <!-- SELECT DRIVE -->
 <div class="card">
   <h2>Select Drive</h2>
-<div class="select-row">
 
-  <div>
-    <input list="mainDriveList" id="mainDriveInput" 
-           placeholder="Select / Type Main Drive">
-    <datalist id="mainDriveList"></datalist>
+  <div class="select-row">
+    <input list="mainList" id="mainDrive" placeholder="Select / Type Main Drive">
+    <datalist id="mainList"></datalist>
+
+    <input list="subList" id="subDrive" placeholder="Select / Type Sub Drive">
+    <datalist id="subList"></datalist>
   </div>
-
-  <div>
-    <input list="subDriveList" id="subDriveInput" 
-           placeholder="Select / Type Sub Drive">
-    <datalist id="subDriveList"></datalist>
-  </div>
-
-</div>
 
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
@@ -163,7 +155,6 @@ select{
   <h2>Jobs</h2>
   <div class="jobs-btns">
 
-    <!-- NEW BUTTON ADDED HERE -->
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
 
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
@@ -185,8 +176,8 @@ const DRIVE_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
 let headers=[],rows=[],sheetPassword="";
+let mainMap={};
 
-/* LOAD DRIVE DATA */
 async function loadSheet(){
   const d=await (await fetch(DRIVE_JSON)).json();
   headers=d.headers;
@@ -195,7 +186,6 @@ async function loadSheet(){
   buildMain();
 }
 
-/* PASSWORD */
 function checkPassword(){
   if(!sheetPassword){alert("⏳ Data loading");return false}
   const p=prompt("🔐 Enter Password");
@@ -207,36 +197,34 @@ function checkPassword(){
 }
 
 /* BUILD MAIN DRIVE */
-document.getElementById("mainDriveInput")
+function buildMain(){
+  const list=document.getElementById("mainList");
+  list.innerHTML="";
+  headers.forEach((h,i)=>{
+    if(i<7||!h)return;
+    mainMap[h]=i;
+    const option=document.createElement("option");
+    option.value=h;
+    list.appendChild(option);
+  });
+}
+
+/* BUILD SUB DRIVE */
+document.getElementById("mainDrive")
 .addEventListener("input",function(){
 
-  const selectedHeader=headers.find(h=>h===this.value);
-  if(!selectedHeader) return;
+  const main=this.value;
+  const index=mainMap[main];
+  const subList=document.getElementById("subList");
+  subList.innerHTML="";
 
-  const index=headers.indexOf(selectedHeader);
-
-  const list=document.getElementById("subDriveList");
-  list.innerHTML="";
+  if(index===undefined) return;
 
   rows.forEach(r=>{
     if(r[index]){
       const option=document.createElement("option");
       option.value=r[index];
-      list.appendChild(option);
-    }
-  });
-});
-
-/* SUB DRIVE */
-document.getElementById("mainDrive").addEventListener("change",function(){
-  const sub=document.getElementById("subDrive");
-  sub.innerHTML="<option value=''>Select Sub Drive</option>";
-  rows.forEach(r=>{
-    if(r[this.value]){
-      const o=document.createElement("option");
-      o.value=r[this.value];
-      o.textContent=r[this.value];
-      sub.appendChild(o);
+      subList.appendChild(option);
     }
   });
 });
@@ -245,19 +233,16 @@ document.getElementById("mainDrive").addEventListener("change",function(){
 function secureView(type){
   if(!checkPassword())return;
 
-  const main=document.getElementById("mainDriveInput").value;
-  const sub=document.getElementById("subDriveInput").value;
+  const main=document.getElementById("mainDrive").value;
+  const sub=document.getElementById("subDrive").value;
 
-  if(!headers.includes(main)){
+  if(mainMap[main]===undefined){
     alert("Select valid Main Drive");
     return;
   }
 
-  const index=headers.indexOf(main);
-
-  const validSubs=rows
-    .map(r=>r[index])
-    .filter(Boolean);
+  const index=mainMap[main];
+  const validSubs=rows.map(r=>r[index]).filter(Boolean);
 
   if(!validSubs.includes(sub)){
     alert("Select valid Sub Drive");
@@ -273,7 +258,6 @@ function secureView(type){
   encodeURIComponent(id);
 }
 
-/* OPEN */
 function secureOpen(type){
   if(!checkPassword())return;
   const map={
@@ -292,7 +276,6 @@ function secureOpen(type){
   location.href="https://08electricaldata.github.io/"+map[type];
 }
 
-/* NEW MONTHLY TREND */
 function openMonthlyTrend(){
   if(checkPassword())
     location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
