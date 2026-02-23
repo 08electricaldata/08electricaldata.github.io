@@ -190,13 +190,12 @@ if (id) {
   }
 }
 
-/* LOAD + SORT DATA */
+/* PRELOAD + SORT */
 let natureData = [];
 
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
 .then(r => r.json())
 .then(j => {
-
   const set = new Set();
   j.rows.forEach(r => {
     const v = (r[2] || "").trim();
@@ -207,9 +206,10 @@ fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/
   populateDropdown(natureData);
 });
 
-function populateDropdown(data){
+/* Populate Dropdown */
+function populateDropdown(list){
   natureSelect.innerHTML = "";
-  data.forEach(v => {
+  list.forEach(v => {
     const opt = document.createElement("option");
     opt.value = v;
     opt.textContent = v;
@@ -217,16 +217,33 @@ function populateDropdown(data){
   });
 }
 
-/* SEARCH FILTER */
+/* SEARCH FILTER BEHAVIOR */
 natureSearch.addEventListener("input", function(){
   const q = this.value.toLowerCase();
+
+  if (!q) {
+    populateDropdown(natureData);
+    natureSelect.size = 1;   // normal closed
+    return;
+  }
+
   const filtered = natureData.filter(v =>
     v.toLowerCase().includes(q)
   );
+
   populateDropdown(filtered);
+
+  // open dropdown visually
+  natureSelect.size = filtered.length > 6 ? 6 : filtered.length;
 });
 
-/* SUCCESS MESSAGE */
+/* CLOSE AFTER SELECTION */
+natureSelect.addEventListener("change", function(){
+  natureSelect.size = 1;     // collapse
+  natureSearch.value = "";   // clear search
+});
+
+/* SUCCESS */
 jobForm.onsubmit = () => {
   setTimeout(() => {
     msg.innerText = "✅ Submitted successfully. Pending verification.";
@@ -235,6 +252,5 @@ jobForm.onsubmit = () => {
   }, 800);
 };
 </script>
-
 </body>
 </html>
