@@ -104,9 +104,16 @@ body{
   border:1px solid #334155;
   border-radius:6px;
   margin-top:4px;
-  max-height:220px;
+  max-height:0;
   overflow-y:auto;
+  opacity:0;
+  transition:all .2s ease;
   z-index:1000;
+}
+
+.dropdown.show{
+  max-height:220px;
+  opacity:1;
 }
 
 .dropdown-item{
@@ -115,7 +122,8 @@ body{
   transition:background .15s;
 }
 
-.dropdown-item:hover{
+.dropdown-item:hover,
+.dropdown-item.active{
   background:#003f88;
 }
 
@@ -181,7 +189,6 @@ method="POST">
 <input type="hidden" name="entry.273858386" id="subDrive">
 <input type="hidden" name="entry.1114156376" id="natureHidden">
 
-<!-- MATERIAL SEARCHABLE DROPDOWN -->
 <div class="field">
   <div class="material-input">
     <input type="text" id="natureInput" placeholder=" " autocomplete="off" required>
@@ -221,11 +228,9 @@ method="POST">
 </div>
 
 <script>
-/* AUTO DATE */
 const today=new Date();
 dateField.value=today.toISOString().split("T")[0];
 
-/* READ ID */
 const id=new URLSearchParams(location.search).get("id");
 if(id){
   const firstDash=id.indexOf("-");
@@ -235,7 +240,6 @@ if(id){
   }
 }
 
-/* LOAD DATA */
 let natureData=[];
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
 .then(r=>r.json())
@@ -245,46 +249,91 @@ fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/
     const v=(r[2]||"").trim();
     if(v) set.add(v);
   });
-
   natureData=[...set].sort((a,b)=>a.localeCompare(b));
-  renderDropdown(natureData);
 });
 
-/* DROPDOWN LOGIC */
 const input=document.getElementById("natureInput");
 const dropdown=document.getElementById("dropdown");
 const hidden=document.getElementById("natureHidden");
 
-function renderDropdown(list){
+let currentIndex=-1;
+
+function render(list){
   dropdown.innerHTML="";
-  list.forEach(v=>{
+  list.forEach((v,i)=>{
     const div=document.createElement("div");
     div.className="dropdown-item";
     div.textContent=v;
-    div.onclick=()=>{
-      input.value=v;
-      hidden.value=v;
-    };
+
+    div.onclick=()=>selectValue(v);
+
     dropdown.appendChild(div);
   });
+
+  if(list.length>0){
+    dropdown.classList.add("show");
+  }else{
+    dropdown.classList.remove("show");
+  }
 }
 
-/* Filter while typing */
+function selectValue(val){
+  input.value=val;
+  hidden.value=val;
+  dropdown.classList.remove("show");
+}
+
+input.addEventListener("focus",()=>{
+  render(natureData);
+});
+
 input.addEventListener("input",()=>{
   const q=input.value.toLowerCase();
   const filtered=natureData.filter(v=>v.toLowerCase().includes(q));
-  renderDropdown(filtered);
+  currentIndex=-1;
+  render(filtered);
 });
 
-/* Prevent invalid */
+input.addEventListener("keydown",(e)=>{
+  const items=document.querySelectorAll(".dropdown-item");
+
+  if(e.key==="ArrowDown"){
+    currentIndex++;
+  }
+  if(e.key==="ArrowUp"){
+    currentIndex--;
+  }
+
+  if(e.key==="Enter"){
+    e.preventDefault();
+    if(items[currentIndex]){
+      selectValue(items[currentIndex].textContent);
+    }
+  }
+
+  items.forEach(i=>i.classList.remove("active"));
+  if(items.length>0){
+    if(currentIndex>=items.length) currentIndex=0;
+    if(currentIndex<0) currentIndex=items.length-1;
+    if(items[currentIndex]){
+      items[currentIndex].classList.add("active");
+    }
+  }
+});
+
+document.addEventListener("click",(e)=>{
+  if(!e.target.closest(".field")){
+    dropdown.classList.remove("show");
+  }
+});
+
 jobForm.addEventListener("submit",e=>{
   if(!natureData.includes(input.value)){
-    alert("Please select valid Nature of Job from list.");
+    alert("Please select valid Nature of Job.");
     e.preventDefault();
   }
 });
 
-/* Success */
 jobForm.onsubmit=()=>{
   setTimeout(()=>{
     msg.innerText="✅ Submitted successfully. Pending verification.";
