@@ -6,113 +6,168 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0e1621;
-  color: #e5e7eb;
-  margin: 0;
-  padding: 16px;
+body{
+  font-family:Arial,sans-serif;
+  background:#0e1621;
+  color:#e5e7eb;
+  margin:0;
+  padding:16px;
 }
 
 /* ===== TOP NAV ===== */
-.top-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+.top-nav{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
 }
 
-.top-nav button {
-  padding: 6px 14px;
-  font-size: 14px;
-  background: #003f88;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.top-nav button{
+  padding:6px 14px;
+  font-size:14px;
+  background:#003f88;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.top-title {
-  flex: 1;
-  text-align: center;
+.top-title{
+  flex:1;
+  text-align:center;
 }
 
-.top-title strong {
-  display: block;
-  font-size: 16px;
-  color: #93c5fd;
+.top-title strong{
+  display:block;
+  font-size:16px;
+  color:#93c5fd;
 }
 
-.top-title span {
-  font-size: 12px;
-  opacity: 0.9;
+.top-title span{
+  font-size:12px;
+  opacity:0.9;
 }
 
 /* ===== CARD ===== */
-.container {
-  background: #1b2636;
-  padding: 18px;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.6);
-  max-width: 520px;
-  margin: auto;
+.container{
+  background:#1b2636;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+  max-width:520px;
+  margin:auto;
 }
 
-/* ===== FORM ===== */
-.field {
-  margin-bottom: 14px;
+/* ===== FIELD ===== */
+.field{
+  margin-bottom:22px;
+  position:relative;
 }
 
-label {
-  font-weight: bold;
-  font-size: 13px;
-  margin-bottom: 4px;
-  display: block;
+/* ===== MATERIAL INPUT ===== */
+.material-input{
+  position:relative;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  background: #111827;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  box-sizing: border-box;
+.material-input input{
+  width:100%;
+  padding:14px 10px 8px;
+  font-size:15px;
+  background:#111827;
+  border:1px solid #334155;
+  border-radius:6px;
+  color:#e5e7eb;
 }
 
-textarea {
-  height: 110px;
-  resize: none;
+.material-input label{
+  position:absolute;
+  left:12px;
+  top:14px;
+  font-size:14px;
+  color:#9ca3af;
+  pointer-events:none;
+  transition:all .2s ease;
 }
 
-/* Scrollable dropdown */
-select {
-  max-height: 160px;
-  overflow-y: auto;
+.material-input input:focus + label,
+.material-input input:not(:placeholder-shown) + label{
+  top:4px;
+  font-size:11px;
+  color:#60a5fa;
 }
 
-/* ===== BUTTON ===== */
-button.submit-btn {
-  width: 100%;
-  padding: 12px;
-  background: #003f88;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
+/* ===== DROPDOWN ===== */
+.dropdown{
+  position:absolute;
+  width:100%;
+  background:#1f2937;
+  border:1px solid #334155;
+  border-radius:6px;
+  margin-top:4px;
+  max-height:0;
+  overflow-y:auto;
+  opacity:0;
+  transition:all .25s ease;
+  z-index:1000;
 }
 
-button.submit-btn:hover {
-  background: #0050aa;
+.dropdown.show{
+  max-height:220px;
+  opacity:1;
 }
 
-#msg {
-  text-align: center;
-  font-weight: bold;
-  color: #22c55e;
-  margin-top: 12px;
+.dropdown-item{
+  padding:10px;
+  cursor:pointer;
+  transition:background .15s;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active{
+  background:#003f88;
+}
+
+/* Ripple */
+.dropdown-item:active{
+  background:#0050aa;
+}
+
+/* ===== OTHER INPUTS ===== */
+textarea,select{
+  width:100%;
+  padding:10px;
+  font-size:14px;
+  background:#111827;
+  color:#e5e7eb;
+  border:1px solid #334155;
+  border-radius:6px;
+}
+
+textarea{
+  height:110px;
+  resize:none;
+}
+
+button.submit-btn{
+  width:100%;
+  padding:12px;
+  background:#003f88;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button.submit-btn:hover{
+  background:#0050aa;
+}
+
+#msg{
+  text-align:center;
+  font-weight:bold;
+  color:#22c55e;
+  margin-top:12px;
 }
 </style>
 </head>
@@ -120,12 +175,12 @@ button.submit-btn:hover {
 <body>
 
 <div class="top-nav">
-  <button type="button" onclick="history.back()">⬅ Back</button>
+  <button onclick="history.back()">⬅ Back</button>
   <div class="top-title">
     <strong>Job Entry</strong>
     <span>Designed and Maintained by Rakesh Chandra Sethy</span>
   </div>
-  <button type="button" onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+  <button onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
 </div>
 
 <div class="container">
@@ -137,12 +192,15 @@ method="POST">
 <input type="hidden" name="entry.2074265710" id="dateField">
 <input type="hidden" name="entry.2034418039" id="mainDrive">
 <input type="hidden" name="entry.273858386" id="subDrive">
+<input type="hidden" name="entry.1114156376" id="natureHidden">
 
-<!-- ===== SEARCH + DROPDOWN ===== -->
+<!-- MATERIAL DROPDOWN -->
 <div class="field">
-  <label>Nature of Job</label>
-  <input type="text" id="natureSearch" placeholder="Search...">
-  <select name="entry.1114156376" id="natureSelect" size="5" required></select>
+  <div class="material-input">
+    <input type="text" id="natureInput" placeholder=" " autocomplete="off" required>
+    <label>Nature of Job</label>
+  </div>
+  <div class="dropdown" id="dropdown"></div>
 </div>
 
 <div class="field">
@@ -177,80 +235,117 @@ method="POST">
 
 <script>
 /* AUTO DATE */
-const today = new Date();
-dateField.value = today.toISOString().split("T")[0];
+const today=new Date();
+dateField.value=today.toISOString().split("T")[0];
 
 /* READ ID */
-const id = new URLSearchParams(location.search).get("id");
-if (id) {
-  const firstDash = id.indexOf("-");
-  if (firstDash !== -1) {
-    mainDrive.value = id.substring(0, firstDash);
-    subDrive.value = id.substring(firstDash + 1);
+const id=new URLSearchParams(location.search).get("id");
+if(id){
+  const firstDash=id.indexOf("-");
+  if(firstDash!==-1){
+    mainDrive.value=id.substring(0,firstDash);
+    subDrive.value=id.substring(firstDash+1);
   }
 }
 
-/* PRELOAD + SORT */
-let natureData = [];
-
+/* LOAD DATA */
+let natureData=[];
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
-.then(r => r.json())
-.then(j => {
-  const set = new Set();
-  j.rows.forEach(r => {
-    const v = (r[2] || "").trim();
-    if (v) set.add(v);
+.then(r=>r.json())
+.then(j=>{
+  const set=new Set();
+  j.rows.forEach(r=>{
+    const v=(r[2]||"").trim();
+    if(v) set.add(v);
   });
-
-  natureData = [...set].sort((a,b)=>a.localeCompare(b));
-  populateDropdown(natureData);
+  natureData=[...set].sort((a,b)=>a.localeCompare(b));
 });
 
-/* Populate Dropdown */
-function populateDropdown(list){
-  natureSelect.innerHTML = "";
-  list.forEach(v => {
-    const opt = document.createElement("option");
-    opt.value = v;
-    opt.textContent = v;
-    natureSelect.appendChild(opt);
-  });
-}
+/* MATERIAL DROPDOWN LOGIC */
+const input=document.getElementById("natureInput");
+const dropdown=document.getElementById("dropdown");
+const hidden=document.getElementById("natureHidden");
 
-/* SEARCH FILTER BEHAVIOR */
-natureSearch.addEventListener("input", function(){
-  const q = this.value.toLowerCase();
+let currentIndex=-1;
 
-  if (!q) {
-    populateDropdown(natureData);
-    natureSelect.size = 1;   // normal closed
+input.addEventListener("input",()=>{
+  const q=input.value.toLowerCase();
+  dropdown.innerHTML="";
+  currentIndex=-1;
+
+  if(!q){
+    dropdown.classList.remove("show");
     return;
   }
 
-  const filtered = natureData.filter(v =>
-    v.toLowerCase().includes(q)
-  );
+  const filtered=natureData.filter(v=>v.toLowerCase().includes(q));
 
-  populateDropdown(filtered);
+  filtered.forEach((v,i)=>{
+    const div=document.createElement("div");
+    div.className="dropdown-item";
+    div.textContent=v;
 
-  // open dropdown visually
-  natureSelect.size = filtered.length > 6 ? 6 : filtered.length;
+    div.onclick=()=>{
+      selectValue(v);
+    };
+
+    dropdown.appendChild(div);
+  });
+
+  dropdown.classList.add("show");
 });
 
-/* CLOSE AFTER SELECTION */
-natureSelect.addEventListener("change", function(){
-  natureSelect.size = 1;     // collapse
-  natureSearch.value = "";   // clear search
+input.addEventListener("keydown",(e)=>{
+  const items=document.querySelectorAll(".dropdown-item");
+
+  if(e.key==="ArrowDown"){
+    currentIndex++;
+    highlight(items);
+  }
+  if(e.key==="ArrowUp"){
+    currentIndex--;
+    highlight(items);
+  }
+  if(e.key==="Enter"){
+    e.preventDefault();
+    if(items[currentIndex]){
+      selectValue(items[currentIndex].textContent);
+    }
+  }
 });
 
-/* SUCCESS */
-jobForm.onsubmit = () => {
-  setTimeout(() => {
-    msg.innerText = "✅ Submitted successfully. Pending verification.";
+function highlight(items){
+  items.forEach(i=>i.classList.remove("active"));
+  if(currentIndex>=items.length) currentIndex=0;
+  if(currentIndex<0) currentIndex=items.length-1;
+  if(items[currentIndex]){
+    items[currentIndex].classList.add("active");
+  }
+}
+
+function selectValue(val){
+  input.value=val;
+  hidden.value=val;
+  dropdown.classList.remove("show");
+}
+
+/* Prevent invalid */
+jobForm.addEventListener("submit",e=>{
+  if(!natureData.includes(input.value)){
+    alert("Please select valid Nature of Job.");
+    e.preventDefault();
+  }
+});
+
+/* Success */
+jobForm.onsubmit=()=>{
+  setTimeout(()=>{
+    msg.innerText="✅ Submitted successfully. Pending verification.";
     jobForm.reset();
-    dateField.value = today.toISOString().split("T")[0];
-  }, 800);
+    dateField.value=today.toISOString().split("T")[0];
+  },800);
 };
 </script>
+
 </body>
 </html>
