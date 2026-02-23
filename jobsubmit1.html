@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Daily Job Entry</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#0e1621;
+  color:#e5e7eb;
+  margin:0;
+  padding:20px
+}
+.container{
+  background:#1b2636;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.6);
+  max-width:1200px;
+  margin:auto
+}
+h2{text-align:center;color:#93c5fd;margin-bottom:20px}
+.row-top{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:15px}
+.row-bottom{display:grid;grid-template-columns:4fr 1fr 1fr;gap:12px;align-items:end}
+label{font-weight:bold;font-size:13px}
+input,select,textarea{
+  width:100%;
+  padding:6px;
+  font-size:14px;
+  background:#111827;
+  color:#e5e7eb;
+  border:1px solid #334155;
+  box-sizing:border-box
+}
+textarea{height:80px;resize:none}
+button{
+  width:100%;
+  padding:10px;
+  background:#003f88;
+  color:white;
+  border:none;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer
+}
+button:hover{background:#0050aa}
+#msg{text-align:center;font-weight:bold;color:#22c55e;margin-top:12px}
+
+/* TOP NAV */
+.top-nav{
+  display:flex;
+  gap:10px;
+  margin-bottom:10px
+}
+.top-nav button{
+  width:auto;
+  padding:6px 14px
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <button type="button" onclick="history.back()">⬅ Back</button>
+  <button type="button" onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+  <button type="button" onclick="location.href='https://08electricaldata.github.io/scan.html'">📷 Scan QR</button>
+</div>
+
+<div class="container">
+<h2>DAILY JOB DETAILS – LANDSCAPE ENTRY</h2>
+
+<form id="jobForm" target="hiddenFrame"
+action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
+method="POST">
+
+<div class="row-top">
+
+  <div>
+    <label>Date</label>
+    <input type="date" name="entry.2074265710" id="dateField" required>
+  </div>
+
+  <div>
+    <label>Main Drive</label>
+    <select name="entry.2034418039" id="mainDrive" required></select>
+  </div>
+
+  <div>
+    <label>Sub Drive</label>
+    <select name="entry.273858386" id="subDrive" required></select>
+  </div>
+
+  <div>
+    <label>Type of Job</label>
+    <select name="entry.591852895" id="typeJob"></select>
+  </div>
+
+  <div>
+    <label>Nature of Job</label>
+    <select name="entry.1114156376" id="natureJob"></select>
+  </div>
+
+  <div>
+    <label>Highlight</label>
+    <select name="entry.1932274245">
+      <option>YES</option>
+      <option>NO</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="row-bottom">
+
+  <div>
+    <label>Job Details</label>
+    <textarea name="entry.556400630" required></textarea>
+  </div>
+
+  <div>
+    <label>Job By</label>
+    <select name="entry.972123475">
+      <option>NALCO</option>
+      <option>ANIL_AREA</option>
+      <option>Nalco & ANIL</option>
+      <option>Nalco & SUPPLY</option>
+      <option>SUPPLY & ANIL</option>
+      <option>SUPPLY</option>
+      <option>MOTOR</option>
+      <option>NALCO_ANIL_SUPPLY</option>
+      <option>SUNIL BISWAL</option>
+      <option>MAHARANA BDM</option>
+    </select>
+  </div>
+
+  <div>
+    <button type="submit">SUBMIT</button>
+  </div>
+
+</div>
+
+<div id="msg"></div>
+</form>
+
+<iframe name="hiddenFrame" style="display:none"></iframe>
+</div>
+
+<script>
+const jsonURL =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+fetch(jsonURL)
+.then(r=>r.json())
+.then(j=>{
+
+  const headers=j.headers;
+  const rows=j.rows;
+
+  const mainSel=document.getElementById("mainDrive");
+  const subSel=document.getElementById("subDrive");
+  const typeJob=document.getElementById("typeJob");
+  const natureJob=document.getElementById("natureJob");
+
+  let mainList=[];
+  headers.forEach((h,i)=>{
+    if(i>=7 && h){
+      mainList.push({index:i,text:h});
+    }
+  });
+
+  mainList.sort((a,b)=>a.text.localeCompare(b.text));
+
+  mainList.forEach(item=>{
+    const o=document.createElement("option");
+    o.value=item.text;
+    o.textContent=item.text;
+    o.dataset.index=item.index;
+    mainSel.appendChild(o);
+  });
+
+  mainSel.onchange=function(){
+    subSel.innerHTML="";
+    let subSet=new Set();
+    const colIndex=this.selectedOptions[0].dataset.index;
+
+    rows.forEach(r=>{
+      if(r[colIndex]!==undefined && r[colIndex]!==""){
+        subSet.add(String(r[colIndex]));
+      }
+    });
+
+    let subList=Array.from(subSet);
+    subList.sort((a,b)=>a.localeCompare(b));
+
+    subList.forEach(val=>{
+      const o=document.createElement("option");
+      o.value=val;
+      o.textContent=val;
+      subSel.appendChild(o);
+    });
+  };
+
+  if(mainSel.options.length>0){
+    mainSel.selectedIndex=0;
+    mainSel.onchange();
+  }
+
+  let typeSet=new Set();
+  if(headers[1]) typeSet.add(headers[1]);
+  rows.forEach(r=>{ if(r[1]) typeSet.add(r[1]); });
+
+  Array.from(typeSet)
+  .sort((a,b)=>a.localeCompare(b))
+  .forEach(v=>typeJob.add(new Option(v,v)));
+
+  let natureSet=new Set();
+  if(headers[2]) natureSet.add(headers[2]);
+  rows.forEach(r=>{ if(r[2]) natureSet.add(r[2]); });
+
+  Array.from(natureSet)
+  .sort((a,b)=>a.localeCompare(b))
+  .forEach(v=>natureJob.add(new Option(v,v)));
+
+});
+
+document.getElementById("jobForm").onsubmit=()=>{
+  setTimeout(()=>{
+    document.getElementById("msg").innerText=
+    "✅ Submitted successfully. Pending verification.";
+    const d=dateField.value;
+    jobForm.reset();
+    dateField.value=d;
+  },800);
+};
+</script>
+
+</body>
+</html>
