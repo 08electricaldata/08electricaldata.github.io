@@ -14,7 +14,6 @@ body{
   padding:16px;
 }
 
-/* ===== TOP NAV ===== */
 .top-nav{
   display:flex;
   align-items:center;
@@ -48,7 +47,6 @@ body{
   opacity:0.9;
 }
 
-/* ===== CARD ===== */
 .container{
   background:#1b2636;
   padding:20px;
@@ -58,13 +56,11 @@ body{
   margin:auto;
 }
 
-/* ===== FIELD ===== */
 .field{
   margin-bottom:22px;
   position:relative;
 }
 
-/* ===== MATERIAL INPUT ===== */
 .material-input{
   position:relative;
 }
@@ -96,7 +92,6 @@ body{
   color:#60a5fa;
 }
 
-/* ===== DROPDOWN ===== */
 .dropdown{
   position:absolute;
   width:100%;
@@ -119,7 +114,6 @@ body{
 .dropdown-item{
   padding:10px;
   cursor:pointer;
-  transition:background .15s;
 }
 
 .dropdown-item:hover,
@@ -127,7 +121,6 @@ body{
   background:#003f88;
 }
 
-/* ===== OTHER INPUTS ===== */
 textarea,select{
   width:100%;
   padding:10px;
@@ -255,7 +248,6 @@ fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/
 const input=document.getElementById("natureInput");
 const dropdown=document.getElementById("dropdown");
 const hidden=document.getElementById("natureHidden");
-
 let currentIndex=-1;
 
 function render(list){
@@ -264,17 +256,11 @@ function render(list){
     const div=document.createElement("div");
     div.className="dropdown-item";
     div.textContent=v;
-
     div.onclick=()=>selectValue(v);
-
     dropdown.appendChild(div);
   });
-
-  if(list.length>0){
-    dropdown.classList.add("show");
-  }else{
-    dropdown.classList.remove("show");
-  }
+  if(list.length>0) dropdown.classList.add("show");
+  else dropdown.classList.remove("show");
 }
 
 function selectValue(val){
@@ -283,9 +269,7 @@ function selectValue(val){
   dropdown.classList.remove("show");
 }
 
-input.addEventListener("focus",()=>{
-  render(natureData);
-});
+input.addEventListener("focus",()=>render(natureData));
 
 input.addEventListener("input",()=>{
   const q=input.value.toLowerCase();
@@ -296,51 +280,53 @@ input.addEventListener("input",()=>{
 
 input.addEventListener("keydown",(e)=>{
   const items=document.querySelectorAll(".dropdown-item");
-
-  if(e.key==="ArrowDown"){
-    currentIndex++;
-  }
-  if(e.key==="ArrowUp"){
-    currentIndex--;
-  }
-
+  if(e.key==="ArrowDown") currentIndex++;
+  if(e.key==="ArrowUp") currentIndex--;
   if(e.key==="Enter"){
     e.preventDefault();
-    if(items[currentIndex]){
-      selectValue(items[currentIndex].textContent);
-    }
+    if(items[currentIndex]) selectValue(items[currentIndex].textContent);
   }
-
   items.forEach(i=>i.classList.remove("active"));
   if(items.length>0){
     if(currentIndex>=items.length) currentIndex=0;
     if(currentIndex<0) currentIndex=items.length-1;
-    if(items[currentIndex]){
-      items[currentIndex].classList.add("active");
-    }
+    if(items[currentIndex]) items[currentIndex].classList.add("active");
   }
 });
 
 document.addEventListener("click",(e)=>{
-  if(!e.target.closest(".field")){
-    dropdown.classList.remove("show");
-  }
+  if(!e.target.closest(".field")) dropdown.classList.remove("show");
 });
 
 jobForm.addEventListener("submit",e=>{
   if(!natureData.includes(input.value)){
     alert("Please select valid Nature of Job.");
     e.preventDefault();
+    return;
   }
-});
 
-jobForm.onsubmit=()=>{
   setTimeout(()=>{
     msg.innerText="✅ Submitted successfully. Pending verification.";
-    jobForm.reset();
-    dateField.value=today.toISOString().split("T")[0];
+
+    /* 🔊 Beep Sound */
+    const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const oscillator=audioCtx.createOscillator();
+    oscillator.type="sine";
+    oscillator.frequency.setValueAtTime(800,audioCtx.currentTime);
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime+0.2);
+
+    /* 📳 Vibration */
+    if(navigator.vibrate) navigator.vibrate(200);
+
+    /* Redirect */
+    setTimeout(()=>{
+      window.location.href="https://08electricaldata.github.io/scan.html";
+    },1500);
+
   },800);
-};
+});
 </script>
 
 </body>
