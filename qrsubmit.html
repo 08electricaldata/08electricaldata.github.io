@@ -14,6 +14,7 @@ body {
   padding: 16px;
 }
 
+/* ===== TOP NAV ===== */
 .top-nav {
   display: flex;
   align-items: center;
@@ -47,6 +48,7 @@ body {
   opacity: 0.9;
 }
 
+/* ===== CARD ===== */
 .container {
   background: #1b2636;
   padding: 18px;
@@ -56,6 +58,7 @@ body {
   margin: auto;
 }
 
+/* ===== FORM ===== */
 .field {
   margin-bottom: 14px;
 }
@@ -78,23 +81,18 @@ input, select, textarea {
   box-sizing: border-box;
 }
 
-select {
-  max-height: 160px;
-}
-
 textarea {
   height: 110px;
   resize: none;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 1px rgba(96,165,250,.6);
+/* Scrollable dropdown */
+select {
+  max-height: 160px;
+  overflow-y: auto;
 }
 
+/* ===== BUTTON ===== */
 button.submit-btn {
   width: 100%;
   padding: 12px;
@@ -140,11 +138,11 @@ method="POST">
 <input type="hidden" name="entry.2034418039" id="mainDrive">
 <input type="hidden" name="entry.273858386" id="subDrive">
 
-<!-- SEARCH + DROPDOWN -->
+<!-- ===== SEARCH + DROPDOWN ===== -->
 <div class="field">
   <label>Nature of Job</label>
-  <input type="text" id="natureSearch" placeholder="Type to filter...">
-  <select name="entry.1114156376" id="natureSelect" size="6" required></select>
+  <input type="text" id="natureSearch" placeholder="Search...">
+  <select name="entry.1114156376" id="natureSelect" size="5" required></select>
 </div>
 
 <div class="field">
@@ -192,12 +190,13 @@ if (id) {
   }
 }
 
-/* PRELOAD + SORT */
+/* LOAD + SORT DATA */
 let natureData = [];
 
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
 .then(r => r.json())
 .then(j => {
+
   const set = new Set();
   j.rows.forEach(r => {
     const v = (r[2] || "").trim();
@@ -208,9 +207,9 @@ fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/
   populateDropdown(natureData);
 });
 
-function populateDropdown(list){
+function populateDropdown(data){
   natureSelect.innerHTML = "";
-  list.forEach(v => {
+  data.forEach(v => {
     const opt = document.createElement("option");
     opt.value = v;
     opt.textContent = v;
@@ -218,7 +217,7 @@ function populateDropdown(list){
   });
 }
 
-/* FILTER */
+/* SEARCH FILTER */
 natureSearch.addEventListener("input", function(){
   const q = this.value.toLowerCase();
   const filtered = natureData.filter(v =>
@@ -227,7 +226,7 @@ natureSearch.addEventListener("input", function(){
   populateDropdown(filtered);
 });
 
-/* SUCCESS */
+/* SUCCESS MESSAGE */
 jobForm.onsubmit = () => {
   setTimeout(() => {
     msg.innerText = "✅ Submitted successfully. Pending verification.";
