@@ -5,116 +5,103 @@
 <title>08 Electrical Data</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- CHART JS ADDED -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-
-/* ===== GLOBAL ===== */
 body{
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family:Arial,sans-serif;
   margin:0;
-  background:linear-gradient(135deg,#dfe9f3,#ffffff);
-  overflow-x:hidden;
+  background:linear-gradient(135deg,#e6f0ff,#f4f9ff);
 }
 
-/* ===== PREMIUM HEADER ===== */
+/* HEADER PREMIUM */
 .header{
-  background:linear-gradient(-45deg,#001f3f,#003f88,#0052cc,#001f3f);
-  background-size:400% 400%;
-  animation:gradientFlow 12s ease infinite;
+  background:linear-gradient(135deg,#002b5c,#0052cc);
   color:white;
-  padding:30px 20px;
-  box-shadow:0 6px 25px rgba(0,0,0,.3);
+  padding:25px 20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
 }
-@keyframes gradientFlow{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
 .header-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:15px;
-  flex-wrap:wrap;
 }
-
-.header-center{text-align:center;min-width:340px;}
-.header h1{margin:0;font-size:34px;letter-spacing:1px}
+.header-center{
+  text-align:center;
+  min-width:340px;
+}
+.header h1{margin:0;font-size:32px}
 .header p{margin:6px 0 0;font-size:15px}
-.header .credit{font-size:13px;margin-top:4px;opacity:.85}
+.header .credit{font-size:14px;margin-top:4px}
 
-/* ===== KPI GLASS PREMIUM ===== */
-.kpi-group{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+/* KPI PREMIUM */
+.kpi-group{display:flex;gap:10px}
 .kpi{
-  width:145px;
-  padding:12px;
-  border-radius:18px;
+  width:140px;
+  padding:10px;
+  border-radius:14px;
   text-align:center;
   cursor:pointer;
   background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(15px);
+  backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,0.25);
-  box-shadow:0 6px 18px rgba(0,0,0,.35);
-  transition:.4s;
-}
-.kpi:hover{
-  transform:translateY(-8px) scale(1.08);
-  box-shadow:0 10px 30px rgba(0,0,0,.5);
-}
-.kpi h3{margin:0;font-size:12px;color:#fff}
-.kpi .num{font-size:24px;font-weight:bold;margin-top:5px;color:#fff}
-.kpi small{font-size:11px;display:block;margin-top:3px;color:#eee}
-
-.kpi.red{
-  background:rgba(255,0,0,0.25);
-  animation:blink 1.2s infinite;
-}
-@keyframes blink{50%{background:rgba(255,0,0,0.45)}}
-
-.kpi-time{text-align:center;font-size:12px;margin-top:10px}
-
-/* ===== LAYOUT ===== */
-.container{
-  max-width:1300px;
-  margin:35px auto;
-  padding:0 15px;
-  display:grid;
-  grid-template-columns:300px 1fr 300px;
-  gap:25px
-}
-.card{
-  background:rgba(255,255,255,.85);
-  border-radius:18px;
-  backdrop-filter:blur(10px);
-  box-shadow:0 8px 25px rgba(0,0,0,.15);
-  padding:28px;
+  box-shadow:0 4px 15px rgba(0,0,0,.25);
   transition:.3s;
 }
-.card:hover{box-shadow:0 12px 35px rgba(0,0,0,.25)}
+.kpi:hover{
+  transform:translateY(-6px) scale(1.05);
+  box-shadow:0 8px 25px rgba(0,0,0,.4);
+}
+.kpi h3{margin:0;font-size:12px;color:#fff}
+.kpi .num{font-size:22px;font-weight:bold;margin-top:5px;color:#fff}
+.kpi small{font-size:11px;display:block;margin-top:3px;color:#e0e0e0}
+.kpi.red{background:rgba(255,0,0,0.25);animation:blink 1.2s infinite}
+@keyframes blink{50%{background:rgba(255,0,0,0.4)}}
+.kpi-time{text-align:center;font-size:12px;margin-top:10px}
+
+/* LAYOUT */
+.container{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 15px;
+  display:grid;
+  grid-template-columns:280px 1fr 280px;
+  gap:20px
+}
+.card{
+  background:white;
+  border-radius:14px;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);
+  padding:25px;
+  transition:.3s;
+}
+.card:hover{box-shadow:0 6px 25px rgba(0,0,0,.25)}
 .card h2{margin-top:0;color:#003f88;text-align:center}
 
-/* ===== BUTTONS ===== */
-.master-btns,.jobs-btns{display:flex;flex-direction:column;gap:14px}
+/* BUTTONS */
+.master-btns,.jobs-btns{display:flex;flex-direction:column;gap:12px}
 button{
   width:100%;
-  padding:13px;
+  padding:12px;
   font-size:15px;
   background:linear-gradient(135deg,#003f88,#0052cc);
   color:white;
   border:none;
-  border-radius:10px;
+  border-radius:8px;
   cursor:pointer;
-  transition:.4s;
+  transition:.3s;
 }
 button:hover{
-  transform:translateY(-4px);
-  box-shadow:0 10px 20px rgba(0,0,0,.25);
+  transform:translateY(-3px);
+  box-shadow:0 6px 15px rgba(0,0,0,.25);
 }
 
-/* ===== SELECT ===== */
+/* SELECT */
 .select-row{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 select{
-  padding:12px;font-size:15px;border-radius:8px;
+  padding:12px;font-size:16px;border-radius:6px;
   border:1px solid #ccc;min-width:260px
 }
 .button-row{
@@ -123,48 +110,77 @@ select{
 }
 .button-row button{width:auto;min-width:150px}
 
-/* ===== MONTHLY PREMIUM TABLE ===== */
-.monthly-table{margin-top:30px;overflow-x:auto;animation:fadeIn .8s ease}
-.monthly-table table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:14px;
+.footer{text-align:center;padding:15px;font-size:14px;color:#555}
+
+@media(max-width:1200px){
+  .header-row{flex-wrap:wrap;justify-content:center}
+  .kpi-group{flex-wrap:wrap;justify-content:center}
 }
+@media(max-width:1000px){
+  .container{grid-template-columns:1fr}
+}
+
+/* ================= NEW MONTHLY TABLE STYLE ================= */
+
+.monthly-table{margin-top:25px;overflow-x:auto}
+.monthly-table table{width:100%;border-collapse:collapse}
 .monthly-table th{
-  background:linear-gradient(135deg,#003f88,#0052cc);
+  background:#003f88;
   color:white;
-  padding:10px;
-  text-align:center;
+  padding:8px;
 }
 .monthly-table td{
-  padding:8px;
+  padding:6px;
   text-align:center;
   border-bottom:1px solid #ddd;
-  transition:.5s;
 }
 .monthly-table td:first-child{
   text-align:left;
   font-weight:bold;
 }
-.monthly-table tr:hover{background:#f2f6ff}
-
-/* Trend colors */
+.monthly-table tr:hover{
+  background:#f2f6ff;
+  cursor:pointer;
+}
 .increase{background:#d4f8d4;color:#0a7a0a;font-weight:bold}
 .decrease{background:#ffd6d6;color:#b00000;font-weight:bold}
-.same{background:#f0f0f0;color:#555;font-weight:bold}
 
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
+/* MODAL STYLE */
+#trendModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(6px);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
 }
-
-/* Responsive */
-@media(max-width:1000px){
-  .container{grid-template-columns:1fr}
+.modal-box{
+  background:white;
+  width:90%;
+  max-width:700px;
+  border-radius:18px;
+  padding:25px;
+  position:relative;
 }
-
-.footer{text-align:center;padding:15px;font-size:14px;color:#555}
-
+.close-btn{
+  position:absolute;
+  top:10px;
+  right:15px;
+  background:red;
+  color:white;
+  border:none;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  cursor:pointer;
+}
+.growth-text{
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:10px;
+}
 </style>
 </head>
 
@@ -187,7 +203,6 @@ select{
 
 <div class="container">
 
-<!-- LEFT -->
 <div class="card">
   <h2>Master List</h2>
   <div class="master-btns">
@@ -198,10 +213,8 @@ select{
   </div>
 </div>
 
-<!-- CENTER -->
 <div class="card">
   <h2>Select Drive</h2>
-
   <div class="select-row">
     <select id="mainDrive"><option value="">Select Main Drive</option></select>
     <select id="subDrive"><option value="">Select Sub Drive</option></select>
@@ -219,10 +232,10 @@ select{
     <button onclick="openJob2()">📕 Job2 Summary</button>
   </div>
 
-  <div id="monthlyJobTable"></div>
+  <!-- MONTHLY TABLE WILL LOAD HERE -->
+  <div id="futureJobSection"></div>
 </div>
 
-<!-- RIGHT -->
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
@@ -240,20 +253,30 @@ select{
 © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy
 </div>
 
-<script>
+<!-- TREND MODAL -->
+<div id="trendModal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="closeTrend()">✕</button>
+    <h3 id="trendTitle" style="text-align:center;color:#003f88"></h3>
+    <div id="growthInfo" class="growth-text"></div>
+    <canvas id="trendChart" height="120"></canvas>
+  </div>
+</div>
 
+<script>
 const DRIVE_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
-
 const DASHBOARD_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dashboard/summary.json";
-
 const MONTHLY_JOB_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dashboard/monthly_job_count.json";
 
 let headers=[],rows=[],sheetPassword="";
+let monthlyData;
+let chartInstance=null;
 
-/* ===== DRIVE LOAD ===== */
+/* ===== ORIGINAL SYSTEM (UNCHANGED) ===== */
+
 async function loadSheet(){
   const d=await (await fetch(DRIVE_JSON)).json();
   headers=d.headers;
@@ -262,8 +285,19 @@ async function loadSheet(){
   buildMain();
 }
 
+function checkPassword(){
+  if(!sheetPassword){alert("⏳ Data loading");return false}
+  const p=prompt("🔐 Enter Password");
+  if(p===null||p.trim()!==sheetPassword){
+    alert("❌ Incorrect password");
+    return false;
+  }
+  return true;
+}
+
 function buildMain(){
   const mainDrive=document.getElementById("mainDrive");
+  mainDrive.innerHTML="<option value=''>Select Main Drive</option>";
   headers.forEach((h,i)=>{
     if(i<7||!h)return;
     const o=document.createElement("option");
@@ -286,18 +320,20 @@ document.getElementById("mainDrive").onchange=function(){
   });
 };
 
-/* ===== PASSWORD ===== */
-function checkPassword(){
-  if(!sheetPassword){alert("⏳ Data loading");return false}
-  const p=prompt("🔐 Enter Password");
-  if(p===null||p.trim()!==sheetPassword){
-    alert("❌ Incorrect password");
-    return false;
+function secureView(type){
+  if(!checkPassword())return;
+  const mainDrive=document.getElementById("mainDrive");
+  const subDrive=document.getElementById("subDrive");
+  if(!mainDrive.value||!subDrive.value){
+    alert("Please select Main Drive and Sub Drive");
+    return;
   }
-  return true;
+  const id=mainDrive.selectedOptions[0].text+"-"+subDrive.value;
+  location.href="https://08electricaldata.github.io/"+
+  (type==="view"?"drive-viewer/index.html?id=":"drive-viewer/history.html?id=")+
+  encodeURIComponent(id);
 }
 
-/* ===== OPEN ===== */
 function secureOpen(type){
   if(!checkPassword())return;
   const map={
@@ -316,10 +352,15 @@ function secureOpen(type){
   location.href="https://08electricaldata.github.io/"+map[type];
 }
 
-function openJob1(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";}
-function openJob2(){ if(checkPassword()) location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";}
+function openJob1(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
+}
+function openJob2(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+}
 
-/* ===== KPI LOAD ===== */
 async function loadKPI(){
   const j=await (await fetch(DASHBOARD_JSON)).json();
   const left=document.getElementById("kpiLeft");
@@ -351,47 +392,103 @@ async function loadKPI(){
     "Last updated: "+new Date(j.updated).toLocaleString();
 }
 
-/* ===== MONTHLY PREMIUM TABLE ===== */
-async function loadMonthlyJobTable(){
-  const res=await fetch(MONTHLY_JOB_JSON);
-  const data=await res.json();
-  const headers=data.headers;
-  const rows=data.rows;
+/* ===== NEW MONTHLY SECTION ===== */
 
-  const last=headers.length-1;
-  const prev=headers.length-2;
-
-  const lastMonth=new Date(headers[last]).toLocaleString('default',{month:'short'});
-  const prevMonth=new Date(headers[prev]).toLocaleString('default',{month:'short'});
-
-  let html=`<div class="monthly-table"><table>
-  <tr><th>Job Type</th><th>${prevMonth}</th><th>${lastMonth}</th></tr>`;
-
-  rows.forEach(r=>{
-    const p=Number(r[prev])||0;
-    const l=Number(r[last])||0;
-    if(p===0&&l===0)return;
-
-    let cls="same",arrow="→";
-    if(l>p){cls="increase";arrow="↑"}
-    else if(l<p){cls="decrease";arrow="↓"}
-
-    html+=`<tr>
-    <td>${r[0]}</td>
-    <td>${p>0?p:""}</td>
-    <td class="${cls}">${l>0?l:""} ${arrow}</td>
-    </tr>`;
+function getCurrentMonthIndex(headers){
+  const today=new Date();
+  const m=today.getMonth();
+  const y=today.getFullYear();
+  let idx=headers.findIndex(h=>{
+    const d=new Date(h);
+    return d.getMonth()===m && d.getFullYear()===y;
   });
-
-  html+="</table></div>";
-  document.getElementById("monthlyJobTable").innerHTML=html;
+  if(idx===-1){idx=headers.length-1;}
+  return idx;
 }
 
-/* ===== INIT ===== */
+async function loadMonthly(){
+  const res=await fetch(MONTHLY_JOB_JSON);
+  monthlyData=await res.json();
+
+  const headers=monthlyData.headers;
+  const rows=monthlyData.rows;
+
+  const curr=getCurrentMonthIndex(headers);
+  const prev=curr-1;
+
+  const currLabel=new Date(headers[curr])
+  .toLocaleString('default',{month:'short',year:'2-digit'});
+  const prevLabel=new Date(headers[prev])
+  .toLocaleString('default',{month:'short',year:'2-digit'});
+
+  let html='<div class="monthly-table"><table>';
+  html+='<tr><th>Job Type</th><th>'+prevLabel+'</th><th>'+currLabel+'</th></tr>';
+
+  rows.forEach((r,i)=>{
+    const p=Number(r[prev])||0;
+    const c=Number(r[curr])||0;
+    if(p===0 && c===0)return;
+
+    let cls="";
+    if(c>p)cls="increase";
+    if(c<p)cls="decrease";
+
+    html+='<tr onclick="openTrend('+i+')">';
+    html+='<td>'+r[0]+'</td>';
+    html+='<td>'+(p>0?p:"")+'</td>';
+    html+='<td class="'+cls+'">'+(c>0?c:"")+'</td>';
+    html+='</tr>';
+  });
+
+  html+='</table></div>';
+  document.getElementById("futureJobSection").innerHTML=html;
+}
+
+function openTrend(index){
+  const headers=monthlyData.headers;
+  const row=monthlyData.rows[index];
+
+  const labels=headers.slice(1).map(h=>
+    new Date(h).toLocaleString('default',{month:'short'})
+  );
+
+  const values=row.slice(1);
+
+  const prev=values[values.length-2]||0;
+  const curr=values[values.length-1]||0;
+
+  let growth="No Change";
+  if(prev>0){
+    growth="Growth: "+(((curr-prev)/prev)*100).toFixed(1)+"%";
+  }
+
+  document.getElementById("trendTitle").innerText=row[0]+" Trend";
+  document.getElementById("growthInfo").innerText=growth;
+  document.getElementById("trendModal").style.display="flex";
+
+  const ctx=document.getElementById("trendChart");
+  if(chartInstance){chartInstance.destroy();}
+
+  chartInstance=new Chart(ctx,{
+    data:{
+      labels:labels,
+      datasets:[
+        {type:'bar',data:values,backgroundColor:'rgba(0,82,204,0.4)'},
+        {type:'line',data:values,borderColor:'#003f88',tension:0.4}
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+  });
+}
+
+function closeTrend(){
+  document.getElementById("trendModal").style.display="none";
+}
+
+/* INIT */
 loadSheet();
 loadKPI();
-loadMonthlyJobTable();
-
+loadMonthly();
 </script>
 
 </body>
