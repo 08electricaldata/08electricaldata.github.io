@@ -17,6 +17,26 @@ body {
   padding: 20px;
 }
 
+/* TOP NAV */
+.top-nav{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+  justify-content:center;
+}
+.top-nav button{
+  padding:6px 14px;
+  background:#003f88;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+.top-nav button:hover{
+  background:#0050aa;
+}
+
 .container {
   max-width: 420px;
   margin: auto;
@@ -53,6 +73,11 @@ h2 {
 </head>
 
 <body>
+
+<div class="top-nav">
+  <button onclick="history.back()">⬅ Back</button>
+  <button onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+</div>
 
 <div class="container">
   <h2>📷 Scan QR Code</h2>
@@ -103,7 +128,6 @@ function onScanSuccess(decodedText) {
 
   html5QrcodeScanner.clear();
 
-  // Extract ID from scanned URL
   try {
     const url = new URL(decodedText);
     const id = url.searchParams.get("id");
