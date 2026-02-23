@@ -129,14 +129,21 @@ select{
 <!-- SELECT DRIVE -->
 <div class="card">
   <h2>Select Drive</h2>
-  <div class="select-row">
-    <select id="mainDrive">
-      <option value="">Select Main Drive</option>
-    </select>
-    <select id="subDrive">
-      <option value="">Select Sub Drive</option>
-    </select>
+<div class="select-row">
+
+  <div>
+    <input list="mainDriveList" id="mainDriveInput" 
+           placeholder="Select / Type Main Drive">
+    <datalist id="mainDriveList"></datalist>
   </div>
+
+  <div>
+    <input list="subDriveList" id="subDriveInput" 
+           placeholder="Select / Type Sub Drive">
+    <datalist id="subDriveList"></datalist>
+  </div>
+
+</div>
 
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
@@ -200,18 +207,25 @@ function checkPassword(){
 }
 
 /* BUILD MAIN DRIVE */
-function buildMain(){
-  const main=document.getElementById("mainDrive");
-  main.innerHTML="<option value=''>Select Main Drive</option>";
+document.getElementById("mainDriveInput")
+.addEventListener("input",function(){
 
-  headers.forEach((h,i)=>{
-    if(i<7||!h)return;
-    const o=document.createElement("option");
-    o.value=i;
-    o.textContent=h;
-    main.appendChild(o);
+  const selectedHeader=headers.find(h=>h===this.value);
+  if(!selectedHeader) return;
+
+  const index=headers.indexOf(selectedHeader);
+
+  const list=document.getElementById("subDriveList");
+  list.innerHTML="";
+
+  rows.forEach(r=>{
+    if(r[index]){
+      const option=document.createElement("option");
+      option.value=r[index];
+      list.appendChild(option);
+    }
   });
-}
+});
 
 /* SUB DRIVE */
 document.getElementById("mainDrive").addEventListener("change",function(){
@@ -231,18 +245,31 @@ document.getElementById("mainDrive").addEventListener("change",function(){
 function secureView(type){
   if(!checkPassword())return;
 
-  const main=document.getElementById("mainDrive");
-  const sub=document.getElementById("subDrive");
+  const main=document.getElementById("mainDriveInput").value;
+  const sub=document.getElementById("subDriveInput").value;
 
-  if(!main.value||!sub.value){
-    alert("Please select Main Drive and Sub Drive");
+  if(!headers.includes(main)){
+    alert("Select valid Main Drive");
     return;
   }
 
-  const id=main.selectedOptions[0].text+"-"+sub.value;
+  const index=headers.indexOf(main);
+
+  const validSubs=rows
+    .map(r=>r[index])
+    .filter(Boolean);
+
+  if(!validSubs.includes(sub)){
+    alert("Select valid Sub Drive");
+    return;
+  }
+
+  const id=main+"-"+sub;
 
   location.href="https://08electricaldata.github.io/"+
-  (type==="view"?"drive-viewer/index.html?id=":"drive-viewer/history.html?id=")+
+  (type==="view"
+    ?"drive-viewer/index.html?id="
+    :"drive-viewer/history.html?id=")+
   encodeURIComponent(id);
 }
 
