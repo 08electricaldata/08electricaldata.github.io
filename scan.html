@@ -17,53 +17,111 @@ body {
   padding: 20px;
 }
 
+.container {
+  max-width: 420px;
+  margin: auto;
+}
+
 h2 {
-  margin-bottom: 10px;
+  margin: 10px 0 5px;
+  font-size: 22px;
+  color: #93c5fd;
+}
+
+.subtitle {
+  font-size: 13px;
+  margin-bottom: 18px;
+  opacity: 0.85;
 }
 
 #reader {
   width: 100%;
-  max-width: 400px;
   margin: auto;
 }
 
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background: #003f88;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #22c55e;
+}
+
+/* Mobile optimization */
+@media (max-width: 480px) {
+  h2 { font-size: 20px; }
+  .subtitle { font-size: 12px; }
 }
 </style>
 </head>
 
 <body>
 
-<h2>📷 Scan QR Code</h2>
-<p>Point camera at equipment QR</p>
+<div class="container">
+  <h2>📷 Scan QR Code</h2>
+  <div class="subtitle">
+    Point camera at equipment QR<br>
+    Designed and Maintained by Rakesh Chandra Sethy
+  </div>
 
-<div id="reader"></div>
+  <div id="reader"></div>
+  <div class="status" id="status"></div>
+</div>
 
 <script>
-function onScanSuccess(decodedText) {
-  console.log("Scanned:", decodedText);
+let html5QrcodeScanner;
 
-  // Stop scanning
+/* 🔊 Beep Sound */
+function playBeep() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+    audioCtx.close();
+  }, 150);
+}
+
+/* 📳 Vibration */
+function vibratePhone() {
+  if (navigator.vibrate) {
+    navigator.vibrate(200);
+  }
+}
+
+/* ✅ On Successful Scan */
+function onScanSuccess(decodedText) {
+
+  document.getElementById("status").innerText = "QR Detected. Redirecting...";
+
+  playBeep();       // 🔊 Beep
+  vibratePhone();   // 📳 Vibrate
+
   html5QrcodeScanner.clear();
 
-  // Redirect to scanned URL
-  window.location.href = decodedText;
+  setTimeout(() => {
+    window.location.href = decodedText;
+  }, 800);
 }
 
 function onScanFailure(error) {
   // silent
 }
 
-let html5QrcodeScanner = new Html5QrcodeScanner(
+html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
-  { fps: 10, qrbox: 250 }
+  {
+    fps: 10,
+    qrbox: { width: 250, height: 250 }
+  },
+  false
 );
 
 html5QrcodeScanner.render(onScanSuccess, onScanFailure);
