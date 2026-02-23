@@ -45,7 +45,6 @@ h2 {
   color: #22c55e;
 }
 
-/* Mobile optimization */
 @media (max-width: 480px) {
   h2 { font-size: 20px; }
   .subtitle { font-size: 12px; }
@@ -69,7 +68,7 @@ h2 {
 <script>
 let html5QrcodeScanner;
 
-/* 🔊 Beep Sound */
+/* 🔊 Beep */
 function playBeep() {
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const oscillator = audioCtx.createOscillator();
@@ -79,48 +78,51 @@ function playBeep() {
   gainNode.connect(audioCtx.destination);
 
   oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+  oscillator.frequency.setValueAtTime(900, audioCtx.currentTime);
   gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
 
   oscillator.start();
   setTimeout(() => {
     oscillator.stop();
     audioCtx.close();
-  }, 150);
+  }, 120);
 }
 
-/* 📳 Vibration */
+/* 📳 Vibrate */
 function vibratePhone() {
   if (navigator.vibrate) {
-    navigator.vibrate(200);
+    navigator.vibrate(150);
   }
 }
 
-/* ✅ On Successful Scan */
+/* ✅ Scan Success */
 function onScanSuccess(decodedText) {
 
-  document.getElementById("status").innerText = "QR Detected. Redirecting...";
-
-  playBeep();       // 🔊 Beep
-  vibratePhone();   // 📳 Vibrate
+  playBeep();
+  vibratePhone();
 
   html5QrcodeScanner.clear();
 
-  setTimeout(() => {
-    window.location.href = decodedText;
-  }, 800);
+  // Extract ID from scanned URL
+  try {
+    const url = new URL(decodedText);
+    const id = url.searchParams.get("id");
+
+    if (id) {
+      window.location.href =
+        "https://08electricaldata.github.io/qrsubmit.html?id=" +
+        encodeURIComponent(id);
+    }
+  } catch (e) {
+    console.log("Invalid QR format");
+  }
 }
 
-function onScanFailure(error) {
-  // silent
-}
+function onScanFailure(error) {}
 
 html5QrcodeScanner = new Html5QrcodeScanner(
   "reader",
-  {
-    fps: 10,
-    qrbox: { width: 250, height: 250 }
-  },
+  { fps: 10, qrbox: 250 },
   false
 );
 
