@@ -21,7 +21,6 @@ body{
 }
 .header-row{
   display:flex;
-  align-items:center;
   justify-content:center;
 }
 .header-center{text-align:center}
@@ -63,19 +62,44 @@ button{
   cursor:pointer;
 }
 
-/* SEARCHABLE INPUT */
+/* CUSTOM DROPDOWN */
 .select-row{
   display:flex;
   gap:15px;
   justify-content:center;
   flex-wrap:wrap
 }
-input[list]{
+.dropdown{
+  position:relative;
+  min-width:260px;
+}
+.dropdown input{
+  width:100%;
   padding:12px;
   font-size:16px;
   border-radius:6px;
   border:1px solid #ccc;
-  min-width:260px;
+  box-sizing:border-box;
+}
+.dropdown-list{
+  position:absolute;
+  top:100%;
+  left:0;
+  width:100%;
+  max-height:220px;
+  overflow-y:auto;
+  background:white;
+  border:1px solid #ccc;
+  border-top:none;
+  display:none;
+  z-index:999;
+}
+.dropdown-list div{
+  padding:10px;
+  cursor:pointer;
+}
+.dropdown-list div:hover{
+  background:#e6f0ff;
 }
 
 .button-row{
@@ -114,7 +138,7 @@ input[list]{
 
 <div class="container">
 
-<!-- MASTER LIST -->
+<!-- MASTER -->
 <div class="card">
   <h2>Master List</h2>
   <div class="master-btns">
@@ -130,11 +154,17 @@ input[list]{
   <h2>Select Drive</h2>
 
   <div class="select-row">
-    <input list="mainList" id="mainDrive" placeholder="Select / Type Main Drive">
-    <datalist id="mainList"></datalist>
 
-    <input list="subList" id="subDrive" placeholder="Select / Type Sub Drive">
-    <datalist id="subList"></datalist>
+    <div class="dropdown">
+      <input id="mainDrive" placeholder="Select / Type Main Drive">
+      <div class="dropdown-list" id="mainList"></div>
+    </div>
+
+    <div class="dropdown">
+      <input id="subDrive" placeholder="Select / Type Sub Drive">
+      <div class="dropdown-list" id="subList"></div>
+    </div>
+
   </div>
 
   <div class="button-row">
@@ -186,6 +216,63 @@ async function loadSheet(){
   buildMain();
 }
 
+function buildMain(){
+  const list=document.getElementById("mainList");
+  list.innerHTML="";
+  headers.forEach((h,i)=>{
+    if(i<7||!h)return;
+    mainMap[h]=i;
+    const div=document.createElement("div");
+    div.innerText=h;
+    div.onclick=()=>{
+      mainDrive.value=h;
+      list.style.display="none";
+      buildSub(i);
+    };
+    list.appendChild(div);
+  });
+}
+
+function buildSub(index){
+  const list=document.getElementById("subList");
+  list.innerHTML="";
+  rows.forEach(r=>{
+    if(r[index]){
+      const div=document.createElement("div");
+      div.innerText=r[index];
+      div.onclick=()=>{
+        subDrive.value=r[index];
+        list.style.display="none";
+      };
+      list.appendChild(div);
+    }
+  });
+}
+
+mainDrive.onfocus=()=>mainList.style.display="block";
+subDrive.onfocus=()=>subList.style.display="block";
+
+mainDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...mainList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+subDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...subList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".dropdown")){
+    mainList.style.display="none";
+    subList.style.display="none";
+  }
+});
+
 function checkPassword(){
   if(!sheetPassword){alert("⏳ Data loading");return false}
   const p=prompt("🔐 Enter Password");
@@ -196,45 +283,11 @@ function checkPassword(){
   return true;
 }
 
-/* BUILD MAIN DRIVE */
-function buildMain(){
-  const list=document.getElementById("mainList");
-  list.innerHTML="";
-  headers.forEach((h,i)=>{
-    if(i<7||!h)return;
-    mainMap[h]=i;
-    const option=document.createElement("option");
-    option.value=h;
-    list.appendChild(option);
-  });
-}
-
-/* BUILD SUB DRIVE */
-document.getElementById("mainDrive")
-.addEventListener("input",function(){
-
-  const main=this.value;
-  const index=mainMap[main];
-  const subList=document.getElementById("subList");
-  subList.innerHTML="";
-
-  if(index===undefined) return;
-
-  rows.forEach(r=>{
-    if(r[index]){
-      const option=document.createElement("option");
-      option.value=r[index];
-      subList.appendChild(option);
-    }
-  });
-});
-
-/* VIEW */
 function secureView(type){
   if(!checkPassword())return;
 
-  const main=document.getElementById("mainDrive").value;
-  const sub=document.getElementById("subDrive").value;
+  const main=mainDrive.value;
+  const sub=subDrive.value;
 
   if(mainMap[main]===undefined){
     alert("Select valid Main Drive");
