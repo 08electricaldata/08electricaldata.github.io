@@ -18,6 +18,7 @@ body{
   color:white;
   padding:25px 20px;
   box-shadow:0 4px 20px rgba(0,0,0,.25);
+  position:relative;
 }
 .header-row{
   display:flex;
@@ -27,6 +28,59 @@ body{
 .header h1{margin:0;font-size:32px}
 .header p{margin:6px 0 0;font-size:15px}
 .header .credit{font-size:14px;margin-top:4px}
+
+/* 🔵 GLOWING HEADER SCAN BUTTON */
+.scan-icon{
+  position:absolute;
+  left:20px;
+  top:28px;
+  cursor:pointer;
+  font-size:26px;
+  background:white;
+  color:#003f88;
+  padding:10px 14px;
+  border-radius:12px;
+  box-shadow:0 0 15px rgba(0,82,204,.8);
+  animation:glowPulse 1.8s infinite alternate;
+  transition:.3s;
+}
+.scan-icon:hover{
+  transform:scale(1.1);
+}
+
+@keyframes glowPulse{
+  from{box-shadow:0 0 10px rgba(0,82,204,.6);}
+  to{box-shadow:0 0 25px rgba(0,82,204,1);}
+}
+
+/* 🟢 FLOATING ROUND BUTTON */
+.floating-scan{
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#00c853,#00e676);
+  color:white;
+  font-size:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  animation:floatPulse 2s infinite;
+  z-index:1000;
+}
+.floating-scan:hover{
+  transform:scale(1.1);
+}
+
+@keyframes floatPulse{
+  0%{box-shadow:0 0 0 0 rgba(0,200,83,.7);}
+  70%{box-shadow:0 0 0 20px rgba(0,200,83,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,200,83,0);}
+}
 
 /* LAYOUT */
 .container{
@@ -127,6 +181,10 @@ button{
 <body>
 
 <div class="header">
+
+  <!-- 🔵 Animated Header Scan -->
+  <div class="scan-icon" onclick="openScanner()">📷</div>
+
   <div class="header-row">
     <div class="header-center">
       <h1>08 Electrical Data</h1>
@@ -152,27 +210,21 @@ button{
 <!-- SELECT DRIVE -->
 <div class="card">
   <h2>Select Drive</h2>
-
   <div class="select-row">
-
     <div class="dropdown">
       <input id="mainDrive" placeholder="Select / Type Main Drive">
       <div class="dropdown-list" id="mainList"></div>
     </div>
-
     <div class="dropdown">
       <input id="subDrive" placeholder="Select / Type Sub Drive">
       <div class="dropdown-list" id="subList"></div>
     </div>
-
   </div>
-
   <div class="button-row">
     <button onclick="secureView('view')">VIEW</button>
     <button onclick="secureView('history')">HISTORY</button>
     <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
   </div>
-
   <div class="button-row">
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="openJob1()">📘 Job1 Summary</button>
@@ -184,9 +236,7 @@ button{
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
-
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
-
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
     <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
@@ -201,7 +251,18 @@ button{
 © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy
 </div>
 
+<!-- 🟢 Floating Scanner Button -->
+<div class="floating-scan" onclick="openScanner()">📷</div>
+
 <script>
+
+/* 🔓 Open Scanner */
+function openScanner(){
+  location.href="https://08electricaldata.github.io/scanview.html";
+}
+
+/* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
+
 const DRIVE_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
@@ -285,25 +346,13 @@ function checkPassword(){
 
 function secureView(type){
   if(!checkPassword())return;
-
   const main=mainDrive.value;
   const sub=subDrive.value;
-
-  if(mainMap[main]===undefined){
-    alert("Select valid Main Drive");
-    return;
-  }
-
+  if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
   const index=mainMap[main];
   const validSubs=rows.map(r=>r[index]).filter(Boolean);
-
-  if(!validSubs.includes(sub)){
-    alert("Select valid Sub Drive");
-    return;
-  }
-
+  if(!validSubs.includes(sub)){alert("Select valid Sub Drive");return;}
   const id=main+"-"+sub;
-
   location.href="https://08electricaldata.github.io/"+
   (type==="view"
     ?"drive-viewer/index.html?id="
