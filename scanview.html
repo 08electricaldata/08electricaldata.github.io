@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR Scanner View</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #0e1621;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+/* TOP NAV */
+.top-nav{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+  justify-content:center;
+}
+.top-nav button{
+  padding:6px 14px;
+  background:#003f88;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+.top-nav button:hover{
+  background:#0050aa;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+}
+
+h2 {
+  margin: 10px 0 5px;
+  font-size: 22px;
+  color: #93c5fd;
+}
+
+.subtitle {
+  font-size: 13px;
+  margin-bottom: 18px;
+  opacity: 0.85;
+}
+
+#reader {
+  width: 100%;
+  margin: auto;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #22c55e;
+  word-wrap: break-word;
+}
+
+.result-box{
+  margin-top:15px;
+  background:#1e293b;
+  padding:10px;
+  border-radius:8px;
+  font-size:13px;
+  word-break: break-all;
+}
+
+@media (max-width: 480px) {
+  h2 { font-size: 20px; }
+  .subtitle { font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <button onclick="history.back()">⬅ Back</button>
+  <button onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+</div>
+
+<div class="container">
+  <h2>📷 Scan QR Code</h2>
+  <div class="subtitle">
+    Point camera at equipment QR<br>
+    Designed and Maintained by Rakesh Chandra Sethy
+  </div>
+
+  <div id="reader"></div>
+  <div class="status" id="status"></div>
+  <div class="result-box" id="result"></div>
+</div>
+
+<script>
+let html5QrcodeScanner;
+
+/* 🔊 Beep */
+function playBeep() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(900, audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+    audioCtx.close();
+  }, 120);
+}
+
+/* 📳 Vibrate */
+function vibratePhone() {
+  if (navigator.vibrate) {
+    navigator.vibrate(150);
+  }
+}
+
+/* ✅ Scan Success */
+function onScanSuccess(decodedText) {
+
+  playBeep();
+  vibratePhone();
+
+  html5QrcodeScanner.clear();
+
+  document.getElementById("status").innerText = "✅ QR Scanned Successfully";
+
+  try {
+    const url = new URL(decodedText);
+
+    // If valid URL → open directly
+    window.location.href = decodedText;
+
+  } catch (e) {
+    // If not URL → show text only
+    document.getElementById("result").innerText = decodedText;
+  }
+}
+
+function onScanFailure(error) {}
+
+html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader",
+  { fps: 10, qrbox: 250 },
+  false
+);
+
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+</script>
+
+</body>
+</html>
