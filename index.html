@@ -100,6 +100,15 @@ body{
 .card h2{margin-top:0;color:#003f88;text-align:center}
 
 /* BUTTONS */
+
+/* 🗄️ Board Button Special Color */
+.board-btn{
+  background:linear-gradient(135deg,#ff8c00,#ffb347);
+  font-weight:bold;
+}
+.board-btn:hover{
+  background:linear-gradient(135deg,#ff6a00,#ff9f1c);
+}
 .master-btns,.jobs-btns{
   display:flex;
   flex-direction:column;
@@ -203,7 +212,13 @@ button{
     <button onclick="secureOpen('motor')">⚙️ Motor List</button>
     <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
     <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
-    <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+
+<button class="board-btn" onclick="secureOpen('boardlist')">
+  🗄️ Board List
+</button>
+
+<button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+    
   </div>
 </div>
 
@@ -366,6 +381,7 @@ function secureOpen(type){
     motor:"drive-viewer/motorlist.html",
     trafo:"drive-viewer/trafolist.html",
     breaker:"drive-viewer/breakerlist.html",
+    boardlist:"drive-viewer/boardlist.html",
     ersmaster:"drive-viewer/ersmasterdata.html",
     advanced:"drive-viewer/summary-advanced.html",
     motoroh:"drive-viewer/motoroh.html",
