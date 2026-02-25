@@ -18,6 +18,7 @@ body{
   color:white;
   padding:25px 20px;
   box-shadow:0 4px 20px rgba(0,0,0,.25);
+  position:relative;
 }
 .header-row{
   display:flex;
@@ -28,7 +29,31 @@ body{
 .header p{margin:6px 0 0;font-size:15px}
 .header .credit{font-size:14px;margin-top:4px}
 
-/* 🟢 FLOATING ROUND SCAN BUTTON */
+/* 🔵 GLOWING HEADER SCAN BUTTON */
+.scan-icon{
+  position:absolute;
+  left:20px;
+  top:28px;
+  cursor:pointer;
+  font-size:26px;
+  background:white;
+  color:#003f88;
+  padding:10px 14px;
+  border-radius:12px;
+  box-shadow:0 0 15px rgba(0,82,204,.8);
+  animation:glowPulse 1.8s infinite alternate;
+  transition:.3s;
+}
+.scan-icon:hover{
+  transform:scale(1.1);
+}
+
+@keyframes glowPulse{
+  from{box-shadow:0 0 10px rgba(0,82,204,.6);}
+  to{box-shadow:0 0 25px rgba(0,82,204,1);}
+}
+
+/* 🟢 FLOATING ROUND BUTTON */
 .floating-scan{
   position:fixed;
   right:25px;
@@ -75,6 +100,15 @@ body{
 .card h2{margin-top:0;color:#003f88;text-align:center}
 
 /* BUTTONS */
+
+/* 🗄️ Board Button Special Color */
+.board-btn{
+  background:linear-gradient(135deg,#ff8c00,#ffb347);
+  font-weight:bold;
+}
+.board-btn:hover{
+  background:linear-gradient(135deg,#ff6a00,#ff9f1c);
+}
 .master-btns,.jobs-btns{
   display:flex;
   flex-direction:column;
@@ -156,6 +190,10 @@ button{
 <body>
 
 <div class="header">
+
+  <!-- 🔵 Animated Header Scan -->
+  <div class="scan-icon" onclick="openScanner()">📷</div>
+
   <div class="header-row">
     <div class="header-center">
       <h1>08 Electrical Data</h1>
@@ -174,7 +212,13 @@ button{
     <button onclick="secureOpen('motor')">⚙️ Motor List</button>
     <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
     <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
-    <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+
+<button class="board-btn" onclick="secureOpen('boardlist')">
+  🗄️ Board List
+</button>
+
+<button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+    
   </div>
 </div>
 
@@ -227,13 +271,144 @@ button{
 
 <script>
 
+/* 🔓 Open Scanner */
 function openScanner(){
   location.href="https://08electricaldata.github.io/scanview.html";
 }
 
-/* YOUR ORIGINAL SCRIPT CONTINUES BELOW — NO CHANGES */
-/* (Keep your full original JS exactly same here) */
+/* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
 
+const DRIVE_JSON =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+let headers=[],rows=[],sheetPassword="";
+let mainMap={};
+
+async function loadSheet(){
+  const d=await (await fetch(DRIVE_JSON)).json();
+  headers=d.headers;
+  rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
+  buildMain();
+}
+
+function buildMain(){
+  const list=document.getElementById("mainList");
+  list.innerHTML="";
+  headers.forEach((h,i)=>{
+    if(i<7||!h)return;
+    mainMap[h]=i;
+    const div=document.createElement("div");
+    div.innerText=h;
+    div.onclick=()=>{
+      mainDrive.value=h;
+      list.style.display="none";
+      buildSub(i);
+    };
+    list.appendChild(div);
+  });
+}
+
+function buildSub(index){
+  const list=document.getElementById("subList");
+  list.innerHTML="";
+  rows.forEach(r=>{
+    if(r[index]){
+      const div=document.createElement("div");
+      div.innerText=r[index];
+      div.onclick=()=>{
+        subDrive.value=r[index];
+        list.style.display="none";
+      };
+      list.appendChild(div);
+    }
+  });
+}
+
+mainDrive.onfocus=()=>mainList.style.display="block";
+subDrive.onfocus=()=>subList.style.display="block";
+
+mainDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...mainList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+subDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...subList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".dropdown")){
+    mainList.style.display="none";
+    subList.style.display="none";
+  }
+});
+
+function checkPassword(){
+  if(!sheetPassword){alert("⏳ Data loading");return false}
+  const p=prompt("🔐 Enter Password");
+  if(p===null||p.trim()!==sheetPassword){
+    alert("❌ Incorrect password");
+    return false;
+  }
+  return true;
+}
+
+function secureView(type){
+  if(!checkPassword())return;
+  const main=mainDrive.value;
+  const sub=subDrive.value;
+  if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
+  const index=mainMap[main];
+  const validSubs=rows.map(r=>r[index]).filter(Boolean);
+  if(!validSubs.includes(sub)){alert("Select valid Sub Drive");return;}
+  const id=main+"-"+sub;
+  location.href="https://08electricaldata.github.io/"+
+  (type==="view"
+    ?"drive-viewer/index.html?id="
+    :"drive-viewer/history.html?id=")+
+  encodeURIComponent(id);
+}
+
+function secureOpen(type){
+  if(!checkPassword())return;
+  const map={
+    motor:"drive-viewer/motorlist.html",
+    trafo:"drive-viewer/trafolist.html",
+    breaker:"drive-viewer/breakerlist.html",
+    boardlist:"drive-viewer/boardlist.html",
+    ersmaster:"drive-viewer/ersmasterdata.html",
+    advanced:"drive-viewer/summary-advanced.html",
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    trafopm:"drive-viewer/trafopm.html",
+    trafooil:"drive-viewer/transformer-oil-summary.html",
+    breakerpm:"drive-viewer/breakerpm.html",
+    jobentry:"jobsubmit.html"
+  };
+  location.href="https://08electricaldata.github.io/"+map[type];
+}
+
+function openMonthlyTrend(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
+}
+
+function openJob1(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
+}
+function openJob2(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+}
+
+loadSheet();
 </script>
 
 </body>
