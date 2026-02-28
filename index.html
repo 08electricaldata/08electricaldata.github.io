@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,6 +185,14 @@ button{
 @media(max-width:1000px){
   .container{grid-template-columns:1fr}
 }
+  /* 🔴 ERS Pending Special Button */
+.pending-btn{
+  background:linear-gradient(135deg,#d32f2f,#f44336);
+  font-weight:bold;
+}
+.pending-btn:hover{
+  background:linear-gradient(135deg,#b71c1c,#e53935);
+}
 </style>
 </head>
 
@@ -218,6 +227,7 @@ button{
 </button>
 
 <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+<button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
     
   </div>
 </div>
@@ -365,14 +375,8 @@ function secureView(type){
   const sub=subDrive.value;
   if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
   const index=mainMap[main];
-const validSubs = rows
-  .map(r => String(r[index]).trim())
-  .filter(Boolean);
-
-if (!validSubs.includes(String(sub).trim())) {
-  alert("Select valid Sub Drive");
-  return;
-}
+  const validSubs=rows.map(r=>r[index]).filter(Boolean);
+  if(!validSubs.includes(sub)){alert("Select valid Sub Drive");return;}
   const id=main+"-"+sub;
   location.href="https://08electricaldata.github.io/"+
   (type==="view"
@@ -389,6 +393,7 @@ function secureOpen(type){
     breaker:"drive-viewer/breakerlist.html",
     boardlist:"drive-viewer/boardlist.html",
     ersmaster:"drive-viewer/ersmasterdata.html",
+    erspending:"drive-viewer/ersmasterdata1.html",
     advanced:"drive-viewer/summary-advanced.html",
     motoroh:"drive-viewer/motoroh.html",
     motorpm:"drive-viewer/motorpm.html",
