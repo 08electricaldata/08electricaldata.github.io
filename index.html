@@ -375,8 +375,14 @@ function secureView(type){
   const sub=subDrive.value;
   if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
   const index=mainMap[main];
-  const validSubs=rows.map(r=>r[index]).filter(Boolean);
-  if(!validSubs.includes(sub)){alert("Select valid Sub Drive");return;}
+  const validSubs = rows
+  .map(r => String(r[index]).trim())
+  .filter(Boolean);
+
+if (!validSubs.includes(String(sub).trim())) {
+   alert("Select valid Sub Drive");
+   return;
+}
   const id=main+"-"+sub;
   location.href="https://08electricaldata.github.io/"+
   (type==="view"
