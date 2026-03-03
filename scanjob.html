@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR Scanner - Industrial Optimized</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #0e1621;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.top-nav{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+  justify-content:center;
+}
+.top-nav button{
+  padding:6px 14px;
+  background:#003f88;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+.top-nav button:hover{
+  background:#0050aa;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+}
+
+h2 {
+  margin: 10px 0 5px;
+  font-size: 22px;
+  color: #93c5fd;
+}
+
+.subtitle {
+  font-size: 13px;
+  margin-bottom: 18px;
+  opacity: 0.85;
+}
+
+#reader {
+  width: 100%;
+  margin: auto;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #22c55e;
+}
+
+.control-btn{
+  margin-top:10px;
+  padding:6px 12px;
+  background:#222;
+  color:white;
+  border:1px solid #444;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+@media (max-width: 480px) {
+  h2 { font-size: 20px; }
+  .subtitle { font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-nav">
+  <button onclick="history.back()">⬅ Back</button>
+  <button onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
+</div>
+
+<div class="container">
+  <h2>📷 Industrial QR Scanner</h2>
+  <div class="subtitle">
+    Fast Equipment Scanning Mode<br>
+    Designed and Maintained by Rakesh Chandra Sethy
+  </div>
+
+  <div id="reader"></div>
+  <div class="status" id="status">Initializing camera...</div>
+
+  <button class="control-btn" onclick="toggleTorch()">🔦 Toggle Torch</button>
+</div>
+
+<script>
+let html5QrCode;
+let currentCameraId = null;
+let scanning = false;
+
+/* 🔊 Beep */
+function playBeep() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.frequency.value = 950;
+  gainNode.gain.value = 0.25;
+
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+    audioCtx.close();
+  }, 120);
+}
+
+/* 📳 Vibrate */
+function vibratePhone() {
+  if (navigator.vibrate) {
+    navigator.vibrate(150);
+  }
+}
+
+/* 🔦 Torch Toggle */
+async function toggleTorch() {
+  if (!html5QrCode) return;
+
+  try {
+    const track = html5QrCode.getRunningTrack();
+    const capabilities = track.getCapabilities();
+
+    if (capabilities.torch) {
+      const settings = track.getSettings();
+      await track.applyConstraints({
+        advanced: [{ torch: !settings.torch }]
+      });
+    } else {
+      alert("Torch not supported on this device.");
+    }
+  } catch (err) {
+    console.log("Torch error:", err);
+  }
+}
+
+/* 🎯 Zoom Enhancement */
+async function applyZoom(track) {
+  const capabilities = track.getCapabilities();
+  if (capabilities.zoom) {
+    const maxZoom = capabilities.zoom.max;
+    await track.applyConstraints({
+      advanced: [{ zoom: Math.min(2, maxZoom) }]
+    });
+  }
+}
+
+/* ✅ Scan Success */
+function onScanSuccess(decodedText) {
+
+  if (!scanning) return;
+  scanning = false;
+
+  playBeep();
+  vibratePhone();
+
+  document.getElementById("status").innerText = "QR Detected ✔ Redirecting...";
+
+  setTimeout(() => {
+    try {
+      const url = new URL(decodedText);
+      const id = url.searchParams.get("id");
+
+      if (id) {
+        window.location.href =
+          "https://08electricaldata.github.io/qrsubmit.html?id=" +
+          encodeURIComponent(id);
+      } else {
+        restartScanner();
+      }
+    } catch (e) {
+      restartScanner();
+    }
+  }, 500);
+}
+
+/* ❌ Scan Failure */
+function onScanFailure(error) {}
+
+/* 🔄 Restart Scanner */
+function restartScanner() {
+  document.getElementById("status").innerText = "Ready for next scan...";
+  scanning = true;
+}
+
+/* 🚀 Start Scanner */
+function startScanner() {
+
+  html5QrCode = new Html5Qrcode("reader");
+
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length) {
+
+      let rearCamera = devices.find(device =>
+        device.label.toLowerCase().includes("back") ||
+        device.label.toLowerCase().includes("rear")
+      );
+
+      currentCameraId = rearCamera ? rearCamera.id : devices[0].id;
+
+      html5QrCode.start(
+        currentCameraId,
+        {
+          fps: 15,   // Faster industrial scan
+          qrbox: { width: 260, height: 260 },
+          aspectRatio: 1.0
+        },
+        onScanSuccess,
+        onScanFailure
+      ).then(() => {
+
+        scanning = true;
+        document.getElementById("status").innerText = "Ready to scan equipment QR";
+
+        const track = html5QrCode.getRunningTrack();
+        applyZoom(track); // Apply zoom automatically
+
+      });
+
+    }
+  }).catch(err => {
+    document.getElementById("status").innerText = "Camera Error";
+    console.log(err);
+  });
+}
+
+startScanner();
+</script>
+
+</body>
+</html>
