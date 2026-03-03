@@ -193,6 +193,30 @@ button{
 .pending-btn:hover{
   background:linear-gradient(135deg,#b71c1c,#e53935);
 }
+/* 📅 Weekly Job Plan Table */
+.weekly-plan{
+  margin-top:25px;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+.weekly-plan table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+.weekly-plan th{
+  background:linear-gradient(135deg,#003f88,#0052cc);
+  color:white;
+  padding:10px;
+}
+.weekly-plan td{
+  padding:10px;
+  border:1px solid #ddd;
+}
+.weekly-plan tr:nth-child(even){
+  background:#f4f9ff;
+}
 </style>
 </head>
 
@@ -218,6 +242,7 @@ button{
 <div class="card">
   <h2>Master List</h2>
   <div class="master-btns">
+    <button onclick="openMonthlyJobPlan()">🗓️ Monthly Job Plan</button>
     <button onclick="secureOpen('motor')">⚙️ Motor List</button>
     <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
     <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
@@ -254,6 +279,43 @@ button{
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="openJob1()">📘 Job1 Summary</button>
     <button onclick="openJob2()">📕 Job2 Summary</button>
+    <!-- 📅 Weekly Job Plan Table -->
+<div class="weekly-plan">
+  <table>
+    <tr>
+      <th>Day</th>
+      <th>Work Details</th>
+    </tr>
+    <tr>
+      <td>Monday</td>
+      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+    </tr>
+    <tr>
+      <td>Wednesday</td>
+      <td>
+        PMCC / MCC Maintenance / Blowing<br>
+        ASB Maintenance / Blowing<br>
+        TD, MLDB, SLDB, DCDB, PLC Panel
+      </td>
+    </tr>
+    <tr>
+      <td>Thursday</td>
+      <td>6.6 kV VCU / Breaker PM</td>
+    </tr>
+    <tr>
+      <td>Friday</td>
+      <td>Transformer PM Job</td>
+    </tr>
+    <tr>
+      <td>Saturday</td>
+      <td>Inspection of S/S and Housekeeping Jobs</td>
+    </tr>
+  </table>
+</div>
   </div>
 </div>
 
@@ -267,6 +329,7 @@ button{
     <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
     <button onclick="secureOpen('trafooil')">🛢️ Transformer Oil Report</button>
     <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
+    <button onclick="openBoardPM()">🗄️ Board PM Status</button>
   </div>
 </div>
 
@@ -284,6 +347,15 @@ button{
 /* 🔓 Open Scanner */
 function openScanner(){
   location.href="https://08electricaldata.github.io/scanview.html";
+}
+function openMonthlyJobPlan(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
+}
+
+function openBoardPM(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
 }
 
 /* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
