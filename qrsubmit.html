@@ -237,20 +237,21 @@ let natureData=[];
 fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
 .then(r=>r.json())
 .then(j=>{
-const set=new Set();
 
-/* add header column C */
-if(j.headers && j.headers[2]){
-  set.add(j.headers[2].trim());
-}
+  const set=new Set();
 
-/* add rows column C */
-j.rows.forEach(r=>{
-  const v=(r[2]||"").trim();
-  if(v) set.add(v);
+  if(j.headers && j.headers[2]){
+    set.add(j.headers[2].trim());
+  }
+
+  j.rows.forEach(r=>{
+    const v=(r[2]||"").trim();
+    if(v) set.add(v);
+  });
+
+  natureData=[...set].sort((a,b)=>a.localeCompare(b));
+
 });
-
-natureData=[...set].sort((a,b)=>a.localeCompare(b));
 const input=document.getElementById("natureInput");
 const dropdown=document.getElementById("dropdown");
 const hidden=document.getElementById("natureHidden");
