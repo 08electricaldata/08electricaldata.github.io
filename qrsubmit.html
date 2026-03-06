@@ -238,7 +238,7 @@ fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/
 .then(r=>r.json())
 .then(j=>{
   const set=new Set();
-  j.rows.forEach(r=>{
+  j.rows.slice(1).forEach(r=>{
     const v=(r[2]||"").trim();
     if(v) set.add(v);
   });
