@@ -217,16 +217,17 @@ button{
 .weekly-plan tr:nth-child(even){
   background:#f4f9ff;
 }
-  /* ===========================
-   MOBILE APP STYLE
-   =========================== */
-
-@media (max-width:768px){
+/*==================================================
+  MOBILE APP STYLE
+==================================================*/
+@media screen and (max-width:768px){
 
 body{
     font-size:13px;
+    overflow-x:hidden;
 }
 
+/* Header */
 .header{
     padding:10px 8px;
 }
@@ -248,41 +249,66 @@ body{
     left:8px;
     top:10px;
     font-size:18px;
-    padding:7px;
+    padding:7px 9px;
+    border-radius:8px;
 }
 
+/* Layout */
 .container{
     display:flex;
     flex-direction:column;
     gap:10px;
-    margin:8px;
+    margin:10px;
     padding:0;
 }
 
 .card{
     padding:12px;
     border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
 .card h2{
-    font-size:18px;
-    margin-bottom:10px;
+    font-size:17px;
+    margin:0 0 10px;
 }
 
+/* Buttons */
 .master-btns,
 .jobs-btns{
-    gap:8px;
+    gap:6px;
 }
 
 button{
-    padding:9px;
-    font-size:13px;
+    width:100%;
+    height:36px;
+    padding:0 8px;
+    font-size:12px;
+    font-weight:600;
     border-radius:8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-.select-row{
+.button-row{
+    margin-top:8px;
+    display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:6px;
+}
+
+.button-row button{
+    width:100%;
+    min-width:100%;
+    height:36px;
+}
+
+/* Dropdown */
+.select-row{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
 .dropdown{
@@ -291,45 +317,58 @@ button{
 }
 
 .dropdown input{
-    padding:9px;
+    width:100%;
+    padding:8px 10px;
     font-size:13px;
 }
 
-.button-row{
-    flex-direction:column;
-    gap:8px;
+.dropdown-list{
+    max-height:180px;
 }
 
-.button-row button{
-    width:100%;
-    min-width:100%;
+.dropdown-list div{
+    padding:8px;
+    font-size:13px;
 }
 
+/* Weekly Plan */
 .weekly-plan{
+    margin-top:12px;
     overflow-x:auto;
 }
 
 .weekly-plan table{
-    min-width:420px;
-    font-size:12px;
+    min-width:430px;
+    font-size:11px;
 }
 
-.weekly-plan th,
+.weekly-plan th{
+    padding:6px;
+}
+
 .weekly-plan td{
     padding:6px;
 }
 
+/* Footer */
 .footer{
-    font-size:11px;
+    font-size:10px;
     padding:10px;
 }
 
+/* Floating Scan */
 .floating-scan{
     width:52px;
     height:52px;
     right:12px;
     bottom:12px;
     font-size:22px;
+}
+
+/* Remove extra spacing */
+.master-btns button,
+.jobs-btns button{
+    margin:0;
 }
 
 }
