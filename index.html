@@ -1,1 +1,659 @@
-<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>08 Electrical Data</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#eef5ff}header{background:#0052cc;color:#fff;padding:14px;display:flex;justify-content:space-between}h1{font-size:22px}.container{max-width:900px;margin:auto;padding:12px}.card{background:#fff;border-radius:12px;padding:14px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tile,.action{border:none;border-radius:10px;color:#fff;padding:12px;font-size:12px;font-weight:bold}.tile{background:#0052cc}.action{background:#16a34a}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ccc}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:6px}th{background:#0052cc;color:#fff}</style></head><body><header><div><h1>⚡ 08 Electrical Data</h1><div style='font-size:12px'>Drive Information & Maintenance</div></div><div style='font-size:26px'>📷</div></header><div class='container'><div class='card'><h2>Master List</h2><div class='grid'><button class='tile'>⚙️ Motor</button><button class='tile'>⚡ Trafo</button><button class='tile'>🔌 Breaker</button><button class='tile'>🗄️ Board</button><button class='tile'>🗂️ ERS</button><button class='tile'>📌 Pending</button></div></div><div class='card'><h2>Select Drive</h2><input placeholder='Main Drive'><input placeholder='Sub Drive'><div class='actions'><button class='action'>VIEW</button><button class='action'>HISTORY</button><button class='action'>NEW JOB</button></div></div><div class='card'><h2>Reports</h2><div class='grid'><button class='tile'>📈 Trend</button><button class='tile'>🛠️ O/H</button><button class='tile'>🧾 PM</button><button class='tile'>⚡ Trafo</button><button class='tile'>🛢️ Oil</button><button class='tile'>🔌 Breaker</button><button class='tile'>🗄️ Board</button><button class='tile'>📘 Job1</button><button class='tile'>📕 Job2</button></div></div></div></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>08 Electrical Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  margin:0;
+  background:linear-gradient(135deg,#e6f0ff,#f4f9ff);
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,#002b5c,#0052cc);
+  color:white;
+  padding:25px 20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  position:relative;
+}
+.header-row{
+  display:flex;
+  justify-content:center;
+}
+.header-center{text-align:center}
+.header h1{margin:0;font-size:32px}
+.header p{margin:6px 0 0;font-size:15px}
+.header .credit{font-size:14px;margin-top:4px}
+
+/* 🔵 GLOWING HEADER SCAN BUTTON */
+.scan-icon{
+  position:absolute;
+  left:20px;
+  top:28px;
+  cursor:pointer;
+  font-size:26px;
+  background:white;
+  color:#003f88;
+  padding:10px 14px;
+  border-radius:12px;
+  box-shadow:0 0 15px rgba(0,82,204,.8);
+  animation:glowPulse 1.8s infinite alternate;
+  transition:.3s;
+}
+.scan-icon:hover{
+  transform:scale(1.1);
+}
+
+@keyframes glowPulse{
+  from{box-shadow:0 0 10px rgba(0,82,204,.6);}
+  to{box-shadow:0 0 25px rgba(0,82,204,1);}
+}
+
+/* 🟢 FLOATING ROUND BUTTON */
+.floating-scan{
+  position:fixed;
+  right:25px;
+  bottom:25px;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#00c853,#00e676);
+  color:white;
+  font-size:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  animation:floatPulse 2s infinite;
+  z-index:1000;
+}
+.floating-scan:hover{
+  transform:scale(1.1);
+}
+
+@keyframes floatPulse{
+  0%{box-shadow:0 0 0 0 rgba(0,200,83,.7);}
+  70%{box-shadow:0 0 0 20px rgba(0,200,83,0);}
+  100%{box-shadow:0 0 0 0 rgba(0,200,83,0);}
+}
+
+/* LAYOUT */
+.container{
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 15px;
+  display:grid;
+  grid-template-columns:280px 1fr 280px;
+  gap:20px
+}
+.card{
+  background:white;
+  border-radius:14px;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);
+  padding:25px;
+}
+.card h2{margin-top:0;color:#003f88;text-align:center}
+
+/* BUTTONS */
+
+/* 🗄️ Board Button Special Color */
+.board-btn{
+  background:linear-gradient(135deg,#ff8c00,#ffb347);
+  font-weight:bold;
+}
+.board-btn:hover{
+  background:linear-gradient(135deg,#ff6a00,#ff9f1c);
+}
+.master-btns,.jobs-btns{
+  display:flex;
+  flex-direction:column;
+  gap:12px
+}
+button{
+  width:100%;
+  padding:12px;
+  font-size:15px;
+  background:linear-gradient(135deg,#003f88,#0052cc);
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* CUSTOM DROPDOWN */
+.select-row{
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  flex-wrap:wrap
+}
+.dropdown{
+  position:relative;
+  min-width:260px;
+}
+.dropdown input{
+  width:100%;
+  padding:12px;
+  font-size:16px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  box-sizing:border-box;
+}
+.dropdown-list{
+  position:absolute;
+  top:100%;
+  left:0;
+  width:100%;
+  max-height:220px;
+  overflow-y:auto;
+  background:white;
+  border:1px solid #ccc;
+  border-top:none;
+  display:none;
+  z-index:999;
+}
+.dropdown-list div{
+  padding:10px;
+  cursor:pointer;
+}
+.dropdown-list div:hover{
+  background:#e6f0ff;
+}
+
+.button-row{
+  margin-top:20px;
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  flex-wrap:wrap
+}
+.button-row button{width:auto;min-width:150px}
+
+.footer{
+  text-align:center;
+  padding:15px;
+  font-size:14px;
+  color:#555
+}
+
+@media(max-width:1000px){
+  .container{grid-template-columns:1fr}
+}
+  /* 🔴 ERS Pending Special Button */
+.pending-btn{
+  background:linear-gradient(135deg,#d32f2f,#f44336);
+  font-weight:bold;
+}
+.pending-btn:hover{
+  background:linear-gradient(135deg,#b71c1c,#e53935);
+}
+/* 📅 Weekly Job Plan Table */
+.weekly-plan{
+  margin-top:25px;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+.weekly-plan table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+.weekly-plan th{
+  background:linear-gradient(135deg,#003f88,#0052cc);
+  color:white;
+  padding:10px;
+}
+.weekly-plan td{
+  padding:10px;
+  border:1px solid #ddd;
+}
+.weekly-plan tr:nth-child(even){
+  background:#f4f9ff;
+}
+/*==================================================
+  MOBILE APP STYLE
+==================================================*/
+@media screen and (max-width:768px){
+
+body{
+    font-size:13px;
+    overflow-x:hidden;
+}
+
+/* Header */
+.header{
+    padding:10px 8px;
+}
+
+.header h1{
+    font-size:20px;
+}
+
+.header p{
+    font-size:11px;
+    margin-top:2px;
+}
+
+.header .credit{
+    font-size:9px;
+}
+
+.scan-icon{
+    left:8px;
+    top:10px;
+    font-size:18px;
+    padding:7px 9px;
+    border-radius:8px;
+}
+
+/* Layout */
+.container{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin:10px;
+    padding:0;
+}
+
+.card{
+    padding:12px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.card h2{
+    font-size:17px;
+    margin:0 0 10px;
+}
+
+/* Buttons */
+.master-btns,
+.jobs-btns{
+    gap:6px;
+}
+
+button{
+    width:100%;
+    height:36px;
+    padding:0 8px;
+    font-size:12px;
+    font-weight:600;
+    border-radius:8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.button-row{
+    margin-top:8px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.button-row button{
+    width:100%;
+    min-width:100%;
+    height:36px;
+}
+
+/* Dropdown */
+.select-row{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.dropdown{
+    width:100%;
+    min-width:100%;
+}
+
+.dropdown input{
+    width:100%;
+    padding:8px 10px;
+    font-size:13px;
+}
+
+.dropdown-list{
+    max-height:180px;
+}
+
+.dropdown-list div{
+    padding:8px;
+    font-size:13px;
+}
+
+/* Weekly Plan */
+.weekly-plan{
+    margin-top:12px;
+    overflow-x:auto;
+}
+
+.weekly-plan table{
+    min-width:430px;
+    font-size:11px;
+}
+
+.weekly-plan th{
+    padding:6px;
+}
+
+.weekly-plan td{
+    padding:6px;
+}
+
+/* Footer */
+.footer{
+    font-size:10px;
+    padding:10px;
+}
+
+/* Floating Scan */
+.floating-scan{
+    width:52px;
+    height:52px;
+    right:12px;
+    bottom:12px;
+    font-size:22px;
+}
+
+/* Remove extra spacing */
+.master-btns button,
+.jobs-btns button{
+    margin:0;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+  <!-- 🔵 Animated Header Scan -->
+  <div class="scan-icon" onclick="openScanner()">📷</div>
+
+  <div class="header-row">
+    <div class="header-center">
+      <h1>08 Electrical Data</h1>
+      <p>Drive Information & Maintenance History</p>
+      <div class="credit">Designed and Maintained by RAKESH CHANDRA SETHY</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- MASTER -->
+<div class="card">
+  <h2>Master List</h2>
+  <div class="master-btns">
+    <button onclick="openMonthlyJobPlan()">🗓️ Monthly Job Plan</button>
+    <button onclick="secureOpen('motor')">⚙️ Motor List</button>
+    <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
+    <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
+
+<button class="board-btn" onclick="secureOpen('boardlist')">
+  🗄️ Board List
+</button>
+
+<button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
+<button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
+    
+  </div>
+</div>
+
+<!-- SELECT DRIVE -->
+<div class="card">
+  <h2>Select Drive</h2>
+  <div class="select-row">
+    <div class="dropdown">
+      <input id="mainDrive" placeholder="Select / Type Main Drive">
+      <div class="dropdown-list" id="mainList"></div>
+    </div>
+    <div class="dropdown">
+      <input id="subDrive" placeholder="Select / Type Sub Drive">
+      <div class="dropdown-list" id="subList"></div>
+    </div>
+  </div>
+  <div class="button-row">
+    <button onclick="secureView('view')">VIEW</button>
+    <button onclick="secureView('history')">HISTORY</button>
+    <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
+  </div>
+  <div class="button-row">
+    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+    <button onclick="openJob1()">📘 Job1 Summary</button>
+    <button onclick="openJob2()">📕 Job2 Summary</button>
+    <!-- 📅 Weekly Job Plan Table -->
+<div class="weekly-plan">
+  <table>
+    <tr>
+      <th>Day</th>
+      <th>Work Details</th>
+    </tr>
+    <tr>
+      <td>Monday</td>
+      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+    </tr>
+    <tr>
+      <td>Wednesday</td>
+      <td>
+        PMCC / MCC Maintenance / Blowing<br>
+        ASB Maintenance / Blowing<br>
+        TD, MLDB, SLDB, DCDB, PLC Panel
+      </td>
+    </tr>
+    <tr>
+      <td>Thursday</td>
+      <td>6.6 kV VCU / Breaker PM</td>
+    </tr>
+    <tr>
+      <td>Friday</td>
+      <td>Transformer PM Job</td>
+    </tr>
+    <tr>
+      <td>Saturday</td>
+      <td>Inspection of S/S and Housekeeping Jobs</td>
+    </tr>
+  </table>
+</div>
+  </div>
+</div>
+
+<!-- JOBS -->
+<div class="card">
+  <h2>Jobs</h2>
+  <div class="jobs-btns">
+    <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
+    <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
+    <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
+    <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
+    <button onclick="secureOpen('trafooil')">🛢️ Transformer Oil Report</button>
+    <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
+    <button onclick="openBoardPM()">🗄️ Board PM Status</button>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+© 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy
+</div>
+
+<!-- 🟢 Floating Scanner Button -->
+<div class="floating-scan" onclick="openScanner()">📷</div>
+
+<script>
+
+/* 🔓 Open Scanner */
+function openScanner(){
+  location.href="https://08electricaldata.github.io/scanview.html";
+}
+function openMonthlyJobPlan(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
+}
+
+function openBoardPM(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
+}
+
+/* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
+
+const DRIVE_JSON =
+"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+let headers=[],rows=[],sheetPassword="";
+let mainMap={};
+
+async function loadSheet(){
+  const d=await (await fetch(DRIVE_JSON)).json();
+  headers=d.headers;
+  rows=d.rows;
+  sheetPassword=String(headers[6]||"").trim();
+  buildMain();
+}
+
+function buildMain(){
+  const list=document.getElementById("mainList");
+  list.innerHTML="";
+  headers.forEach((h,i)=>{
+    if(i<7||!h)return;
+    mainMap[h]=i;
+    const div=document.createElement("div");
+    div.innerText=h;
+    div.onclick=()=>{
+      mainDrive.value=h;
+      list.style.display="none";
+      buildSub(i);
+    };
+    list.appendChild(div);
+  });
+}
+
+function buildSub(index){
+  const list=document.getElementById("subList");
+  list.innerHTML="";
+  rows.forEach(r=>{
+    if(r[index]){
+      const div=document.createElement("div");
+      div.innerText=r[index];
+      div.onclick=()=>{
+        subDrive.value=r[index];
+        list.style.display="none";
+      };
+      list.appendChild(div);
+    }
+  });
+}
+
+mainDrive.onfocus=()=>mainList.style.display="block";
+subDrive.onfocus=()=>subList.style.display="block";
+
+mainDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...mainList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+subDrive.oninput=function(){
+  const filter=this.value.toLowerCase();
+  [...subList.children].forEach(d=>{
+    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+  });
+};
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".dropdown")){
+    mainList.style.display="none";
+    subList.style.display="none";
+  }
+});
+
+function checkPassword(){
+  if(!sheetPassword){alert("⏳ Data loading");return false}
+  const p=prompt("🔐 Enter Password");
+  if(p===null||p.trim()!==sheetPassword){
+    alert("❌ Incorrect password");
+    return false;
+  }
+  return true;
+}
+
+function secureView(type){
+  if(!checkPassword())return;
+  const main=mainDrive.value;
+  const sub=subDrive.value;
+  if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
+  const index=mainMap[main];
+  const validSubs = rows
+  .map(r => String(r[index]).trim())
+  .filter(Boolean);
+
+if (!validSubs.includes(String(sub).trim())) {
+   alert("Select valid Sub Drive");
+   return;
+}
+  const id=main+"-"+sub;
+  location.href="https://08electricaldata.github.io/"+
+  (type==="view"
+    ?"drive-viewer/index.html?id="
+    :"drive-viewer/history.html?id=")+
+  encodeURIComponent(id);
+}
+
+function secureOpen(type){
+  if(!checkPassword())return;
+  const map={
+    motor:"drive-viewer/motorlist.html",
+    trafo:"drive-viewer/trafolist.html",
+    breaker:"drive-viewer/breakerlist.html",
+    boardlist:"drive-viewer/boardlist.html",
+    ersmaster:"drive-viewer/ersmasterdata.html",
+    erspending:"drive-viewer/ersmasterdata1.html",
+    advanced:"drive-viewer/summary-advanced.html",
+    motoroh:"drive-viewer/motoroh.html",
+    motorpm:"drive-viewer/motorpm.html",
+    trafopm:"drive-viewer/trafopm.html",
+    trafooil:"drive-viewer/transformer-oil-summary.html",
+    breakerpm:"drive-viewer/breakerpm.html",
+    jobentry:"jobsubmit.html"
+  };
+  location.href="https://08electricaldata.github.io/"+map[type];
+}
+
+function openMonthlyTrend(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
+}
+
+function openJob1(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
+}
+function openJob2(){
+  if(checkPassword())
+    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+}
+
+loadSheet();
+</script>
+
+</body>
+</html>
