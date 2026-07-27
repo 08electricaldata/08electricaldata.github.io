@@ -112,6 +112,7 @@ body{
   grid-template-columns: repeat(3, 1fr);
   gap:10px;
   margin-bottom:15px;
+  align-items: stretch;
 }
 
 .drive-action-buttons{
@@ -170,7 +171,8 @@ button:hover{
 /* CUSTOM DROPDOWN */
 .dropdown{
   position:relative;
-  min-width:200px;
+  display:flex;
+  flex-direction:column;
 }
 .dropdown input{
   width:100%;
@@ -179,7 +181,7 @@ button:hover{
   border-radius:6px;
   border:1px solid #ccc;
   box-sizing:border-box;
-  height:100%;
+  flex:1;
 }
 .dropdown-list{
   position:absolute;
@@ -273,18 +275,34 @@ body{
     margin:0 0 10px;
 }
 
-/* Drive inputs - Mobile 3 equal columns */
+/* Drive inputs - Mobile 3 equal columns with matching heights */
 .drive-inputs{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
     gap:6px;
     margin-bottom:10px;
+    align-items: stretch;
+}
+
+.dropdown{
+    display:flex;
+    flex-direction:column;
 }
 
 .dropdown input{
-    padding:10px 6px;
+    padding:10px 8px;
     font-size:12px;
-    height:40px;
+    min-height:44px;
+    box-sizing:border-box;
+    flex:1;
+}
+
+.drive-inputs button{
+    min-height:44px;
+    padding:6px 8px;
+    font-size:12px;
+    font-weight:600;
+    height:100%;
 }
 
 .dropdown-list div{
@@ -300,6 +318,12 @@ body{
     margin-bottom:10px;
 }
 
+.drive-action-buttons button{
+    min-height:40px;
+    padding:6px 8px;
+    font-size:10px;
+}
+
 /* Grid buttons - Mobile 3 columns */
 .master-btns, .jobs-btns{
     display:grid;
@@ -307,10 +331,10 @@ body{
     gap:6px;
 }
 
-button{
+.master-btns button, .jobs-btns button{
     width:100%;
-    min-height:38px;
-    padding:6px 4px;
+    min-height:40px;
+    padding:8px 6px;
     font-size:10px;
     font-weight:600;
     border-radius:8px;
@@ -352,25 +376,41 @@ button{
 /* Grid buttons - Extra small: 3 columns */
 .master-btns, .jobs-btns{
     grid-template-columns: repeat(3, 1fr);
+    gap:6px;
 }
 
-button{
-    min-height:36px;
-    padding:4px 3px;
+.master-btns button, .jobs-btns button{
+    min-height:38px;
+    padding:6px 4px;
     font-size:9px;
 }
 
 .drive-inputs{
     grid-template-columns: repeat(3, 1fr);
     gap:6px;
+    align-items: stretch;
 }
 
 .drive-action-buttons{
     grid-template-columns: repeat(3, 1fr);
+    gap:6px;
+}
+
+.drive-action-buttons button{
+    min-height:38px;
+    padding:4px 6px;
+    font-size:9px;
 }
 
 .dropdown input{
-    height:40px;
+    min-height:42px;
+    padding:8px 6px;
+}
+
+.drive-inputs button{
+    min-height:42px;
+    padding:4px 6px;
+    font-size:11px;
 }
 
 }
