@@ -109,12 +109,12 @@ body{
 /* Select drive layout */
 .drive-inputs{
   display:grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: repeat(3, 1fr);
   gap:10px;
   margin-bottom:15px;
 }
 
-.drive-view-buttons{
+.drive-action-buttons{
   display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap:10px;
@@ -179,6 +179,7 @@ button:hover{
   border-radius:6px;
   border:1px solid #ccc;
   box-sizing:border-box;
+  height:100%;
 }
 .dropdown-list{
   position:absolute;
@@ -272,10 +273,10 @@ body{
     margin:0 0 10px;
 }
 
-/* Drive inputs - Mobile */
+/* Drive inputs - Mobile 3 equal columns */
 .drive-inputs{
     display:grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: repeat(3, 1fr);
     gap:6px;
     margin-bottom:10px;
 }
@@ -283,6 +284,7 @@ body{
 .dropdown input{
     padding:10px 6px;
     font-size:12px;
+    height:40px;
 }
 
 .dropdown-list div{
@@ -290,26 +292,10 @@ body{
     font-size:12px;
 }
 
-/* View buttons row - 3 columns */
-.drive-view-buttons{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap:6px;
-    margin-bottom:10px;
-}
-
-/* History, New Job, Advanced - 3 columns */
+/* Action buttons - 3 columns */
 .drive-action-buttons{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
-    gap:6px;
-    margin-bottom:10px;
-}
-
-/* Job summaries - 2 columns */
-.job-summary-buttons{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
     gap:6px;
     margin-bottom:10px;
 }
@@ -363,7 +349,7 @@ button{
     font-size:14px;
 }
 
-/* Grid buttons - Extra small: 2-3 columns */
+/* Grid buttons - Extra small: 3 columns */
 .master-btns, .jobs-btns{
     grid-template-columns: repeat(3, 1fr);
 }
@@ -375,17 +361,16 @@ button{
 }
 
 .drive-inputs{
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: repeat(3, 1fr);
     gap:6px;
 }
 
-.drive-view-buttons,
 .drive-action-buttons{
     grid-template-columns: repeat(3, 1fr);
 }
 
-.job-summary-buttons{
-    grid-template-columns: repeat(2, 1fr);
+.dropdown input{
+    height:40px;
 }
 
 }
@@ -425,15 +410,10 @@ button{
     <button onclick="secureView('view')">VIEW</button>
   </div>
 
-  <div class="drive-view-buttons">
+  <div class="drive-action-buttons">
     <button onclick="secureView('history')">HISTORY</button>
     <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
-  </div>
-
-  <div class="job-summary-buttons">
-    <button onclick="openJob1()">📘 Job1 Summary</button>
-    <button onclick="openJob2()">📕 Job2 Summary</button>
   </div>
 </div>
 
