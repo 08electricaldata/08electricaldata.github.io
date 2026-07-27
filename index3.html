@@ -88,7 +88,7 @@ body{
   margin:30px auto;
   padding:0 15px;
   display:grid;
-  grid-template-columns:280px 1fr 280px;
+  grid-template-columns:1fr;
   gap:20px
 }
 .card{
@@ -99,14 +99,28 @@ body{
 }
 .card h2{margin-top:0;color:#003f88;text-align:center;font-size:18px}
 
-/* BUTTONS - GRID LAYOUT */
-.master-btns, .jobs-btns, .button-row{
+/* BUTTONS - GRID LAYOUT 3 COLUMNS */
+.master-btns, .jobs-btns{
   display:grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap:10px;
 }
 
-/* Special full-width button rows */
+/* Select drive layout */
+.drive-inputs{
+  display:grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.drive-view-buttons{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+  margin-bottom:15px;
+}
+
 .select-row{
   display:flex;
   gap:15px;
@@ -156,8 +170,6 @@ button:hover{
 /* CUSTOM DROPDOWN */
 .dropdown{
   position:relative;
-  min-width:260px;
-  flex:1;
   min-width:200px;
 }
 .dropdown input{
@@ -195,32 +207,6 @@ button:hover{
   padding:15px;
   font-size:14px;
   color:#555
-}
-
-/* 📅 Weekly Job Plan Table */
-.weekly-plan{
-  margin-top:20px;
-  border-radius:10px;
-  overflow:hidden;
-  box-shadow:0 4px 12px rgba(0,0,0,.15);
-  grid-column: 1 / -1;
-}
-.weekly-plan table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-.weekly-plan th{
-  background:linear-gradient(135deg,#003f88,#0052cc);
-  color:white;
-  padding:8px;
-}
-.weekly-plan td{
-  padding:8px;
-  border:1px solid #ddd;
-}
-.weekly-plan tr:nth-child(even){
-  background:#f4f9ff;
 }
 
 /* DESKTOP VIEW */
@@ -286,53 +272,17 @@ body{
     margin:0 0 10px;
 }
 
-/* Grid buttons - Mobile 3 columns */
-.master-btns, .jobs-btns{
+/* Drive inputs - Mobile */
+.drive-inputs{
     display:grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr auto;
     gap:6px;
-}
-
-/* Button row - 2 columns */
-.button-row{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:6px;
-    margin-top:8px;
-}
-
-button{
-    width:100%;
-    min-height:40px;
-    padding:8px 4px;
-    font-size:11px;
-    font-weight:600;
-    border-radius:8px;
-    white-space:normal;
-    word-break:break-word;
-    overflow:hidden;
-}
-
-/* Dropdowns */
-.select-row{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.dropdown{
-    width:100%;
-    min-width:100%;
+    margin-bottom:10px;
 }
 
 .dropdown input{
-    width:100%;
-    padding:10px 8px;
+    padding:10px 6px;
     font-size:12px;
-}
-
-.dropdown-list{
-    max-height:180px;
 }
 
 .dropdown-list div{
@@ -340,24 +290,53 @@ button{
     font-size:12px;
 }
 
-/* Weekly Plan - Mobile */
-.weekly-plan{
-    margin-top:12px;
-    overflow-x:auto;
-    grid-column: 1 / -1;
+/* View buttons row - 3 columns */
+.drive-view-buttons{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:6px;
+    margin-bottom:10px;
 }
 
-.weekly-plan table{
-    min-width:100%;
+/* History, New Job, Advanced - 3 columns */
+.drive-action-buttons{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:6px;
+    margin-bottom:10px;
+}
+
+/* Job summaries - 2 columns */
+.job-summary-buttons{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:6px;
+    margin-bottom:10px;
+}
+
+/* Grid buttons - Mobile 3 columns */
+.master-btns, .jobs-btns{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:6px;
+}
+
+button{
+    width:100%;
+    min-height:38px;
+    padding:6px 4px;
     font-size:10px;
+    font-weight:600;
+    border-radius:8px;
+    white-space:normal;
+    word-break:break-word;
+    overflow:hidden;
 }
 
-.weekly-plan th{
-    padding:6px;
-}
-
-.weekly-plan td{
-    padding:6px;
+/* Footer */
+.footer{
+    font-size:10px;
+    padding:10px;
 }
 
 /* Floating Scan */
@@ -367,12 +346,6 @@ button{
     right:12px;
     bottom:12px;
     font-size:22px;
-}
-
-/* Footer */
-.footer{
-    font-size:10px;
-    padding:10px;
 }
 
 }
@@ -390,20 +363,29 @@ button{
     font-size:14px;
 }
 
-/* Grid buttons - Extra small: 2 columns */
+/* Grid buttons - Extra small: 2-3 columns */
 .master-btns, .jobs-btns{
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 }
 
 button{
     min-height:36px;
-    padding:6px 4px;
-    font-size:10px;
+    padding:4px 3px;
+    font-size:9px;
 }
 
-.button-row{
-    grid-template-columns: repeat(2, 1fr);
+.drive-inputs{
+    grid-template-columns: 1fr 1fr auto;
     gap:6px;
+}
+
+.drive-view-buttons,
+.drive-action-buttons{
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.job-summary-buttons{
+    grid-template-columns: repeat(2, 1fr);
 }
 
 }
@@ -427,6 +409,34 @@ button{
 
 <div class="container">
 
+<!-- SELECT DRIVE - FIRST -->
+<div class="card">
+  <h2>Select Drive</h2>
+  
+  <div class="drive-inputs">
+    <div class="dropdown">
+      <input id="mainDrive" placeholder="Select / Type Main Drive">
+      <div class="dropdown-list" id="mainList"></div>
+    </div>
+    <div class="dropdown">
+      <input id="subDrive" placeholder="Select / Type Sub Drive">
+      <div class="dropdown-list" id="subList"></div>
+    </div>
+    <button onclick="secureView('view')">VIEW</button>
+  </div>
+
+  <div class="drive-view-buttons">
+    <button onclick="secureView('history')">HISTORY</button>
+    <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
+    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+  </div>
+
+  <div class="job-summary-buttons">
+    <button onclick="openJob1()">📘 Job1 Summary</button>
+    <button onclick="openJob2()">📕 Job2 Summary</button>
+  </div>
+</div>
+
 <!-- MASTER -->
 <div class="card">
   <h2>Master List</h2>
@@ -438,66 +448,6 @@ button{
     <button class="board-btn" onclick="secureOpen('boardlist')">🗄️ Board List</button>
     <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
     <button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
-    <button onclick="alert('Spare Button 1')">Spare 1</button>
-    <button onclick="alert('Spare Button 2')">Spare 2</button>
-  </div>
-</div>
-
-<!-- SELECT DRIVE -->
-<div class="card">
-  <h2>Select Drive</h2>
-  <div class="select-row">
-    <div class="dropdown">
-      <input id="mainDrive" placeholder="Select / Type Main Drive">
-      <div class="dropdown-list" id="mainList"></div>
-    </div>
-    <div class="dropdown">
-      <input id="subDrive" placeholder="Select / Type Sub Drive">
-      <div class="dropdown-list" id="subList"></div>
-    </div>
-  </div>
-  
-  <div class="button-row">
-    <button onclick="secureView('view')">VIEW</button>
-    <button onclick="secureView('history')">HISTORY</button>
-    <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
-    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
-    <button onclick="openJob1()">📘 Job1 Summary</button>
-    <button onclick="openJob2()">📕 Job2 Summary</button>
-  </div>
-
-  <!-- 📅 Weekly Job Plan Table -->
-  <div class="weekly-plan">
-    <table>
-      <tr>
-        <th>Day</th>
-        <th>Work Details</th>
-      </tr>
-      <tr>
-        <td>Monday</td>
-        <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
-      </tr>
-      <tr>
-        <td>Tuesday</td>
-        <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
-      </tr>
-      <tr>
-        <td>Wednesday</td>
-        <td>PMCC / MCC Maintenance / Blowing<br>ASB Maintenance / Blowing<br>TD, MLDB, SLDB, DCDB, PLC Panel</td>
-      </tr>
-      <tr>
-        <td>Thursday</td>
-        <td>6.6 kV VCU / Breaker PM</td>
-      </tr>
-      <tr>
-        <td>Friday</td>
-        <td>Transformer PM Job</td>
-      </tr>
-      <tr>
-        <td>Saturday</td>
-        <td>Inspection of S/S and Housekeeping Jobs</td>
-      </tr>
-    </table>
   </div>
 </div>
 
@@ -512,8 +462,6 @@ button{
     <button onclick="secureOpen('trafooil')">🛢️ Transformer Oil Report</button>
     <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
     <button onclick="openBoardPM()">🗄️ Board PM Status</button>
-    <button onclick="alert('Spare Button 3')">Spare 3</button>
-    <button onclick="alert('Spare Button 4')">Spare 4</button>
   </div>
 </div>
 
