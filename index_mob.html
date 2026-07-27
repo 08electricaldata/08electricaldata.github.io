@@ -452,8 +452,8 @@ body{
 
   <div class="drive-action-buttons">
     <button onclick="secureView('history')">HISTORY</button>
-    <button onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
-    <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
+    <button onclick="openJobEntry()">📝 NEW JOB ENTRY</button>
+    <button onclick="openAdvanced()">📊 Advanced Summary</button>
   </div>
 </div>
 
@@ -462,12 +462,12 @@ body{
   <h2>Master List</h2>
   <div class="master-btns">
     <button onclick="openMonthlyJobPlan()">🗓️ Monthly Job Plan</button>
-    <button onclick="secureOpen('motor')">⚙️ Motor List</button>
-    <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
-    <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
-    <button class="board-btn" onclick="secureOpen('boardlist')">🗄️ Board List</button>
-    <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
-    <button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
+    <button onclick="openMotorList()">⚙️ Motor List</button>
+    <button onclick="openTrafoList()">⚡ Transformer List</button>
+    <button onclick="openBreakerList()">🔌 Breaker List</button>
+    <button class="board-btn" onclick="openBoardList()">🗄️ Board List</button>
+    <button onclick="openERSMaster()">🗂️ ERS Master</button>
+    <button class="pending-btn" onclick="openERSPending()">📌 ERS Pending</button>
   </div>
 </div>
 
@@ -476,11 +476,11 @@ body{
   <h2>Jobs</h2>
   <div class="jobs-btns">
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
-    <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
-    <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
-    <button onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
-    <button onclick="secureOpen('trafooil')">🛢️ Transformer Oil Report</button>
-    <button onclick="secureOpen('breakerpm')">🔌 Breaker PM Status</button>
+    <button onclick="openMotorOH()">🛠️ Motor O/H Data</button>
+    <button onclick="openMotorPM()">🧾 Motor PM Status</button>
+    <button onclick="openTrafoPM()">⚡ Transformer Status</button>
+    <button onclick="openTrafoOil()">🛢️ Transformer Oil Report</button>
+    <button onclick="openBreakerPM()">🔌 Breaker PM Status</button>
     <button onclick="openBoardPM()">🗄️ Board PM Status</button>
   </div>
 </div>
@@ -500,14 +500,70 @@ body{
 function openScanner(){
   location.href="https://08electricaldata.github.io/scanview.html";
 }
+
+/* Open functions WITHOUT PASSWORD */
 function openMonthlyJobPlan(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
+  location.href="https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
+}
+
+function openMotorList(){
+  location.href="https://08electricaldata.github.io/drive-viewer/motorlist.html";
+}
+
+function openTrafoList(){
+  location.href="https://08electricaldata.github.io/drive-viewer/trafolist.html";
+}
+
+function openBreakerList(){
+  location.href="https://08electricaldata.github.io/drive-viewer/breakerlist.html";
+}
+
+function openBoardList(){
+  location.href="https://08electricaldata.github.io/drive-viewer/boardlist.html";
+}
+
+function openERSMaster(){
+  location.href="https://08electricaldata.github.io/drive-viewer/ersmasterdata.html";
+}
+
+function openERSPending(){
+  location.href="https://08electricaldata.github.io/drive-viewer/ersmasterdata1.html";
+}
+
+function openJobEntry(){
+  location.href="https://08electricaldata.github.io/jobsubmit.html";
+}
+
+function openAdvanced(){
+  location.href="https://08electricaldata.github.io/drive-viewer/summary-advanced.html";
+}
+
+function openMonthlyTrend(){
+  location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
+}
+
+function openMotorOH(){
+  location.href="https://08electricaldata.github.io/drive-viewer/motoroh.html";
+}
+
+function openMotorPM(){
+  location.href="https://08electricaldata.github.io/drive-viewer/motorpm.html";
+}
+
+function openTrafoPM(){
+  location.href="https://08electricaldata.github.io/drive-viewer/trafopm.html";
+}
+
+function openTrafoOil(){
+  location.href="https://08electricaldata.github.io/drive-viewer/transformer-oil-summary.html";
+}
+
+function openBreakerPM(){
+  location.href="https://08electricaldata.github.io/drive-viewer/breakerpm.html";
 }
 
 function openBoardPM(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
+  location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
 }
 
 /* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
@@ -613,40 +669,6 @@ if (!validSubs.includes(String(sub).trim())) {
     ?"drive-viewer/index.html?id="
     :"drive-viewer/history.html?id=")+
   encodeURIComponent(id);
-}
-
-function secureOpen(type){
-  if(!checkPassword())return;
-  const map={
-    motor:"drive-viewer/motorlist.html",
-    trafo:"drive-viewer/trafolist.html",
-    breaker:"drive-viewer/breakerlist.html",
-    boardlist:"drive-viewer/boardlist.html",
-    ersmaster:"drive-viewer/ersmasterdata.html",
-    erspending:"drive-viewer/ersmasterdata1.html",
-    advanced:"drive-viewer/summary-advanced.html",
-    motoroh:"drive-viewer/motoroh.html",
-    motorpm:"drive-viewer/motorpm.html",
-    trafopm:"drive-viewer/trafopm.html",
-    trafooil:"drive-viewer/transformer-oil-summary.html",
-    breakerpm:"drive-viewer/breakerpm.html",
-    jobentry:"jobsubmit.html"
-  };
-  location.href="https://08electricaldata.github.io/"+map[type];
-}
-
-function openMonthlyTrend(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
-}
-
-function openJob1(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
-}
-function openJob2(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
 }
 
 loadSheet();
