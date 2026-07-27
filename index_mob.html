@@ -447,11 +447,11 @@ body{
       <input id="subDrive" placeholder="Select / Type Sub Drive">
       <div class="dropdown-list" id="subList"></div>
     </div>
-    <button onclick="secureView('view')">VIEW</button>
+    <button onclick="openView()">VIEW</button>
   </div>
 
   <div class="drive-action-buttons">
-    <button onclick="secureView('history')">HISTORY</button>
+    <button onclick="openHistory()">HISTORY</button>
     <button onclick="openJobEntry()">📝 NEW JOB ENTRY</button>
     <button onclick="openAdvanced()">📊 Advanced Summary</button>
   </div>
@@ -566,19 +566,40 @@ function openBoardPM(){
   location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
 }
 
-/* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
+/* View and History WITHOUT PASSWORD */
+function openView(){
+  const main=mainDrive.value;
+  const sub=subDrive.value;
+  if(!main || !sub){
+    alert("Please select both Main Drive and Sub Drive");
+    return;
+  }
+  const id=main+"-"+sub;
+  location.href="https://08electricaldata.github.io/drive-viewer/index.html?id="+encodeURIComponent(id);
+}
+
+function openHistory(){
+  const main=mainDrive.value;
+  const sub=subDrive.value;
+  if(!main || !sub){
+    alert("Please select both Main Drive and Sub Drive");
+    return;
+  }
+  const id=main+"-"+sub;
+  location.href="https://08electricaldata.github.io/drive-viewer/history.html?id="+encodeURIComponent(id);
+}
+
+/* ======= DROPDOWN SCRIPT ======= */
 
 const DRIVE_JSON =
 "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
 
-let headers=[],rows=[],sheetPassword="";
-let mainMap={};
+let headers=[],rows=[],mainMap={};
 
 async function loadSheet(){
   const d=await (await fetch(DRIVE_JSON)).json();
   headers=d.headers;
   rows=d.rows;
-  sheetPassword=String(headers[6]||"").trim();
   buildMain();
 }
 
@@ -638,38 +659,6 @@ document.addEventListener("click",e=>{
     subList.style.display="none";
   }
 });
-
-function checkPassword(){
-  if(!sheetPassword){alert("⏳ Data loading");return false}
-  const p=prompt("🔐 Enter Password");
-  if(p===null||p.trim()!==sheetPassword){
-    alert("❌ Incorrect password");
-    return false;
-  }
-  return true;
-}
-
-function secureView(type){
-  if(!checkPassword())return;
-  const main=mainDrive.value;
-  const sub=subDrive.value;
-  if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
-  const index=mainMap[main];
-  const validSubs = rows
-  .map(r => String(r[index]).trim())
-  .filter(Boolean);
-
-if (!validSubs.includes(String(sub).trim())) {
-   alert("Select valid Sub Drive");
-   return;
-}
-  const id=main+"-"+sub;
-  location.href="https://08electricaldata.github.io/"+
-  (type==="view"
-    ?"drive-viewer/index.html?id="
-    :"drive-viewer/history.html?id=")+
-  encodeURIComponent(id);
-}
 
 loadSheet();
 </script>
