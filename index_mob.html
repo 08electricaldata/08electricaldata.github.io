@@ -168,6 +168,15 @@ button:hover{
   background:linear-gradient(135deg,#b71c1c,#e53935);
 }
 
+/* NEW: Breakdown Button style (distinct) */
+.breakdown-btn{
+  background:linear-gradient(135deg,#6a1b9a,#8e24aa);
+  font-weight:bold;
+}
+.breakdown-btn:hover{
+  background:linear-gradient(135deg,#4a148c,#6a1b9a);
+}
+
 /* CUSTOM DROPDOWN */
 .dropdown{
   position:relative;
@@ -468,6 +477,8 @@ body{
     <button class="board-btn" onclick="openBoardList()">🗄️ Board List</button>
     <button onclick="openERSMaster()">🗂️ ERS Master</button>
     <button class="pending-btn" onclick="openERSPending()">📌 ERS Pending</button>
+    <!-- NEW Breakdown List button added next to ERS Pending -->
+    <button class="breakdown-btn" onclick="openBreakdown()">🛠️ Breakdown List</button>
   </div>
 </div>
 
@@ -527,7 +538,12 @@ function openERSMaster(){
 }
 
 function openERSPending(){
-  location.href="https://08electricaldata.github.io/drive-viewer/mobile/ersmasterdata1.html";
+  location.href="https://08electricaldata.github.io/drive-viewer/ersmasterdata1.html";
+}
+
+/* NEW: open Breakdown List */
+function openBreakdown(){
+  location.href="https://08electricaldata.github.io/drive-viewer/mobile/breakdown.html";
 }
 
 function openJobEntry(){
