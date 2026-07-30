@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -408,6 +407,8 @@ button{
 
 <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
 <button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
+<!-- Added Break down List button similar to ERS Pending -->
+<button class="pending-btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
     
   </div>
 </div>
@@ -633,7 +634,9 @@ function secureOpen(type){
     trafopm:"drive-viewer/trafopm.html",
     trafooil:"drive-viewer/transformer-oil-summary.html",
     breakerpm:"drive-viewer/breakerpm.html",
-    jobentry:"jobsubmit.html"
+    jobentry:"jobsubmit.html",
+    /* Added breakdown mapping */
+    breakdown:"drive-viewer/breakdown.html"
   };
   location.href="https://08electricaldata.github.io/"+map[type];
 }
