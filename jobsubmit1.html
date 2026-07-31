@@ -1,240 +1,310 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Daily Job Entry</title>
-
+<meta charset="UTF-8" />
+<title>Daily Job Entry — Mobile App View</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-body{
-  font-family:Arial,sans-serif;
-  background:#0e1621;
-  color:#e5e7eb;
-  margin:0;
-  padding:20px
-}
-.container{
-  background:#1b2636;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.6);
-  max-width:1200px;
-  margin:auto
-}
-h2{text-align:center;color:#93c5fd;margin-bottom:20px}
-.row-top{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:15px}
-.row-bottom{display:grid;grid-template-columns:4fr 1fr 1fr;gap:12px;align-items:end}
-label{font-weight:bold;font-size:13px}
-input,select,textarea{
-  width:100%;
-  padding:6px;
-  font-size:14px;
-  background:#111827;
-  color:#e5e7eb;
-  border:1px solid #334155;
-  box-sizing:border-box
-}
-textarea{height:80px;resize:none}
-button{
-  width:100%;
-  padding:10px;
-  background:#003f88;
-  color:white;
-  border:none;
-  border-radius:6px;
-  font-size:15px;
-  cursor:pointer
-}
-button:hover{background:#0050aa}
-#msg{text-align:center;font-weight:bold;color:#22c55e;margin-top:12px}
+  :root{
+    --brand:#003f88;
+    --bg:#0e1621;
+    --card:#0f2536;
+    --muted:#9ca3af;
+    --accent:#22c55e;
+  }
 
-/* TOP NAV */
-.top-nav{
-  display:flex;
-  gap:10px;
-  margin-bottom:10px
-}
-.top-nav button{
-  width:auto;
-  padding:6px 14px
-}
+  /* Mobile-first app look */
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    background:linear-gradient(180deg,#071025 0%, #0e1621 100%);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* App header */
+  .app-header{
+    position:sticky;top:0;z-index:200;
+    display:flex;align-items:center;gap:10px;padding:12px 14px;
+    background:linear-gradient(90deg,var(--brand),#0050aa);
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  }
+  .app-header .left{display:flex;gap:8px;align-items:center}
+  .app-title{flex:1;text-align:center;font-size:16px;font-weight:800}
+  .app-sub{font-size:12px;opacity:.95}
+
+  .btn{
+    background:#fff;color:var(--brand);border:0;padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,0.25);
+  }
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.15)}
+
+  /* Page container */
+  .page{max-width:980px;margin:12px auto;padding:12px;box-sizing:border-box}
+
+  /* Card */
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px;padding:14px;box-shadow:0 8px 28px rgba(0,0,0,0.45);
+    color:#e6eef8;
+  }
+  h2{margin:0 0 12px 0;font-size:18px;text-align:center;color:#cfe6ff}
+
+  /* Form layout - stacked for mobile */
+  form{display:flex;flex-direction:column;gap:12px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  label{font-weight:700;font-size:13px;color:#bcd7ff}
+  input[type="date"], select, textarea, input[type="text"]{
+    background:#071726;border:1px solid #213a4b;color:#e6eef8;padding:10px;border-radius:10px;font-size:15px;
+    outline:none;
+  }
+  textarea{min-height:100px;resize:vertical;padding-top:10px}
+  .row{
+    display:flex;gap:10px;flex-wrap:wrap;
+  }
+  .col{flex:1;min-width:120px}
+
+  /* Submit area */
+  .submit-row{display:flex;gap:10px;align-items:center}
+  .submit-row .primary{flex:1}
+
+  /* status message */
+  #msg{font-weight:700;color:var(--accent);text-align:center;margin-top:6px}
+
+  /* floating help / scan */
+  .floating-scan{position:fixed;right:14px;bottom:14px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00c853,#00e676);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;border:none;box-shadow:0 12px 28px rgba(0,0,0,0.5);z-index:250;cursor:pointer}
+
+  /* desktop/tablet adjustments */
+  @media(min-width:900px){
+    .page{padding:18px}
+    form{gap:16px}
+    .row-top{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .row-bottom{display:grid;grid-template-columns:4fr 1fr 1fr;gap:12px;align-items:end}
+    .field input, .field select, .field textarea{font-size:14px;padding:10px}
+    .submit-row{justify-content:flex-end}
+    .card{padding:20px}
+  }
+
+  /* small-screen tweaks */
+  @media(max-width:420px){
+    .btn{padding:8px 10px}
+    input,select,textarea{font-size:14px}
+  }
 </style>
 </head>
-
 <body>
 
-<div class="top-nav">
-  <button type="button" onclick="history.back()">⬅ Back</button>
-  <button type="button" onclick="location.href='https://08electricaldata.github.io/'">🏠 Home</button>
-  <button type="button" onclick="location.href='https://08electricaldata.github.io/scan.html'">📷 Scan QR</button>
-</div>
-
-<div class="container">
-<h2>DAILY JOB DETAILS – LANDSCAPE ENTRY</h2>
-
-<form id="jobForm" target="hiddenFrame"
-action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
-method="POST">
-
-<div class="row-top">
-
-  <div>
-    <label>Date</label>
-    <input type="date" name="entry.2074265710" id="dateField" required>
+<!-- APP HEADER -->
+<header class="app-header" role="banner">
+  <div class="left">
+    <button class="btn" onclick="history.back()">⬅</button>
   </div>
-
-  <div>
-    <label>Main Drive</label>
-    <select name="entry.2034418039" id="mainDrive" required></select>
+  <div class="app-title">
+    Daily Job Entry
+    <div class="app-sub" style="font-weight:600;font-size:11px">Landscape / Mobile App View</div>
   </div>
-
   <div>
-    <label>Sub Drive</label>
-    <select name="entry.273858386" id="subDrive" required></select>
+    <button class="btn" onclick="location.href='https://08electricaldata.github.io/index_mob.html'">🏠</button>
   </div>
+</header>
 
-  <div>
-    <label>Type of Job</label>
-    <select name="entry.591852895" id="typeJob"></select>
-  </div>
+<!-- PAGE -->
+<main class="page" role="main">
+  <section class="card" aria-labelledby="formTitle">
+    <h2 id="formTitle">DAILY JOB DETAILS — LANDSCAPE ENTRY</h2>
 
-  <div>
-    <label>Nature of Job</label>
-    <select name="entry.1114156376" id="natureJob"></select>
-  </div>
+    <form id="jobForm" target="hiddenFrame"
+      action="https://docs.google.com/forms/d/e/1FAIpQLSeq4rgnqQHCZqJiwnbrdtds8Pk47ZdNlzDJL8SOeNw5z-fFTw/formResponse"
+      method="POST">
 
-  <div>
-    <label>Highlight</label>
-    <select name="entry.1932274245">
-      <option>YES</option>
-      <option>NO</option>
-    </select>
-  </div>
+      <!-- top row (mobile stacked; desktop grid) -->
+      <div class="row row-top" style="width:100%;display:flex;flex-direction:column;gap:12px;">
+        <div class="col field">
+          <label for="dateField">Date</label>
+          <input type="date" name="entry.2074265710" id="dateField" required>
+        </div>
 
-</div>
+        <div class="col field">
+          <label for="mainDrive">Main Drive</label>
+          <select name="entry.2034418039" id="mainDrive" required aria-required="true"></select>
+        </div>
 
-<div class="row-bottom">
+        <div class="col field">
+          <label for="subDrive">Sub Drive</label>
+          <select name="entry.273858386" id="subDrive" required aria-required="true"></select>
+        </div>
 
-  <div>
-    <label>Job Details</label>
-    <textarea name="entry.556400630" required></textarea>
-  </div>
+        <div class="col field">
+          <label for="typeJob">Type of Job</label>
+          <select name="entry.591852895" id="typeJob"></select>
+        </div>
 
-  <div>
-    <label>Job By</label>
-    <select name="entry.972123475">
-      <option>NALCO</option>
-      <option>ANIL_AREA</option>
-      <option>Nalco & ANIL</option>
-      <option>Nalco & SUPPLY</option>
-      <option>SUPPLY & ANIL</option>
-      <option>SUPPLY</option>
-      <option>MOTOR</option>
-      <option>NALCO_ANIL_SUPPLY</option>
-      <option>SUNIL BISWAL</option>
-      <option>MAHARANA BDM</option>
-    </select>
-  </div>
+        <div class="col field">
+          <label for="natureJob">Nature of Job</label>
+          <select name="entry.1114156376" id="natureJob"></select>
+        </div>
 
-  <div>
-    <button type="submit">SUBMIT</button>
-  </div>
+        <div class="col field">
+          <label for="highlight">Highlight</label>
+          <select name="entry.1932274245" id="highlight">
+            <option>YES</option>
+            <option>NO</option>
+          </select>
+        </div>
+      </div>
 
-</div>
+      <!-- bottom row -->
+      <div class="row row-bottom" style="display:flex;flex-direction:column;gap:12px">
+        <div class="field">
+          <label for="jobDetails">Job Details</label>
+          <textarea name="entry.556400630" id="jobDetails" required></textarea>
+        </div>
 
-<div id="msg"></div>
-</form>
+        <div class="field">
+          <label for="jobBy">Job By</label>
+          <select name="entry.972123475" id="jobBy">
+            <option>NALCO</option>
+            <option>ANIL_AREA</option>
+            <option>Nalco & ANIL</option>
+            <option>Nalco & SUPPLY</option>
+            <option>SUPPLY & ANIL</option>
+            <option>SUPPLY</option>
+            <option>MOTOR</option>
+            <option>NALCO_ANIL_SUPPLY</option>
+            <option>SUNIL BISWAL</option>
+            <option>MAHARANA BDM</option>
+          </select>
+        </div>
 
-<iframe name="hiddenFrame" style="display:none"></iframe>
-</div>
+        <div class="field submit-row">
+          <div class="primary" style="width:100%">
+            <button type="submit" id="submitBtn" aria-label="Submit job entry">SUBMIT</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="msg" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+
+<!-- hidden iframe for form submission -->
+<iframe name="hiddenFrame" style="display:none" aria-hidden="true"></iframe>
+
+<!-- Floating scanner/help button -->
+<button class="floating-scan" title="Open scanner" onclick="openScanner()">📷</button>
 
 <script>
-const jsonURL =
-"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+/* Fetch dropdown data (same source) and populate selects.
+   Behavior preserved: mainDrive entries are taken from headers (columns >=7),
+   subDrive is built from selected column values.
+*/
 
+/* Source JSON for dropdowns */
+const jsonURL = "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+
+let headers = [], rows = [], mainMap = {};
+
+/* Populate selects after fetching JSON */
 fetch(jsonURL)
-.then(r=>r.json())
-.then(j=>{
+  .then(r => r.json())
+  .then(j => {
+    headers = j.headers || [];
+    rows = j.rows || [];
 
-  const headers=j.headers;
-  const rows=j.rows;
+    const mainSel = document.getElementById("mainDrive");
+    const subSel = document.getElementById("subDrive");
+    const typeJob = document.getElementById("typeJob");
+    const natureJob = document.getElementById("natureJob");
 
-  const mainSel=document.getElementById("mainDrive");
-  const subSel=document.getElementById("subDrive");
-  const typeJob=document.getElementById("typeJob");
-  const natureJob=document.getElementById("natureJob");
-
-  let mainList=[];
-  headers.forEach((h,i)=>{
-    if(i>=7 && h){
-      mainList.push({index:i,text:h});
-    }
-  });
-
-  mainList.sort((a,b)=>a.text.localeCompare(b.text));
-
-  mainList.forEach(item=>{
-    const o=document.createElement("option");
-    o.value=item.text;
-    o.textContent=item.text;
-    o.dataset.index=item.index;
-    mainSel.appendChild(o);
-  });
-
-  mainSel.onchange=function(){
-    subSel.innerHTML="";
-    let subSet=new Set();
-    const colIndex=this.selectedOptions[0].dataset.index;
-
-    rows.forEach(r=>{
-      if(r[colIndex]!==undefined && r[colIndex]!==""){
-        subSet.add(String(r[colIndex]));
+    // Build main list from headers starting at index 7
+    const mainList = [];
+    headers.forEach((h,i) => {
+      if(i >= 7 && h){
+        mainList.push({ index: i, text: h });
+        mainMap[h] = i;
       }
     });
 
-    let subList=Array.from(subSet);
-    subList.sort((a,b)=>a.localeCompare(b));
-
-    subList.forEach(val=>{
-      const o=document.createElement("option");
-      o.value=val;
-      o.textContent=val;
-      subSel.appendChild(o);
+    mainList.sort((a,b) => a.text.localeCompare(b.text));
+    mainList.forEach(item => {
+      const o = document.createElement("option");
+      o.value = item.text;
+      o.textContent = item.text;
+      o.dataset.index = item.index;
+      mainSel.appendChild(o);
     });
-  };
 
-  if(mainSel.options.length>0){
-    mainSel.selectedIndex=0;
-    mainSel.onchange();
-  }
+    // When main changes populate sub drive
+    function populateSub(){
+      subSel.innerHTML = '';
+      const opt = mainSel.selectedOptions[0];
+      if(!opt) return;
+      const colIndex = Number(opt.dataset.index);
+      const subSet = new Set();
+      rows.forEach(r => {
+        if(r[colIndex] !== undefined && r[colIndex] !== "") subSet.add(String(r[colIndex]));
+      });
+      const list = Array.from(subSet).sort((a,b)=>a.localeCompare(b));
+      list.forEach(val => {
+        const o = document.createElement('option');
+        o.value = val;
+        o.textContent = val;
+        subSel.appendChild(o);
+      });
+    }
 
-  let typeSet=new Set();
-  if(headers[1]) typeSet.add(headers[1]);
-  rows.forEach(r=>{ if(r[1]) typeSet.add(r[1]); });
+    mainSel.addEventListener('change', populateSub);
 
-  Array.from(typeSet)
-  .sort((a,b)=>a.localeCompare(b))
-  .forEach(v=>typeJob.add(new Option(v,v)));
+    // Autoselect first main (if present)
+    if(mainSel.options.length > 0){
+      mainSel.selectedIndex = 0;
+      populateSub();
+    }
 
-  let natureSet=new Set();
-  if(headers[2]) natureSet.add(headers[2]);
-  rows.forEach(r=>{ if(r[2]) natureSet.add(r[2]); });
+    // Type of Job options (column index 1)
+    const typeSet = new Set();
+    if(headers[1]) typeSet.add(headers[1]);
+    rows.forEach(r => { if(r[1]) typeSet.add(r[1]); });
+    Array.from(typeSet).sort().forEach(v => typeJob.add(new Option(v,v)));
 
-  Array.from(natureSet)
-  .sort((a,b)=>a.localeCompare(b))
-  .forEach(v=>natureJob.add(new Option(v,v)));
+    // Nature of Job options (column index 2)
+    const natureSet = new Set();
+    if(headers[2]) natureSet.add(headers[2]);
+    rows.forEach(r => { if(r[2]) natureSet.add(r[2]); });
+    Array.from(natureSet).sort().forEach(v => natureJob.add(new Option(v,v)));
+  })
+  .catch(err => {
+    console.error('Failed to load dropdown data', err);
+  });
 
+/* Form submit feedback: show message then reset (retain date) */
+document.getElementById("jobForm").addEventListener('submit', (e) => {
+  const d = document.getElementById("dateField").value;
+  // show temporary feedback once submission is processed by iframe (best-effort)
+  setTimeout(() => {
+    const msg = document.getElementById("msg");
+    msg.textContent = "✅ Submitted successfully. Pending verification.";
+    msg.style.color = "var(--accent)";
+    // reset form but keep date
+    document.getElementById("jobForm").reset();
+    document.getElementById("dateField").value = d;
+    // restore main/sub selections if options still exist
+    const mainSel = document.getElementById("mainDrive");
+    if(mainSel.options.length) mainSel.selectedIndex = 0;
+    // trigger sub fill
+    mainSel.dispatchEvent(new Event('change'));
+    // clear message after a while
+    setTimeout(()=>{ msg.textContent = ''; }, 5000);
+  }, 700);
 });
 
-document.getElementById("jobForm").onsubmit=()=>{
-  setTimeout(()=>{
-    document.getElementById("msg").innerText=
-    "✅ Submitted successfully. Pending verification.";
-    const d=dateField.value;
-    jobForm.reset();
-    dateField.value=d;
-  },800);
-};
+/* Open scanner (existing page) */
+function openScanner(){
+  location.href = "https://08electricaldata.github.io/scanview.html";
+}
 </script>
-
 </body>
 </html>
