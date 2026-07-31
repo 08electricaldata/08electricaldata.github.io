@@ -587,13 +587,8 @@ document.addEventListener("click",e=>{
   }
 });
 
+/* CHECK PASSWORD: now disabled (always true) */
 function checkPassword(){
-  if(!sheetPassword){alert("⏳ Data loading");return false}
-  const p=prompt("🔐 Enter Password");
-  if(p===null||p.trim()!==sheetPassword){
-    alert("❌ Incorrect password");
-    return false;
-  }
   return true;
 }
 
