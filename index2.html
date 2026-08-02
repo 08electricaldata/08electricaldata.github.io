@@ -405,10 +405,14 @@ button{
   🗄️ Board List
 </button>
 
+
+
 <button onclick="secureOpen('ersmaster')">🗂️ ERS Master</button>
 <button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
 <!-- Added Break down List button similar to ERS Pending -->
 <button class="pending-btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
+<!-- Added Information button as requested -->
+<button onclick="location.href='https://08electricaldata.github.io/drive-viewer/info.html'">📌Information </button>
     
   </div>
 </div>
@@ -479,6 +483,8 @@ button{
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
+    <!-- Added Gallery button above Monthly Job Trend as requested -->
+    <button onclick="location.href='https://08electricaldata.github.io/drive-viewer/gallery.html'">🖼️ Gallery</button>
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
     <button onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
@@ -609,7 +615,7 @@ if (!validSubs.includes(String(sub).trim())) {
   const id=main+"-"+sub;
   location.href="https://08electricaldata.github.io/"+
   (type==="view"
-    ?"drive-viewer/index.html?id="
+    ?"drive-viewer/index2.html?id="
     :"drive-viewer/history.html?id=")+
   encodeURIComponent(id);
 }
