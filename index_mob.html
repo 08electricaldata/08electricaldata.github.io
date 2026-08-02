@@ -479,6 +479,8 @@ body{
     <button class="pending-btn" onclick="openERSPending()">📌 ERS Pending</button>
     <!-- NEW Breakdown List button added next to ERS Pending -->
     <button class="breakdown-btn" onclick="openBreakdown()">🛠️ Breakdown List</button>
+    <!-- NEW Information button AFTER Breakdown List -->
+    <button onclick="openInfo()">📌 Information</button>
   </div>
 </div>
 
@@ -486,6 +488,8 @@ body{
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
+    <!-- NEW Gallery button added above Monthly Job Trend -->
+    <button onclick="openGallery()">🖼️ Gallery</button>
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
     <button onclick="openMotorOH()">🛠️ Motor O/H Data</button>
     <button onclick="openMotorPM()">🧾 Motor PM Status</button>
@@ -544,6 +548,16 @@ function openERSPending(){
 /* NEW: open Breakdown List */
 function openBreakdown(){
   location.href="https://08electricaldata.github.io/drive-viewer/mobile/breakdown.html";
+}
+
+/* NEW: open Information page */
+function openInfo(){
+  location.href="https://08electricaldata.github.io/drive-viewer/mobile/info.html";
+}
+
+/* NEW: open Gallery page */
+function openGallery(){
+  location.href="https://08electricaldata.github.io/drive-viewer/mobile/gallery.html";
 }
 
 function openJobEntry(){
