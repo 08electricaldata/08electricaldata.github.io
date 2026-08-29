@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>08 Electrical Data - Enhanced</title>
+<title>08 Electrical Data - Offline Ready</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -100,8 +100,6 @@ body{
 .card h2{margin-top:0;color:#003f88;text-align:center}
 
 /* BUTTONS */
-
-/* 🗄️ Board Button Special Color */
 .board-btn{
   background:linear-gradient(135deg,#ff8c00,#ffb347);
   font-weight:bold;
@@ -123,6 +121,12 @@ button{
   border:none;
   border-radius:8px;
   cursor:pointer;
+  transition: all 0.3s;
+}
+
+button:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
 }
 
 /* CUSTOM DROPDOWN */
@@ -181,10 +185,55 @@ button{
   color:#555
 }
 
-@media(max-width:1000px){
-  .container{grid-template-columns:1fr}
+/* CONNECTION STATUS INDICATOR */
+.status-indicator{
+  position:fixed;
+  top:10px;
+  right:10px;
+  padding:8px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
-  /* 🔴 ERS Pending Special Button */
+.status-online{
+  background:#4caf50;
+  color:white;
+}
+.status-offline{
+  background:#f44336;
+  color:white;
+}
+.status-cached{
+  background:#ff9800;
+  color:white;
+}
+
+/* DATA REFRESH BANNER */
+.data-status{
+  background:#fffacd;
+  border-left:4px solid #ffc107;
+  padding:12px 15px;
+  margin-bottom:15px;
+  border-radius:4px;
+  font-size:13px;
+  color:#856404;
+}
+.data-status.error{
+  background:#f8d7da;
+  border-left-color:#f5c6cb;
+  color:#721c24;
+}
+.data-status.success{
+  background:#d4edda;
+  border-left-color:#c3e6cb;
+  color:#155724;
+}
+
+/* 🔴 ERS Pending Special Button */
 .pending-btn{
   background:linear-gradient(135deg,#d32f2f,#f44336);
   font-weight:bold;
@@ -192,6 +241,7 @@ button{
 .pending-btn:hover{
   background:linear-gradient(135deg,#b71c1c,#e53935);
 }
+
 /* 📅 Weekly Job Plan Table */
 .weekly-plan{
   margin-top:25px;
@@ -217,24 +267,8 @@ button{
   background:#f4f9ff;
 }
 
-/* CONNECTION STATUS INDICATOR */
-.status-indicator{
-  position:fixed;
-  top:10px;
-  right:10px;
-  padding:8px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
-  z-index:10000;
-}
-.status-online{
-  background:#4caf50;
-  color:white;
-}
-.status-offline{
-  background:#f44336;
-  color:white;
+@media(max-width:1000px){
+  .container{grid-template-columns:1fr}
 }
 
 /*==================================================
@@ -247,7 +281,6 @@ body{
     overflow-x:hidden;
 }
 
-/* Header */
 .header{
     padding:10px 8px;
 }
@@ -273,7 +306,6 @@ body{
     border-radius:8px;
 }
 
-/* Layout */
 .container{
     display:flex;
     flex-direction:column;
@@ -293,7 +325,6 @@ body{
     margin:0 0 10px;
 }
 
-/* Buttons */
 .master-btns,
 .jobs-btns{
     gap:6px;
@@ -324,7 +355,6 @@ button{
     height:36px;
 }
 
-/* Dropdown */
 .select-row{
     display:flex;
     flex-direction:column;
@@ -351,7 +381,6 @@ button{
     font-size:13px;
 }
 
-/* Weekly Plan */
 .weekly-plan{
     margin-top:12px;
     overflow-x:auto;
@@ -370,13 +399,11 @@ button{
     padding:6px;
 }
 
-/* Footer */
 .footer{
     font-size:10px;
     padding:10px;
 }
 
-/* Floating Scan */
 .floating-scan{
     width:52px;
     height:52px;
@@ -385,10 +412,17 @@ button{
     font-size:22px;
 }
 
-/* Remove extra spacing */
-.master-btns button,
-.jobs-btns button{
-    margin:0;
+.status-indicator{
+    top:5px;
+    right:5px;
+    padding:6px 10px;
+    font-size:11px;
+}
+
+.data-status{
+    margin:10px;
+    padding:10px;
+    font-size:11px;
 }
 
 }
@@ -400,10 +434,7 @@ button{
 <div class="status-indicator" id="statusIndicator">🔄 Checking...</div>
 
 <div class="header">
-
-  <!-- 🔵 Animated Header Scan -->
   <div class="scan-icon" onclick="openScanner()">📷</div>
-
   <div class="header-row">
     <div class="header-center">
       <h1>08 Electrical Data</h1>
@@ -419,28 +450,22 @@ button{
 <div class="card">
   <h2>Master List</h2>
   <div class="master-btns">
-    <!-- Added Information button as requested -->
     <button onclick="location.href='https://08electricaldata.github.io/drive-viewer/info.html'">📌Area Information </button>
     <button onclick="openMonthlyJobPlan()">🗓️ Monthly Job Plan</button>
     <button onclick="secureOpen('motor')">⚙️ Motor List</button>
     <button onclick="secureOpen('trafo')">⚡ Transformer List</button>
     <button onclick="secureOpen('breaker')">🔌 Breaker List</button>
-
-<button class="board-btn" onclick="secureOpen('boardlist')">
-  🗄️ Board List
-</button>
-
-<button onclick="secureOpen('ersmaster')">🗂️ ERS Transactions</button>
-<button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
-<!-- Added Break down List button similar to ERS Pending -->
-<button class="pending-btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
-    
+    <button class="board-btn" onclick="secureOpen('boardlist')">🗄️ Board List</button>
+    <button onclick="secureOpen('ersmaster')">🗂️ ERS Transactions</button>
+    <button class="pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
+    <button class="pending-btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
   </div>
 </div>
 
 <!-- SELECT DRIVE -->
 <div class="card">
   <h2>Select Drive</h2>
+  <div id="dataStatus"></div>
   <div class="select-row">
     <div class="dropdown">
       <input id="mainDrive" placeholder="Select / Type Main Drive">
@@ -460,43 +485,38 @@ button{
     <button onclick="secureOpen('advanced')">📊 Advanced Summary</button>
     <button onclick="openJob1()">📘 Job1 Summary</button>
     <button onclick="openJob2()">📕 Job2 Summary</button>
-    <!-- 📅 Weekly Job Plan Table -->
-<div class="weekly-plan">
-  <table>
-    <tr>
-      <th>Day</th>
-      <th>Work Details</th>
-    </tr>
-    <tr>
-      <td>Monday</td>
-      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
-    </tr>
-    <tr>
-      <td>Tuesday</td>
-      <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
-    </tr>
-    <tr>
-      <td>Wednesday</td>
-      <td>
-        PMCC / MCC Maintenance / Blowing<br>
-        ASB Maintenance / Blowing<br>
-        TD, MLDB, SLDB, DCDB, PLC Panel
-      </td>
-    </tr>
-    <tr>
-      <td>Thursday</td>
-      <td>6.6 kV VCU / Breaker PM</td>
-    </tr>
-    <tr>
-      <td>Friday</td>
-      <td>Transformer PM Job</td>
-    </tr>
-    <tr>
-      <td>Saturday</td>
-      <td>Inspection of S/S and Housekeeping Jobs</td>
-    </tr>
-  </table>
-</div>
+    <div class="weekly-plan">
+      <table>
+        <tr>
+          <th>Day</th>
+          <th>Work Details</th>
+        </tr>
+        <tr>
+          <td>Monday</td>
+          <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+        </tr>
+        <tr>
+          <td>Tuesday</td>
+          <td>LT Motor, HT Motor, LT Module Maintenance, VFD Panel PM</td>
+        </tr>
+        <tr>
+          <td>Wednesday</td>
+          <td>PMCC / MCC Maintenance / Blowing<br>ASB Maintenance / Blowing<br>TD, MLDB, SLDB, DCDB, PLC Panel</td>
+        </tr>
+        <tr>
+          <td>Thursday</td>
+          <td>6.6 kV VCU / Breaker PM</td>
+        </tr>
+        <tr>
+          <td>Friday</td>
+          <td>Transformer PM Job</td>
+        </tr>
+        <tr>
+          <td>Saturday</td>
+          <td>Inspection of S/S and Housekeeping Jobs</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -504,7 +524,6 @@ button{
 <div class="card">
   <h2>Jobs</h2>
   <div class="jobs-btns">
-    <!-- Added Gallery button above Monthly Job Trend as requested -->
     <button onclick="location.href='https://08electricaldata.github.io/drive-viewer/gallery.html'">🖼️ Gallery</button>
     <button onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
     <button onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
@@ -522,12 +541,48 @@ button{
 © 08 Electrical Data | Designed & Maintained by Rakesh Chandra Sethy
 </div>
 
-<!-- 🟢 Floating Scanner Button -->
 <div class="floating-scan" onclick="openScanner()">📷</div>
 
 <script>
 
-/* ========== CONNECTION MONITORING ========== */
+/* ========== EMBEDDED FALLBACK DATA ========== */
+const EMBEDDED_DATA = {
+  headers: ["", "", "", "", "", "", "password", "BAT_A", "BAT_B", "BAT_C", "BAT_D", "BAT_E"],
+  rows: [
+    ["P-200", "P-201", "P-202", "P-203", "P-204"],
+    ["P-211", "P-212", "P-213", "P-214", "P-215"],
+    ["P-221A", "P-221B", "P-222A", "P-222B", "P-223"],
+    ["P-231", "P-232", "P-241", "P-242", "P-251"],
+    ["P-261", "P-262", "P-263", "P-264", "P-265"]
+  ]
+};
+
+/* ========== LOCAL STORAGE MANAGEMENT ========== */
+function saveToLocalStorage(data) {
+  try {
+    localStorage.setItem('08ed_drives_data', JSON.stringify(data));
+    localStorage.setItem('08ed_data_timestamp', new Date().toISOString());
+    console.log('✅ Data saved to local storage');
+  } catch (err) {
+    console.warn('⚠️ Failed to save to local storage:', err);
+  }
+}
+
+function getFromLocalStorage() {
+  try {
+    const data = localStorage.getItem('08ed_drives_data');
+    const timestamp = localStorage.getItem('08ed_data_timestamp');
+    if (data) {
+      console.log('📦 Loaded from local storage (', timestamp, ')');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.warn('⚠️ Failed to load from local storage:', err);
+  }
+  return null;
+}
+
+/* ========== CONNECTION STATUS ========== */
 function updateConnectionStatus() {
   const indicator = document.getElementById('statusIndicator');
   if (navigator.onLine) {
@@ -535,212 +590,240 @@ function updateConnectionStatus() {
     indicator.innerText = '✅ Online';
   } else {
     indicator.className = 'status-indicator status-offline';
-    indicator.innerText = '❌ Offline';
+    indicator.innerText = '❌ Offline Mode';
   }
 }
 
 window.addEventListener('online', updateConnectionStatus);
 window.addEventListener('offline', updateConnectionStatus);
-updateConnectionStatus();
 
-/* ========== CORS & INTRANET WORKAROUND ========== */
-/* OPTION 1: Try multiple endpoints */
-async function fetchWithFallback(urls) {
-  for (const url of urls) {
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
-      });
-      
-      if (response.ok) {
-        console.log('✅ Successfully loaded from:', url);
-        return await response.json();
-      }
-    } catch (err) {
-      console.warn('⚠️ Failed to load from:', url, err.message);
-      continue;
-    }
-  }
-  
-  throw new Error('All endpoints failed. Check network & firewall settings.');
-}
-
-/* 🔓 Open Scanner */
-function openScanner(){
-  location.href="https://08electricaldata.github.io/scanview.html";
-}
-function openMonthlyJobPlan(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
-}
-
-function openBoardPM(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
-}
-
-/* ======= YOUR ORIGINAL SCRIPT (ENHANCED) ======= */
-
+/* ========== DATA LOADING WITH OFFLINE SUPPORT ========== */
 const DRIVE_JSON_URLS = [
   "https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json",
   "https://cdn.jsdelivr.net/gh/08electricaldata/08electricaldata-json@main/dropdown/drives.json"
 ];
 
-let headers=[],rows=[],sheetPassword="";
-let mainMap={};
+let headers = [], rows = [], sheetPassword = "";
+let mainMap = {};
+let dataSource = "embedded";
 
-async function loadSheet(){
+async function fetchWithTimeout(url, timeout = 5000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  
   try {
-    const d = await fetchWithFallback(DRIVE_JSON_URLS);
-    headers = d.headers;
-    rows = d.rows;
-    sheetPassword = String(headers[6] || "").trim();
-    buildMain();
-    console.log('✅ Data loaded successfully');
+    const response = await fetch(url, {
+      method: 'GET',
+      signal: controller.signal,
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    });
+    clearTimeout(timeoutId);
+    return response;
   } catch (err) {
-    console.error('❌ Failed to load data:', err);
-    alert('⚠️ Cannot load drive data.\n\nPossible causes:\n1. Office firewall blocking GitHub\n2. CORS policy issue\n3. Network connectivity\n\nTry:\n- Using personal WiFi to test\n- Contact IT about GitHub access\n- Reload page');
-    
-    // Fallback: Load from cache or use sample data
-    loadFallbackData();
+    clearTimeout(timeoutId);
+    throw err;
   }
 }
 
-function loadFallbackData(){
-  // Sample fallback data - replace with your cached data
-  headers = ["", "", "", "", "", "", "password", "BAT_A", "BAT_B", "BAT_C"];
-  rows = [
-    ["P-200", "P-201", "P-202"],
-    ["P-211", "P-212", "P-213"]
-  ];
+async function loadSheet() {
+  const statusDiv = document.getElementById('dataStatus');
+  
+  // Try to load from remote first
+  for (const url of DRIVE_JSON_URLS) {
+    try {
+      console.log('🔄 Attempting to fetch from:', url);
+      const response = await fetchWithTimeout(url, 5000);
+      
+      if (response.ok) {
+        const data = await response.json();
+        headers = data.headers;
+        rows = data.rows;
+        sheetPassword = String(headers[6] || "").trim();
+        saveToLocalStorage(data);
+        dataSource = "remote";
+        
+        statusDiv.innerHTML = '<div class="data-status success">✅ Data loaded from GitHub (Live)</div>';
+        console.log('✅ Successfully loaded from GitHub');
+        buildMain();
+        return;
+      }
+    } catch (err) {
+      console.warn('⚠️ Failed to load from', url, ':', err.message);
+    }
+  }
+  
+  // Try to load from localStorage
+  const cachedData = getFromLocalStorage();
+  if (cachedData) {
+    headers = cachedData.headers;
+    rows = cachedData.rows;
+    sheetPassword = String(headers[6] || "").trim();
+    dataSource = "cached";
+    
+    statusDiv.innerHTML = '<div class="data-status">📦 Using cached data (Last synced: ' + 
+      (localStorage.getItem('08ed_data_timestamp') || 'Unknown') + ')</div>';
+    console.log('📦 Using cached data from local storage');
+    buildMain();
+    return;
+  }
+  
+  // Use embedded fallback data
+  headers = EMBEDDED_DATA.headers;
+  rows = EMBEDDED_DATA.rows;
+  sheetPassword = String(headers[6] || "").trim();
+  dataSource = "embedded";
+  
+  statusDiv.innerHTML = '<div class="data-status error">⚠️ Using sample data (Offline mode). Network blocked or unavailable.</div>';
+  console.log('📋 Using embedded fallback data');
   buildMain();
-  console.log('📋 Using fallback/cached data');
+  
+  // Show warning message
+  setTimeout(() => {
+    alert('⚠️ Cannot connect to GitHub\n\n' +
+      'Your office firewall is blocking GitHub access.\n\n' +
+      'Using sample/cached data instead.\n\n' +
+      'To fix: Ask IT to whitelist raw.githubusercontent.com');
+  }, 1000);
 }
 
-function buildMain(){
-  const list=document.getElementById("mainList");
-  list.innerHTML="";
-  headers.forEach((h,i)=>{
-    if(i<7||!h)return;
-    mainMap[h]=i;
-    const div=document.createElement("div");
-    div.innerText=h;
-    div.onclick=()=>{
-      mainDrive.value=h;
-      list.style.display="none";
+function buildMain() {
+  const list = document.getElementById("mainList");
+  list.innerHTML = "";
+  headers.forEach((h, i) => {
+    if (i < 7 || !h) return;
+    mainMap[h] = i;
+    const div = document.createElement("div");
+    div.innerText = h;
+    div.onclick = () => {
+      mainDrive.value = h;
+      list.style.display = "none";
       buildSub(i);
     };
     list.appendChild(div);
   });
 }
 
-function buildSub(index){
-  const list=document.getElementById("subList");
-  list.innerHTML="";
-  rows.forEach(r=>{
-    if(r[index]){
-      const div=document.createElement("div");
-      div.innerText=r[index];
-      div.onclick=()=>{
-        subDrive.value=r[index];
-        list.style.display="none";
+function buildSub(index) {
+  const list = document.getElementById("subList");
+  list.innerHTML = "";
+  rows.forEach(r => {
+    if (r[index]) {
+      const div = document.createElement("div");
+      div.innerText = r[index];
+      div.onclick = () => {
+        subDrive.value = r[index];
+        list.style.display = "none";
       };
       list.appendChild(div);
     }
   });
 }
 
-mainDrive.onfocus=()=>mainList.style.display="block";
-subDrive.onfocus=()=>subList.style.display="block";
+mainDrive.onfocus = () => mainList.style.display = "block";
+subDrive.onfocus = () => subList.style.display = "block";
 
-mainDrive.oninput=function(){
-  const filter=this.value.toLowerCase();
-  [...mainList.children].forEach(d=>{
-    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+mainDrive.oninput = function() {
+  const filter = this.value.toLowerCase();
+  [...mainList.children].forEach(d => {
+    d.style.display = d.innerText.toLowerCase().includes(filter) ? "block" : "none";
   });
 };
 
-subDrive.oninput=function(){
-  const filter=this.value.toLowerCase();
-  [...subList.children].forEach(d=>{
-    d.style.display=d.innerText.toLowerCase().includes(filter)?"block":"none";
+subDrive.oninput = function() {
+  const filter = this.value.toLowerCase();
+  [...subList.children].forEach(d => {
+    d.style.display = d.innerText.toLowerCase().includes(filter) ? "block" : "none";
   });
 };
 
-document.addEventListener("click",e=>{
-  if(!e.target.closest(".dropdown")){
-    mainList.style.display="none";
-    subList.style.display="none";
+document.addEventListener("click", e => {
+  if (!e.target.closest(".dropdown")) {
+    mainList.style.display = "none";
+    subList.style.display = "none";
   }
 });
 
-/* CHECK PASSWORD: now disabled (always true) */
-function checkPassword(){
+/* UI FUNCTIONS */
+function openScanner() {
+  location.href = "https://08electricaldata.github.io/scanview.html";
+}
+
+function openMonthlyJobPlan() {
+  if (checkPassword())
+    location.href = "https://08electricaldata.github.io/drive-viewer/monthlyjobplan.html";
+}
+
+function openBoardPM() {
+  if (checkPassword())
+    location.href = "https://08electricaldata.github.io/drive-viewer/boardpm.html";
+}
+
+function checkPassword() {
   return true;
 }
 
-function secureView(type){
-  if(!checkPassword())return;
-  const main=mainDrive.value;
-  const sub=subDrive.value;
-  if(mainMap[main]===undefined){alert("Select valid Main Drive");return;}
-  const index=mainMap[main];
-  const validSubs = rows
-  .map(r => String(r[index]).trim())
-  .filter(Boolean);
+function secureView(type) {
+  if (!checkPassword()) return;
+  const main = mainDrive.value;
+  const sub = subDrive.value;
+  if (mainMap[main] === undefined) { alert("Select valid Main Drive"); return; }
+  const index = mainMap[main];
+  const validSubs = rows.map(r => String(r[index]).trim()).filter(Boolean);
 
-if (!validSubs.includes(String(sub).trim())) {
-   alert("Select valid Sub Drive");
-   return;
-}
-  const id=main+"-"+sub;
-  location.href="https://08electricaldata.github.io/"+
-  (type==="view"
-    ?"drive-viewer/index2.html?id="
-    :"drive-viewer/history.html?id=")+
-  encodeURIComponent(id);
+  if (!validSubs.includes(String(sub).trim())) {
+    alert("Select valid Sub Drive");
+    return;
+  }
+  const id = main + "-" + sub;
+  location.href = "https://08electricaldata.github.io/" +
+    (type === "view"
+      ? "drive-viewer/index2.html?id="
+      : "drive-viewer/history.html?id=") +
+    encodeURIComponent(id);
 }
 
-function secureOpen(type){
-  if(!checkPassword())return;
-  const map={
-    motor:"drive-viewer/motorlist.html",
-    trafo:"drive-viewer/trafolist.html",
-    breaker:"drive-viewer/breakerlist.html",
-    boardlist:"drive-viewer/boardlist.html",
-    ersmaster:"drive-viewer/ersmasterdata.html",
-    erspending:"drive-viewer/ersmasterdata1.html",
-    advanced:"drive-viewer/summary-advanced.html",
-    motoroh:"drive-viewer/motoroh.html",
-    motorpm:"drive-viewer/motorpm.html",
-    trafopm:"drive-viewer/trafopm.html",
-    trafooil:"drive-viewer/transformer-oil-summary.html",
-    breakerpm:"drive-viewer/breakerpm.html",
-    jobentry:"jobsubmit.html",
-    breakdown:"drive-viewer/breakdown1.html"
+function secureOpen(type) {
+  if (!checkPassword()) return;
+  const map = {
+    motor: "drive-viewer/motorlist.html",
+    trafo: "drive-viewer/trafolist.html",
+    breaker: "drive-viewer/breakerlist.html",
+    boardlist: "drive-viewer/boardlist.html",
+    ersmaster: "drive-viewer/ersmasterdata.html",
+    erspending: "drive-viewer/ersmasterdata1.html",
+    advanced: "drive-viewer/summary-advanced.html",
+    motoroh: "drive-viewer/motoroh.html",
+    motorpm: "drive-viewer/motorpm.html",
+    trafopm: "drive-viewer/trafopm.html",
+    trafooil: "drive-viewer/transformer-oil-summary.html",
+    breakerpm: "drive-viewer/breakerpm.html",
+    jobentry: "jobsubmit.html",
+    breakdown: "drive-viewer/breakdown1.html"
   };
-  location.href="https://08electricaldata.github.io/"+map[type];
+  location.href = "https://08electricaldata.github.io/" + map[type];
 }
 
-function openMonthlyTrend(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
+function openMonthlyTrend() {
+  if (checkPassword())
+    location.href = "https://08electricaldata.github.io/drive-viewer/monthly-jobs.html";
 }
 
-function openJob1(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
-}
-function openJob2(){
-  if(checkPassword())
-    location.href="https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+function openJob1() {
+  if (checkPassword())
+    location.href = "https://08electricaldata.github.io/drive-viewer/summeryjobwise1.html";
 }
 
+function openJob2() {
+  if (checkPassword())
+    location.href = "https://08electricaldata.github.io/drive-viewer/summeryjobwise.html";
+}
+
+/* INIT */
+updateConnectionStatus();
 loadSheet();
+
 </script>
 
 </body>
