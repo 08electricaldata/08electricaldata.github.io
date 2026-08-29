@@ -520,20 +520,25 @@ function openBoardPM(){
     location.href="https://08electricaldata.github.io/drive-viewer/boardpm.html";
 }
 
-/* ======= YOUR ORIGINAL SCRIPT (UNCHANGED) ======= */
+/* ======= USING jsDelivr CDN ======= */
 
 const DRIVE_JSON =
-"https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json";
+"https://cdn.jsdelivr.net/gh/08electricaldata/08electricaldata-json@main/dropdown/drives.json";
 
 let headers=[],rows=[],sheetPassword="";
 let mainMap={};
 
 async function loadSheet(){
-  const d=await (await fetch(DRIVE_JSON)).json();
-  headers=d.headers;
-  rows=d.rows;
-  sheetPassword=String(headers[6]||"").trim();
-  buildMain();
+  try {
+    const d=await (await fetch(DRIVE_JSON)).json();
+    headers=d.headers;
+    rows=d.rows;
+    sheetPassword=String(headers[6]||"").trim();
+    buildMain();
+  } catch(error) {
+    console.error("Error loading data:", error);
+    alert("Failed to load drive data. Please refresh the page.");
+  }
 }
 
 function buildMain(){
