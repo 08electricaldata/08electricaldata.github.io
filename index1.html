@@ -94,9 +94,17 @@ button.board-btn:focus, button.pending-btn:focus{outline:3px solid rgba(255,255,
 .dropdown-list div{padding:10px;border-radius:8px;cursor:pointer}
 .dropdown-list div:hover{background:linear-gradient(90deg,rgba(21,101,216,0.06),rgba(11,37,64,0.02))}
 
-/* Button rows */
-.button-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-.button-row button{min-width:140px}
+/* Button rows: TWO-COLUMN layout */
+.button-row{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:12px;
+  justify-items:stretch;
+  margin-top:14px;
+}
+.button-row button{width:100%;min-width:0;padding:12px;font-size:15px;border-radius:10px}
+
+/* ensure other uses of button-row (if in other places) inherit same behavior */
 
 /* Weekly plan */
 .weekly-plan{margin-top:14px;border-radius:10px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
@@ -108,12 +116,14 @@ button.board-btn:focus, button.pending-btn:focus{outline:3px solid rgba(255,255,
 /* Footer */
 .footer{text-align:center;padding:16px;color:var(--muted);font-size:13px;margin-top:12px}
 
-/* Responsive */
+/* Responsive: single-column and single-column button rows on small screens */
 @media (max-width:1000px){
   .container{grid-template-columns:1fr; padding:0 14px}
   .dropdown-list{top:calc(100% + 6px)}
 }
-@media (max-width:420px){
+/* make button rows 1 column on small screens for clarity */
+@media (max-width:640px){
+  .button-row{ grid-template-columns: 1fr; }
   .header-center h1{font-size:18px}
   .header p{font-size:12px}
   button.btn{font-size:14px;padding:10px}
@@ -175,9 +185,6 @@ button:focus, .dropdown input:focus, .scan-icon:focus { outline:3px solid rgba(2
       <button class="btn" onclick="secureView('view')">VIEW</button>
       <button class="btn" onclick="secureView('history')">HISTORY</button>
       <button class="btn" onclick="secureOpen('jobentry')">📝 NEW JOB ENTRY</button>
-    </div>
-
-    <div class="button-row" style="margin-top:14px">
       <button class="btn" onclick="secureOpen('advanced')">📊 Advanced Summary</button>
       <button class="btn" onclick="openJob1()">📘 Job1 Summary</button>
       <button class="btn" onclick="openJob2()">📕 Job2 Summary</button>
