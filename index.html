@@ -241,6 +241,7 @@ function openJob2(){ if(checkPassword()) location.href="https://08electricaldata
 const DRIVE_JSON = "https://cdn.jsdelivr.net/gh/08electricaldata/08electricaldata-json@main/dropdown/drives.json";
 let headers=[], rows=[], sheetPassword="";
 let mainMap={};
+let displayNameToActualName={}; // Map display names to actual column names
 
 async function loadSheet(){
   try {
@@ -255,20 +256,37 @@ async function loadSheet(){
   }
 }
 
+// Display name mapping (DISPLAY_NAME -> ACTUAL_COLUMN_NAME)
+const DISPLAY_NAMES = {
+  "BATTERY-A": "BAT_A",
+  "BATTERY-B": "BAT_B",
+  "BATTERY-C": "BAT_C"
+  // Add more mappings as needed
+};
+
+function getDisplayName(actualName){
+  return DISPLAY_NAMES[actualName] || actualName;
+}
+
+function getActualName(displayName){
+  return Object.keys(DISPLAY_NAMES).includes(displayName) ? DISPLAY_NAMES[displayName] : displayName;
+}
+
 function buildMain(){
   const list = document.getElementById("mainList");
   list.innerHTML = "";
   headers.forEach((h,i)=>{
     if(i < 7 || !h) return;
-    mainMap[h] = i;
+    const displayName = getDisplayName(h);
+    mainMap[displayName] = {index: i, actual: h};
     const div = document.createElement("div");
-    div.innerText = h;
+    div.innerText = displayName;
     div.tabIndex = 0;
     div.role = "option";
     div.onclick = () => {
-      mainDrive.value = h;
+      mainDrive.value = displayName;
       hideLists();
-      buildSub(i);
+      buildSub(i, h);
     };
     div.onkeydown = (e) => { if(e.key === "Enter") div.onclick(); };
     list.appendChild(div);
@@ -276,7 +294,7 @@ function buildMain(){
 }
 
 /* build sub drive list based on selected header index */
-function buildSub(index){
+function buildSub(index, actualName){
   const list = document.getElementById("subList");
   list.innerHTML = "";
   rows.forEach(r=>{
@@ -329,13 +347,18 @@ function checkPassword(){ return true; }
 /* navigation helpers used by secureView/secureOpen */
 function secureView(type){
   if(!checkPassword()) return;
-  const main = mainDrive.value;
+  const displayMain = mainDrive.value;
   const sub = subDrive.value;
-  if(mainMap[main] === undefined){ alert("Select valid Main Drive"); return; }
-  const index = mainMap[main];
+  
+  if(!mainMap[displayMain]){ alert("Select valid Main Drive"); return; }
+  
+  const actualMain = mainMap[displayMain].actual;
+  const index = mainMap[displayMain].index;
   const validSubs = rows.map(r => String(r[index]).trim()).filter(Boolean);
   if(!validSubs.includes(String(sub).trim())){ alert("Select valid Sub Drive"); return; }
-  const id = main + "-" + sub;
+  
+  // Use actual name in URL
+  const id = actualMain + "-" + sub;
   location.href = "https://08electricaldata.github.io/" + (type === "view" ? "drive-viewer/index2.html?id=" : "drive-viewer/history.html?id=") + encodeURIComponent(id);
 }
 
