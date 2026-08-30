@@ -241,7 +241,24 @@ function openJob2(){ if(checkPassword()) location.href="https://08electricaldata
 const DRIVE_JSON = "https://cdn.jsdelivr.net/gh/08electricaldata/08electricaldata-json@main/dropdown/drives.json";
 let headers=[], rows=[], sheetPassword="";
 let mainMap={};
-let displayNameToActualName={}; // Map display names to actual column names
+
+// Display name mapping (ACTUAL_NAME -> DISPLAY_NAME)
+const DISPLAY_NAMES = {
+  "BAT_A": "BATTERY-A",
+  "BAT_B": "BATTERY-B"
+};
+
+function getDisplayName(actualName){
+  return DISPLAY_NAMES[actualName] || actualName;
+}
+
+function getActualName(displayName){
+  // Reverse lookup
+  for(let key in DISPLAY_NAMES){
+    if(DISPLAY_NAMES[key] === displayName) return key;
+  }
+  return displayName;
+}
 
 async function loadSheet(){
   try {
@@ -254,22 +271,6 @@ async function loadSheet(){
     console.error("Error loading data:", error);
     alert("Failed to load drive data. Please refresh the page.");
   }
-}
-
-// Display name mapping (DISPLAY_NAME -> ACTUAL_COLUMN_NAME)
-const DISPLAY_NAMES = {
-  "BATTERY-A": "BAT_A",
-  "BATTERY-B": "BAT_B",
-  "BATTERY-C": "BAT_C"
-  // Add more mappings as needed
-};
-
-function getDisplayName(actualName){
-  return DISPLAY_NAMES[actualName] || actualName;
-}
-
-function getActualName(displayName){
-  return Object.keys(DISPLAY_NAMES).includes(displayName) ? DISPLAY_NAMES[displayName] : displayName;
 }
 
 function buildMain(){
