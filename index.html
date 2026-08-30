@@ -76,10 +76,6 @@ button.btn{
   box-shadow:0 8px 20px rgba(21,101,216,0.12);transition:transform .12s,box-shadow .12s;
 }
 button.btn:hover{transform:translateY(-3px)}
-button.board-btn{background:linear-gradient(135deg,var(--warn),#ffb347)}
-button.pending-btn{background:linear-gradient(135deg,var(--danger),#f44336)}
-/* make sure special buttons have strong contrast on mobile */
-button.board-btn:focus, button.pending-btn:focus{outline:3px solid rgba(255,255,255,0.12)}
 
 /* Select drive area */
 .select-row{display:flex;gap:12px;flex-direction:column}
@@ -159,10 +155,11 @@ button:focus, .dropdown input:focus, .scan-icon:focus { outline:3px solid rgba(2
       <button class="btn" onclick="secureOpen('motor')">⚙️ Motor List</button>
       <button class="btn" onclick="secureOpen('trafo')">⚡ Transformer List</button>
       <button class="btn" onclick="secureOpen('breaker')">🔌 Breaker List</button>
-      <button class="btn board-btn" onclick="secureOpen('boardlist')">🗄️ Board List</button>
+      <button class="btn" onclick="secureOpen('boardlist')">🗄️ Board List</button>
       <button class="btn" onclick="secureOpen('ersmaster')">🗂️ ERS Transactions</button>
-      <button class="btn pending-btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
-      <button class="btn pending-btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
+      <button class="btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
+      <button class="btn" onclick="secureOpen('sparemotor')">⚙️ ERS Motor Spare</button>
+      <button class="btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
     </div>
   </aside>
 
@@ -357,7 +354,8 @@ function secureOpen(type){
     trafooil:"drive-viewer/transformer-oil-summary.html",
     breakerpm:"drive-viewer/breakerpm.html",
     jobentry:"jobsubmit.html",
-    breakdown:"drive-viewer/breakdown1.html"
+    breakdown:"drive-viewer/breakdown1.html",
+    sparemotor:"drive-viewer/sparemotor.html"
   };
   location.href = "https://08electricaldata.github.io/" + (map[type] || "");
 }
