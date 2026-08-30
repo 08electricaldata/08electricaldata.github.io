@@ -159,7 +159,7 @@ button:focus, .dropdown input:focus, .scan-icon:focus { outline:3px solid rgba(2
       <button class="btn" onclick="secureOpen('ersmaster')">🗂️ ERS Transactions</button>
       <button class="btn" onclick="secureOpen('erspending')">📌 ERS Pending</button>
       <button class="btn" onclick="secureOpen('sparemotor')">⚙️ ERS Motor Spare</button>
-      <button class="btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
+      <button class="btn" onclick="secureOpen('materialcode')">📦 Material Codes</button>
     </div>
   </aside>
 
@@ -210,6 +210,7 @@ button:focus, .dropdown input:focus, .scan-icon:focus { outline:3px solid rgba(2
     <div class="jobs-btns">
       <button class="btn" onclick="location.href='https://08electricaldata.github.io/drive-viewer/gallery.html'">🖼️ Gallery</button>
       <button class="btn" onclick="openMonthlyTrend()">📈 Monthly Job Trend</button>
+      <button class="btn" onclick="secureOpen('breakdown')">📌 Break down List</button>
       <button class="btn" onclick="secureOpen('motoroh')">🛠️ Motor O/H Data</button>
       <button class="btn" onclick="secureOpen('motorpm')">🧾 Motor PM Status</button>
       <button class="btn" onclick="secureOpen('trafopm')">⚡ Transformer Status</button>
@@ -355,7 +356,8 @@ function secureOpen(type){
     breakerpm:"drive-viewer/breakerpm.html",
     jobentry:"jobsubmit.html",
     breakdown:"drive-viewer/breakdown1.html",
-    sparemotor:"drive-viewer/sparemotor.html"
+    sparemotor:"drive-viewer/sparemotor.html",
+    materialcode:"drive-viewer/materialcode.html"
   };
   location.href = "https://08electricaldata.github.io/" + (map[type] || "");
 }
