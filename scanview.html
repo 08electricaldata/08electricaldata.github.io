@@ -24,8 +24,8 @@ body {
   justify-content: center;
 }
 
-button {
-  padding: 10px 14px;
+.top-nav button {
+  padding: 6px 14px;
   background: #003f88;
   color: white;
   border: none;
@@ -34,13 +34,8 @@ button {
   font-size: 14px;
 }
 
-button:hover {
+.top-nav button:hover {
   background: #0050aa;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .container {
@@ -65,13 +60,6 @@ h2 {
   margin: auto;
 }
 
-.camera-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 0;
-}
-
 .status {
   margin-top: 15px;
   font-size: 14px;
@@ -82,16 +70,10 @@ h2 {
 .result-box {
   margin-top: 15px;
   background: #1e293b;
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   font-size: 13px;
   overflow-wrap: anywhere;
-}
-
-.result-box a {
-  display: inline-block;
-  margin-top: 12px;
-  color: #93c5fd;
 }
 
 @media (max-width: 480px) {
@@ -115,32 +97,18 @@ h2 {
     Designed and Maintained by Rakesh Chandra Sethy
   </div>
 
-  <div class="camera-controls">
-    <button id="startButton" type="button">Start camera</button>
-    <button id="stopButton" type="button" disabled>Stop camera</button>
-  </div>
-
   <div id="reader"></div>
   <div class="status" id="status" role="status" aria-live="polite">
-    Tap “Start camera” and allow camera access when prompted.
+    Starting camera…
   </div>
-  <div class="result-box" id="result" aria-live="polite"></div>
+  <div class="result-box" id="result"></div>
 </div>
 
 <script>
 const statusElement = document.getElementById("status");
 const resultElement = document.getElementById("result");
-const startButton = document.getElementById("startButton");
-const stopButton = document.getElementById("stopButton");
 
-const scannerConfig = {
-  fps: 10,
-  qrbox: { width: 250, height: 250 },
-  aspectRatio: 1
-};
-
-let scanner = null;
-let isScanning = false;
+let scanner;
 let hasScanned = false;
 
 function playBeep() {
@@ -169,124 +137,77 @@ function playBeep() {
   }
 }
 
-function vibratePhone() {
-  if (navigator.vibrate) {
-    navigator.vibrate(150);
-  }
-}
-
-async function startCamera() {
-  resultElement.replaceChildren();
-  hasScanned = false;
-
-  if (!window.isSecureContext) {
-    statusElement.textContent =
-      "Camera access requires a secure connection (HTTPS). Open this page using its https:// address.";
-    return;
-  }
-
-  if (!navigator.mediaDevices?.getUserMedia) {
-    statusElement.textContent =
-      "Camera access is not available in this browser. Try opening this page in Chrome or Safari.";
-    return;
-  }
-
-  if (typeof Html5Qrcode === "undefined") {
-    statusElement.textContent =
-      "The QR scanner could not load. Check your internet connection and reload the page.";
-    return;
-  }
-
-  startButton.disabled = true;
-  statusElement.textContent = "Requesting camera access…";
-
-  try {
-    scanner = new Html5Qrcode("reader");
-
-    // Prefer the rear camera on phones. This call is made from the button
-    // click so the browser can show its camera-permission prompt.
-    await scanner.start(
-      { facingMode: "environment" },
-      scannerConfig,
-      onScanSuccess,
-      () => {}
-    );
-
-    isScanning = true;
-    stopButton.disabled = false;
-    statusElement.textContent = "Camera is on. Point it at a QR code.";
-  } catch (error) {
-    console.error("Could not start camera:", error);
-
-    const errorName = error?.name || "";
-    if (errorName === "NotAllowedError" || errorName === "PermissionDeniedError") {
-      statusElement.textContent =
-        "Camera permission was denied. Allow camera access for this site in your browser settings, then try again.";
-    } else if (errorName === "NotFoundError" || errorName === "DevicesNotFoundError") {
-      statusElement.textContent = "No camera was found on this device.";
-    } else {
-      statusElement.textContent =
-        "Could not open the camera. Check the browser’s site permissions and make sure no other app is using the camera.";
-    }
-
-    scanner = null;
-    startButton.disabled = false;
-    stopButton.disabled = true;
-  }
-}
-
-async function stopCamera() {
-  if (!scanner || !isScanning) return;
-
-  try {
-    await scanner.stop();
-  } catch (error) {
-    console.warn("Could not stop scanner cleanly:", error);
-  }
-
-  scanner.clear();
-  scanner = null;
-  isScanning = false;
-  startButton.disabled = false;
-  stopButton.disabled = true;
-  statusElement.textContent = "Camera stopped.";
-}
-
-async function onScanSuccess(decodedText) {
+function onScanSuccess(decodedText) {
   if (hasScanned) return;
   hasScanned = true;
 
   playBeep();
-  vibratePhone();
 
-  statusElement.textContent = "✅ QR code scanned successfully.";
-  resultElement.replaceChildren();
-
-  const text = document.createElement("div");
-  text.textContent = decodedText;
-  resultElement.appendChild(text);
-
-  // Show a link only for HTTP(S) URLs, and require the user to click it.
-  // This avoids automatically redirecting to an unexpected QR-code destination.
+  let scannedUrl;
   try {
-    const url = new URL(decodedText);
-    if (url.protocol === "https:" || url.protocol === "http:") {
-      const link = document.createElement("a");
-      link.href = url.href;
-      link.textContent = "Open scanned link";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      resultElement.appendChild(link);
-    }
+    scannedUrl = new URL(decodedText);
   } catch {
-    // The QR code contains text rather than a valid URL.
+    statusElement.textContent = "QR code scanned, but it does not contain a valid link.";
+    resultElement.textContent = decodedText;
+    return;
   }
 
-  await stopCamera();
+  if (scannedUrl.protocol !== "https:" && scannedUrl.protocol !== "http:") {
+    statusElement.textContent = "QR code scanned, but its link type is not supported.";
+    resultElement.textContent = decodedText;
+    return;
+  }
+
+  statusElement.textContent = "✅ QR scanned. Opening link…";
+  window.location.href = scannedUrl.href;
 }
 
-startButton.addEventListener("click", startCamera);
-stopButton.addEventListener("click", stopCamera);
+async function startScanner() {
+  if (!window.isSecureContext) {
+    statusElement.textContent = "Camera access requires this page to be opened using HTTPS.";
+    return;
+  }
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    statusElement.textContent = "Camera access is not available in this browser.";
+    return;
+  }
+
+  if (typeof Html5Qrcode === "undefined") {
+    statusElement.textContent = "The QR scanner failed to load. Check your internet connection and reload.";
+    return;
+  }
+
+  try {
+    scanner = new Html5Qrcode("reader");
+
+    await scanner.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1
+      },
+      onScanSuccess,
+      () => {}
+    );
+
+    statusElement.textContent = "Camera is on. Point it at a QR code.";
+  } catch (error) {
+    console.error("Could not start camera:", error);
+
+    if (error?.name === "NotAllowedError" ||
+        error?.name === "PermissionDeniedError") {
+      statusElement.textContent =
+        "Camera permission was denied. Allow camera access for this site in your browser settings, then reload.";
+    } else {
+      statusElement.textContent =
+        "Could not open the camera. Check this site's camera permission and try again.";
+    }
+  }
+}
+
+startScanner();
 </script>
 
 </body>
