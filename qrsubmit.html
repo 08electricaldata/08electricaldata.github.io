@@ -61,77 +61,14 @@ body{
   position:relative;
 }
 
-.material-input{
-  position:relative;
-}
-
-.material-input input{
-  width:100%;
-  padding:14px 10px 8px;
-  font-size:15px;
-  background:#111827;
-  border:1px solid #334155;
-  border-radius:6px;
-  color:#e5e7eb;
-}
-
-.material-input label{
-  position:absolute;
-  left:12px;
-  top:14px;
-  font-size:14px;
-  color:#9ca3af;
-  pointer-events:none;
-  transition:all .2s ease;
-}
-
-.material-input input:focus + label,
-.material-input input:not(:placeholder-shown) + label{
-  top:4px;
-  font-size:11px;
-  color:#60a5fa;
-}
-
-.dropdown{
-  position:absolute;
-  width:100%;
-  background:#1f2937;
-  border:1px solid #334155;
-  border-radius:6px;
-  margin-top:4px;
-  max-height:0;
-  overflow-y:auto;
-  opacity:0;
-  transition:all .2s ease;
-  z-index:1000;
-}
-
-.dropdown.show{
-  max-height:220px;
-  opacity:1;
-}
-
-.dropdown-item{
-  padding:10px;
-  cursor:pointer;
-}
-
-.dropdown-item:hover,
-.dropdown-item.active{
-  background:#003f88;
-}
-
-textarea,select{
-  width:100%;
-  padding:10px;
-  font-size:14px;
-  background:#111827;
-  color:#e5e7eb;
-  border:1px solid #334155;
-  border-radius:6px;
-}
-
 textarea{
+  width:100%;
+  padding:10px;
+  font-size:14px;
+  background:#111827;
+  color:#e5e7eb;
+  border:1px solid #334155;
+  border-radius:6px;
   height:110px;
   resize:none;
 }
@@ -180,36 +117,10 @@ method="POST">
 <input type="hidden" name="entry.2074265710" id="dateField">
 <input type="hidden" name="entry.2034418039" id="mainDrive">
 <input type="hidden" name="entry.273858386" id="subDrive">
-<input type="hidden" name="entry.1114156376" id="natureHidden">
-
-<div class="field">
-  <div class="material-input">
-    <input type="text" id="natureInput" placeholder=" " autocomplete="off" required>
-    <label>Nature of Job</label>
-  </div>
-  <div class="dropdown" id="dropdown"></div>
-</div>
 
 <div class="field">
   <label>Job Details</label>
   <textarea name="entry.556400630" required></textarea>
-</div>
-
-<div class="field">
-  <label>Job By</label>
-  <select name="entry.972123475" required>
-    <option value="">Select</option>
-    <option>NALCO</option>
-    <option>ANIL_AREA</option>
-    <option>Nalco & ANIL</option>
-    <option>Nalco & SUPPLY</option>
-    <option>SUPPLY & ANIL</option>
-    <option>SUPPLY</option>
-    <option>MOTOR</option>
-    <option>NALCO_ANIL_SUPPLY</option>
-    <option>SUNIL BISWAL</option>
-    <option>MAHARANA BDM</option>
-  </select>
 </div>
 
 <button type="submit" class="submit-btn">SUBMIT</button>
@@ -221,118 +132,43 @@ method="POST">
 </div>
 
 <script>
-const today=new Date();
-dateField.value=today.toISOString().split("T")[0];
+const today = new Date();
+document.getElementById("dateField").value = today.toISOString().split("T")[0];
 
-const id=new URLSearchParams(location.search).get("id");
+const id = new URLSearchParams(location.search).get("id");
 if(id){
-  const firstDash=id.indexOf("-");
-  if(firstDash!==-1){
-    mainDrive.value=id.substring(0,firstDash);
-    subDrive.value=id.substring(firstDash+1);
+  const firstDash = id.indexOf("-");
+  if(firstDash !== -1){
+    document.getElementById("mainDrive").value = id.substring(0, firstDash);
+    document.getElementById("subDrive").value = id.substring(firstDash + 1);
   }
 }
 
-let natureData=[];
-fetch("https://raw.githubusercontent.com/08electricaldata/08electricaldata-json/main/dropdown/drives.json")
-.then(r=>r.json())
-.then(j=>{
+const jobForm = document.getElementById("jobForm");
+const msg = document.getElementById("msg");
 
-  const set=new Set();
-
-  if(j.headers && j.headers[2]){
-    set.add(j.headers[2].trim());
-  }
-
-  j.rows.forEach(r=>{
-    const v=(r[2]||"").trim();
-    if(v) set.add(v);
-  });
-
-  natureData=[...set].sort((a,b)=>a.localeCompare(b));
-
-});
-const input=document.getElementById("natureInput");
-const dropdown=document.getElementById("dropdown");
-const hidden=document.getElementById("natureHidden");
-let currentIndex=-1;
-
-function render(list){
-  dropdown.innerHTML="";
-  list.forEach((v,i)=>{
-    const div=document.createElement("div");
-    div.className="dropdown-item";
-    div.textContent=v;
-    div.onclick=()=>selectValue(v);
-    dropdown.appendChild(div);
-  });
-  if(list.length>0) dropdown.classList.add("show");
-  else dropdown.classList.remove("show");
-}
-
-function selectValue(val){
-  input.value=val;
-  hidden.value=val;
-  dropdown.classList.remove("show");
-}
-
-input.addEventListener("focus",()=>render(natureData));
-
-input.addEventListener("input",()=>{
-  const q=input.value.toLowerCase();
-  const filtered=natureData.filter(v=>v.toLowerCase().includes(q));
-  currentIndex=-1;
-  render(filtered);
-});
-
-input.addEventListener("keydown",(e)=>{
-  const items=document.querySelectorAll(".dropdown-item");
-  if(e.key==="ArrowDown") currentIndex++;
-  if(e.key==="ArrowUp") currentIndex--;
-  if(e.key==="Enter"){
-    e.preventDefault();
-    if(items[currentIndex]) selectValue(items[currentIndex].textContent);
-  }
-  items.forEach(i=>i.classList.remove("active"));
-  if(items.length>0){
-    if(currentIndex>=items.length) currentIndex=0;
-    if(currentIndex<0) currentIndex=items.length-1;
-    if(items[currentIndex]) items[currentIndex].classList.add("active");
-  }
-});
-
-document.addEventListener("click",(e)=>{
-  if(!e.target.closest(".field")) dropdown.classList.remove("show");
-});
-
-jobForm.addEventListener("submit",e=>{
-  if(!natureData.includes(input.value)){
-    alert("Please select valid Nature of Job.");
-    e.preventDefault();
-    return;
-  }
-
-  setTimeout(()=>{
-    msg.innerText="✅ Submitted successfully. Pending verification.";
+jobForm.addEventListener("submit", () => {
+  setTimeout(() => {
+    msg.innerText = "✅ Submitted successfully. Pending verification.";
 
     /* 🔊 Beep Sound */
-    const audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    const oscillator=audioCtx.createOscillator();
-    oscillator.type="sine";
-    oscillator.frequency.setValueAtTime(800,audioCtx.currentTime);
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
     oscillator.connect(audioCtx.destination);
     oscillator.start();
-    oscillator.stop(audioCtx.currentTime+0.2);
+    oscillator.stop(audioCtx.currentTime + 0.2);
 
     /* 📳 Vibration */
     if(navigator.vibrate) navigator.vibrate(200);
 
     /* Redirect */
-    setTimeout(()=>{
-      window.location.href="https://08electricaldata.github.io/scanjob.html";
-    },1500);
+    setTimeout(() => {
+      window.location.href = "https://08electricaldata.github.io/scanjob.html";
+    }, 1500);
 
-  },800);
+  }, 800);
 });
 </script>
 
